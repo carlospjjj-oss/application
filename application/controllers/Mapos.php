@@ -111,16 +111,7 @@ class Mapos extends MY_Controller
 
     public function emitente()
     {
-        if (!$this->permission->checkPermission($this->session->userdata('permissao'), 'cEmitente')) {
-            $this->session->set_flashdata('error', 'Você não tem permissão para configurar emitente.');
-            redirect(base_url());
-        }
-
-        $this->data['menuConfiguracoes'] = 'Configuracoes';
-        $this->data['dados'] = $this->mapos_model->getEmitente();
-        $this->data['view'] = 'mapos/emitente';
-
-        return $this->layout();
+        return redirect(site_url('proton/emitente'));
     }
 
     public function do_upload()
@@ -217,7 +208,7 @@ class Mapos extends MY_Controller
 
         if ($this->form_validation->run() == false) {
             $this->session->set_flashdata('error', 'Campos obrigatórios não foram preenchidos.');
-            redirect(site_url('mapos/emitente'));
+            redirect(site_url('proton/emitente'));
         } else {
             $nome = $this->input->post('nome');
             $cnpj = $this->input->post('cnpj');
@@ -240,7 +231,7 @@ class Mapos extends MY_Controller
             } else {
                 $this->session->set_flashdata('error', 'Ocorreu um erro ao tentar inserir as informações.');
             }
-            redirect(site_url('mapos/emitente'));
+            redirect(site_url('proton/emitente'));
         }
     }
 
@@ -266,7 +257,7 @@ class Mapos extends MY_Controller
 
         if ($this->form_validation->run() == false) {
             $this->session->set_flashdata('error', 'Campos obrigatórios não foram preenchidos.');
-            redirect(site_url('mapos/emitente'));
+            redirect(site_url('proton/emitente'));
         } else {
             $nome = $this->input->post('nome');
             $cnpj = $this->input->post('cnpj');
@@ -288,7 +279,7 @@ class Mapos extends MY_Controller
             } else {
                 $this->session->set_flashdata('error', 'Ocorreu um erro ao tentar alterar as informações.');
             }
-            redirect(site_url('mapos/emitente'));
+            redirect(site_url('proton/emitente'));
         }
     }
 
@@ -302,7 +293,7 @@ class Mapos extends MY_Controller
         $id = $this->input->post('id');
         if ($id == null || !is_numeric($id)) {
             $this->session->set_flashdata('error', 'Ocorreu um erro ao tentar alterar a logomarca.');
-            redirect(site_url('mapos/emitente'));
+            redirect(site_url('proton/emitente'));
         }
         $this->load->helper('file');
         delete_files(FCPATH . 'assets/uploads/');
@@ -317,7 +308,7 @@ class Mapos extends MY_Controller
         } else {
             $this->session->set_flashdata('error', 'Ocorreu um erro ao tentar alterar as informações.');
         }
-        redirect(site_url('mapos/emitente'));
+        redirect(site_url('proton/emitente'));
     }
 
     public function uploadUserImage()

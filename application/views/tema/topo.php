@@ -105,7 +105,7 @@
           <ul class="dropdown-menu">
             <li><a href="<?= site_url('mapos/configurar') ?>">Sistema</a></li>
             <li><a href="<?= site_url('usuarios') ?>">Usuários</a></li>
-            <li><a href="<?= site_url('mapos/emitente') ?>">Emitente</a></li>
+            <li><a href="<?= site_url('proton/emitente') ?>">Emitente</a></li>
             <li><a href="<?= site_url('permissoes') ?>">Permissões</a></li>
             <li><a href="<?= site_url('auditoria') ?>">Auditoria</a></li>
             <li><a href="<?= site_url('mapos/emails') ?>">Emails</a></li>
