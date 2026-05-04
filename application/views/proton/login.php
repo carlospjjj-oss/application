@@ -145,7 +145,7 @@
             dataType: 'json',
             success: function(data) {
                 if (data.result == true) {
-                    window.location.href = "<?= site_url('mapos'); ?>";
+                    window.location.href = "<?= site_url('proton'); ?>";
                 } else {
                     $('#btn-acessar').removeClass('disabled');
                     $('#progress-acessar').addClass('hide');

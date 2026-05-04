@@ -183,7 +183,7 @@ class Vendas extends MY_Controller
     {
         if (! $this->uri->segment(3) || ! is_numeric($this->uri->segment(3))) {
             $this->session->set_flashdata('error', 'Item não pode ser encontrado, parâmetro não foi passado corretamente.');
-            redirect('mapos');
+            redirect('proton');
         }
 
         if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'vVenda')) {
@@ -226,7 +226,7 @@ class Vendas extends MY_Controller
     {
         if (! $this->uri->segment(3) || ! is_numeric($this->uri->segment(3))) {
             $this->session->set_flashdata('error', 'Item não pode ser encontrado, parâmetro não foi passado corretamente.');
-            redirect('mapos');
+            redirect('proton');
         }
 
         if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'vVenda')) {
@@ -253,7 +253,7 @@ class Vendas extends MY_Controller
     {
         if (! $this->uri->segment(3) || ! is_numeric($this->uri->segment(3))) {
             $this->session->set_flashdata('error', 'Item não pode ser encontrado, parâmetro não foi passado corretamente.');
-            redirect('mapos');
+            redirect('proton');
         }
 
         if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'vVenda')) {
@@ -281,7 +281,7 @@ class Vendas extends MY_Controller
     {
         if (! $this->uri->segment(3) || ! is_numeric($this->uri->segment(3))) {
             $this->session->set_flashdata('error', 'Item não pode ser encontrado, parâmetro não foi passado corretamente.');
-            redirect('mapos');
+            redirect('proton');
         }
 
         if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'vVenda')) {

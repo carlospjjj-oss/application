@@ -1244,7 +1244,7 @@ if ($this->permission->checkPermission($this->session->userdata('permissao'), 'd
             dayMaxEvents: true, // allow "more" link when too many events
             displayEventTime: false,
             events: {
-                url: "<?= base_url() . "index.php/mapos/calendario"; ?>",
+                url: "<?= base_url() . "index.php/proton/calendario"; ?>",
                 method: 'GET',
                 extraParams: function() { // a function that returns an object
                     return {
