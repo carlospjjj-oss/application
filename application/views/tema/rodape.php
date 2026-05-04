@@ -1,7 +1,7 @@
 <div class="row-fluid">
     <div id="footer" class="span12">
         <a class="pecolor" href="https://protonmobilidade.com.br/" target="_blank">
-            <?= date('Y') ?> &copy; Proton Mobilidade - Map-OS - Versão: <?= $this->config->item('app_version') ?>
+            <?= date('Y') ?> &copy; Proton Mobilidade - Versão: <?= $this->config->item('app_version') ?>
         </a>
     </div>
 </div>
