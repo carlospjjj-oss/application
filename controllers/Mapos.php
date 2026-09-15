@@ -611,6 +611,55 @@ class Mapos extends MY_Controller
             ];
         }, $allOs);
 
+        // Adiciona lancamentos financeiros (contas a pagar/receber) ao calendario
+        $this->load->model('financeiro_model');
+        $allLancamentos = $this->financeiro_model->calendario($start, $end);
+
+        $hoje = new DateTime(date('Y-m-d'));
+
+        $eventosFinanceiro = array_map(function ($lanc) use ($hoje) {
+            if ($lanc->baixado == 1) {
+                $cor = '#00cd00'; // verde - ja pago/recebido
+            } else {
+                $vencimento = new DateTime($lanc->data_vencimento);
+                $diff = (int) $hoje->diff($vencimento)->format('%r%a');
+
+                if ($diff <= 0) {
+                    $cor = '#CD0000'; // vermelho - vencido ou vencendo hoje
+                } elseif ($diff <= 7) {
+                    $cor = '#FFD700'; // amarelo - proximos 7 dias
+                } elseif ($diff <= 30) {
+                    $cor = '#FF7F00'; // laranja - proximos 8 a 30 dias
+                } else {
+                    $cor = '#808080'; // cinza - mais distante
+                }
+            }
+
+            $tipoLabel = $lanc->tipo === 'receita' ? 'Receita' : 'Despesa';
+            $statusLabel = $lanc->baixado == 1 ? ($lanc->tipo === 'receita' ? 'Recebido' : 'Pago') : 'Pendente';
+
+            return [
+                'title' => "{$tipoLabel}: {$lanc->descricao} - R$ " . number_format($lanc->valor, 2, ',', '.'),
+                'start' => $lanc->data_vencimento,
+                'end' => $lanc->data_vencimento,
+                'color' => $cor,
+                'extendedProps' => [
+                    'id' => $lanc->idLancamentos,
+                    'tipoEvento' => 'financeiro',
+                    'descricao' => '<b>Descrição:</b> ' . $lanc->descricao,
+                    'clienteFornecedor' => '<b>Cliente/Fornecedor:</b> ' . $lanc->cliente_fornecedor,
+                    'valor' => '<b>Valor:</b> R$ ' . number_format($lanc->valor, 2, ',', '.'),
+                    'vencimento' => '<b>Vencimento:</b> ' . date('d/m/Y', strtotime($lanc->data_vencimento)),
+                    'status' => '<b>Status:</b> ' . $statusLabel,
+                    'tipo' => '<b>Tipo:</b> ' . $tipoLabel,
+                    'formaPgto' => '<b>Forma de Pagamento:</b> ' . $lanc->forma_pgto,
+                    'observacoes' => '<b>Observações:</b> ' . strip_tags(html_entity_decode($lanc->observacoes)),
+                ],
+            ];
+        }, $allLancamentos);
+
+        $events = array_merge($events, $eventosFinanceiro);
+
         return $this->output
             ->set_content_type('application/json')
             ->set_status_header(200)

@@ -21,8 +21,11 @@ class Visita_tecnica_model extends CI_Model
 
     public function getById($id)
     {
-        $this->db->where('id', $id);
-        return $this->db->get('visita_tecnica')->row();
+        $this->db->select('visita_tecnica.*, clientes.nomeCliente');
+        $this->db->from('visita_tecnica');
+        $this->db->join('clientes', 'clientes.idClientes = visita_tecnica.clientes_id', 'left');
+        $this->db->where('visita_tecnica.id', $id);
+        return $this->db->get()->row();
     }
 
     public function add($table, $data)

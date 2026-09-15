@@ -112,6 +112,22 @@ class Financeiro extends MY_Controller
         if ($this->form_validation->run('receita') == false) {
             $this->data['custom_error'] = (validation_errors() ? '<div class="form_error">' . validation_errors() . '</div>' : false);
         } else {
+            // Logica de Upload do Anexo (Nota Fiscal)
+            $anexoFile = null;
+            if (!empty($_FILES['userfile']['name'])) {
+                $config['upload_path']   = FCPATH . 'assets/anexos/';
+                $config['allowed_types'] = 'pdf|png|jpg|jpeg|xml';
+                $config['max_size']      = 5120;
+                $config['encrypt_name']  = TRUE;
+
+                $this->load->library('upload', $config);
+
+                if ($this->upload->do_upload('userfile')) {
+                    $upload_data = $this->upload->data();
+                    $anexoFile = $upload_data['file_name'];
+                }
+            }
+
             $vencimento = $this->input->post('vencimento');
             $recebimento = $this->input->post('recebimento');
             if ($recebimento != null) {
@@ -158,6 +174,9 @@ class Financeiro extends MY_Controller
                 'observacoes' => set_value('observacoes'),
                 'usuarios_id' => $this->session->userdata('id_admin'),
             ];
+            if ($anexoFile) {
+                $data['anexo'] = $anexoFile;
+            }
             if (set_value('idFornecedor')) {
                 $data['clientes_id'] = set_value('idFornecedor');
             }
@@ -515,6 +534,22 @@ class Financeiro extends MY_Controller
             if (set_value('idCliente')) {
                 $data['clientes_id'] = set_value('idCliente');
             }
+
+            // Logica de Upload do Anexo (Nota Fiscal) na edicao
+            if (!empty($_FILES['userfile']['name'])) {
+                $configUpload['upload_path']   = FCPATH . 'assets/anexos/';
+                $configUpload['allowed_types'] = 'pdf|png|jpg|jpeg|xml';
+                $configUpload['max_size']      = 5120;
+                $configUpload['encrypt_name']  = TRUE;
+
+                $this->load->library('upload', $configUpload);
+
+                if ($this->upload->do_upload('userfile')) {
+                    $upload_data = $this->upload->data();
+                    $data['anexo'] = $upload_data['file_name'];
+                }
+            }
+
             if ($this->financeiro_model->edit('lancamentos', $data, 'idLancamentos', $this->input->post('id')) == true) {
                 $this->session->set_flashdata('success', 'lançamento editado com sucesso!');
                 log_info('Alterou um lançamento no financeiro. ID' . $this->input->post('id'));

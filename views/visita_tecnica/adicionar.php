@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="<?php echo base_url() ?>assets/js/jquery-ui/css/smoothness/jquery-ui-1.9.2.custom.css" />
 <script type="text/javascript" src="<?php echo base_url() ?>assets/js/jquery-ui/js/jquery-ui-1.9.2.custom.js"></script>
 <div class="row-fluid" style="margin-top:0">
     <div class="span12">
@@ -55,7 +56,7 @@
                     <div class="control-group">
                         <label class="control-label">Endereço</label>
                         <div class="controls">
-                            <input type="text" name="endereco" class="span6" placeholder="Endereço da visita" />
+                            <input id="endereco" type="text" name="endereco" class="span6" placeholder="Endereço da visita" />
                         </div>
                     </div>
                     <div class="control-group">
@@ -95,7 +96,12 @@ $(document).ready(function() {
     $("#cliente").autocomplete({
         source: "<?php echo base_url(); ?>index.php/os/autoCompleteCliente",
         minLength: 1,
-        select: function(event, ui) { $("#clientes_id").val(ui.item.id); }
+        select: function(event, ui) {
+            $("#clientes_id").val(ui.item.id);
+            if (ui.item.endereco) {
+                $("#endereco").val(ui.item.endereco);
+            }
+        }
     });
     $(".datepicker").datepicker({ dateFormat: 'dd/mm/yy' });
     $('#formVisita').validate({

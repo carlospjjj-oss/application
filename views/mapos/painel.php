@@ -1122,7 +1122,7 @@
     </div>
     <div class="modal-body">
         <div class="span5" id="divFormStatusOS" style="margin-left: 0"></div>
-        <h4><b>OS:</b> <span id="modalId" class="modal-id"></span></h4>
+        <h4><b id="modalIdLabel">OS:</b> <span id="modalId" class="modal-id"></span></h4>
         <h5 id="modalCliente" class="modal-cliente"></h5>
         <div id="modalDataInicial" class="modal-DataInicial"></div>
         <div id="modalDataFinal" class="modal-DataFinal"></div>
@@ -1257,29 +1257,54 @@ if ($this->permission->checkPermission($this->session->userdata('permissao'), 'd
             },
             eventClick: function(info) {
                 var eventObj = info.event.extendedProps;
-                $('#modalId').html(eventObj.id);
-                $('#modalIdVisualizar').attr("href", "<?php echo base_url(); ?>index.php/os/visualizar/" + eventObj.id);
-                if (eventObj.editar) {
-                    $('#modalIdEditar').show();
-                    $('#linkExcluir').show();
-                    $('#modalIdEditar').attr("href", "<?php echo base_url(); ?>index.php/os/editar/" + eventObj.id);
-                    $('#modalIdExcluir').val(eventObj.id);
-                } else {
+
+                if (eventObj.tipoEvento === 'financeiro') {
+                    $('#calendarModal .modal-header h3').text('Detalhes do Lançamento Financeiro');
+                    $('#modalIdLabel').text('Lançamento:');
+                    $('#modalId').html(eventObj.id);
+                    $('#modalIdVisualizar').hide();
                     $('#modalIdEditar').hide();
                     $('#linkExcluir').hide();
+                    $('#modalCliente').html(eventObj.clienteFornecedor);
+                    $('#modalDataInicial').html(eventObj.vencimento);
+                    $('#modalDataFinal').html('');
+                    $('#modalGarantia').html(eventObj.tipo);
+                    $('#modalStatus').html(eventObj.status);
+                    $('#modalDescription').html(eventObj.descricao);
+                    $('#modalDefeito').html('');
+                    $('#modalObservacoes').html(eventObj.observacoes);
+                    $('#modalSubtotal').html(eventObj.valor);
+                    $('#modalDesconto').html('');
+                    $('#modalTotal').html(eventObj.formaPgto);
+                    $('#modalFaturado').html('');
+                } else {
+                    $('#calendarModal .modal-header h3').text('Status OS Detalhada');
+                    $('#modalIdLabel').text('OS:');
+                    $('#modalId').html(eventObj.id);
+                    $('#modalIdVisualizar').show().attr("href", "<?php echo base_url(); ?>index.php/os/visualizar/" + eventObj.id);
+                    if (eventObj.editar) {
+                        $('#modalIdEditar').show();
+                        $('#linkExcluir').show();
+                        $('#modalIdEditar').attr("href", "<?php echo base_url(); ?>index.php/os/editar/" + eventObj.id);
+                        $('#modalIdExcluir').val(eventObj.id);
+                    } else {
+                        $('#modalIdEditar').hide();
+                        $('#linkExcluir').hide();
+                    }
+                    $('#modalCliente').html(eventObj.cliente);
+                    $('#modalDataInicial').html(eventObj.dataInicial);
+                    $('#modalDataFinal').html(eventObj.dataFinal);
+                    $('#modalGarantia').html(eventObj.garantia);
+                    $('#modalStatus').html(eventObj.status);
+                    $('#modalDescription').html(eventObj.description);
+                    $('#modalDefeito').html(eventObj.defeito);
+                    $('#modalObservacoes').html(eventObj.observacoes);
+                    $('#modalSubtotal').html(eventObj.subtotal);
+                    $('#modalDesconto').html(eventObj.desconto);
+                    $('#modalTotal').html(eventObj.total);
+                    $('#modalFaturado').html(eventObj.faturado);
                 }
-                $('#modalCliente').html(eventObj.cliente);
-                $('#modalDataInicial').html(eventObj.dataInicial);
-                $('#modalDataFinal').html(eventObj.dataFinal);
-                $('#modalGarantia').html(eventObj.garantia);
-                $('#modalStatus').html(eventObj.status);
-                $('#modalDescription').html(eventObj.description);
-                $('#modalDefeito').html(eventObj.defeito);
-                $('#modalObservacoes').html(eventObj.observacoes);
-                $('#modalSubtotal').html(eventObj.subtotal);
-                $('#modalDesconto').html(eventObj.desconto);
-                $('#modalTotal').html(eventObj.total);
-                $('#modalFaturado').html(eventObj.faturado);
+
                 $('#eventUrl').attr('href', event.url);
                 $('#calendarModal').modal();
             },

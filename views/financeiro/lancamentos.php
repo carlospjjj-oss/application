@@ -116,6 +116,7 @@ $periodo = $this->input->get('periodo');
                             <th>Valor (+)</th>
                             <th>Desconto (-)</th>
                             <th>Valor Total (=)</th>
+                            <th>NF</th>
                             <th>Ações</th>
                         </tr>
                     </thead>
@@ -153,6 +154,14 @@ foreach ($results as $r) {
     echo  $r->tipo_desconto == "real" ? '<td>' . "R$ ".$r->desconto . '</td>' : ($r->tipo_desconto == "porcento" ? '<td>' . $r->desconto." %" . '</td>' : '<td>' . "0" . '</td>'); // valor do desconto
     echo $r->valor_desconto != 0 ? '<td> R$ ' . number_format($r->valor_desconto, 2, ',', '.') . '</td>' : '<td> R$ ' . number_format($r->valor, 2, ',', '.') . '</td>'; // valor total  com o desconto
                            
+    echo '<td style="text-align:center;">';
+    if (!empty($r->anexo)) {
+        echo '<a href="' . base_url() . 'assets/anexos/' . $r->anexo . '" target="_blank" title="Ver Nota Fiscal"><i class="bx bx-file"></i></a>';
+    } else {
+        echo '-';
+    }
+    echo '</td>';
+
     echo '<td>';
     if ($r->data_pagamento == "0000-00-00") {
         $data_pagamento = "";
@@ -249,7 +258,7 @@ echo number_format($soma_descontos_pagos, 2, ',', '.')?></strong></td>
 
 <!-- Modal nova receita e despesa -->
 <div id="modalReceita" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <form id="formReceita" action="<?php echo base_url() ?>index.php/financeiro/adicionarReceita" method="post">
+    <form id="formReceita" action="<?php echo base_url() ?>index.php/financeiro/adicionarReceita" method="post" enctype="multipart/form-data">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             <h3 id="myModalLabel">Adicionar Receita/Despesa</h3>
@@ -329,7 +338,7 @@ echo number_format($soma_descontos_pagos, 2, ',', '.')?></strong></td>
 	    	</div>    
             <div class="span3" style="margin-left: 0">
                 <div class="span3" style="margin-left: 0">
-                    <label for="recebido">Recebido?</label>
+                    <label for="recebido" id="labelRecebido">Recebido?</label>
                   <input id="recebido" type="checkbox" name="recebido" value="1" />
                 </div>
             </div>
@@ -348,7 +357,7 @@ echo number_format($soma_descontos_pagos, 2, ',', '.')?></strong></td>
                             <option value="Cartão de Crédito" selected>Cartão de Crédito</option>
                             <option value="Cartão de Débito">Cartão de Débito</option>
                             <option value="Cheque">Cheque</option> 
-                            <option value="Cheque Pré-datado">Cheque Pré-datado</option> 
+                            <option value="Pagamento via DDA">Pagamento via DDA</option> 
                             <option value="Depósito">Depósito</option>
                             <option value="Transferência DOC">Transferência DOC</option>
                             <option value="Transferência TED">Transferência TED</option>
@@ -360,7 +369,13 @@ echo number_format($soma_descontos_pagos, 2, ',', '.')?></strong></td>
             </div>
 
         </div>
-        <div class="modal-footer" style="display:flex;justify-content: right">
+        <div class="modal-footer" style="display:flex;justify-content: right; align-items:center; gap:8px;">
+            <div style="margin-right:auto; display:flex; align-items:center;">
+                <label for="userfile" class="button btn btn-info" style="min-width: 110px; cursor:pointer; margin-bottom:0; display:inline-flex; align-items:center; justify-content:center;">
+                    <span class="button__icon"><i class="bx bx-upload"></i></span><span class="button__text2" id="labelNotaFiscal">Anexar NF</span>
+                </label>
+                <input type="file" id="userfile" name="userfile" accept=".pdf,.jpg,.jpeg,.png,.xml" style="display:none;">
+            </div>
             <button class="button btn btn-warning" id="cancelar_nova_receita" data-dismiss="modal" aria-hidden="true" style="min-width: 110px">
             <span class="button__icon"><i class="bx bx-x"></i></span><span class="button__text2">Cancelar</span></button>
             <button class="button btn btn-primary" style="min-width: 110px">
@@ -446,7 +461,7 @@ echo number_format($soma_descontos_pagos, 2, ',', '.')?></strong></td>
                             <option value="Cartão de Crédito">Cartão de Crédito</option>
                             <option value="Cartão de Débito">Cartão de Débito</option>
                             <option value="Cheque">Cheque</option> 
-                            <option value="Cheque Pré-datado">Cheque Pré-datado</option> 
+                            <option value="Pagamento via DDA">Pagamento via DDA</option> 
                             <option value="Depósito">Depósito</option>
                             <option value="Transferência DOC">Transferência DOC</option>
                             <option value="Transferência TED">Transferência TED</option>
@@ -568,7 +583,7 @@ echo number_format($soma_descontos_pagos, 2, ',', '.')?></strong></td>
 
 <!-- Modal editar lançamento -->
 <div id="modalEditar" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <form id="formEditar" action="<?php echo base_url() ?>index.php/financeiro/editar" method="post">
+    <form id="formEditar" action="<?php echo base_url() ?>index.php/financeiro/editar" method="post" enctype="multipart/form-data">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             <h3 id="myModalLabel">Editar Lançamento</h3>
@@ -644,7 +659,7 @@ echo number_format($soma_descontos_pagos, 2, ',', '.')?></strong></td>
                             <option value="Cartão de Crédito">Cartão de Crédito</option>
                             <option value="Cartão de Débito">Cartão de Débito</option>
                             <option value="Cheque">Cheque</option> 
-                            <option value="Cheque Pré-datado">Cheque Pré-datado</option> 
+                            <option value="Pagamento via DDA">Pagamento via DDA</option> 
                             <option value="Depósito">Depósito</option>
                             <option value="Transferência DOC">Transferência DOC</option>
                             <option value="Transferência TED">Transferência TED</option>
@@ -656,9 +671,16 @@ echo number_format($soma_descontos_pagos, 2, ',', '.')?></strong></td>
             </div>
 
         </div>
-        <div class="modal-footer" style="display:flex;justify-content: center">
-            <label for="documento" class="control-label">Modificado por: </label>
-            <div class="controls span4">
+        <div class="modal-footer" style="display:flex;justify-content: center; align-items:center; gap:8px; padding-left:16px; padding-right:16px;">
+            <div style="margin-right:auto; display:flex; align-items:center;">
+                <label for="userfileEditar" class="button btn btn-info" style="min-width: 110px; cursor:pointer; margin-bottom:0; display:inline-flex; align-items:center; justify-content:center;">
+                    <span class="button__icon"><i class="bx bx-upload"></i></span><span class="button__text2" id="labelNotaFiscalEditar">Anexar NF</span>
+                </label>
+                <input type="file" id="userfileEditar" name="userfile" accept=".pdf,.jpg,.jpeg,.png,.xml" style="display:none;">
+                <span id="linkNotaFiscalAtual" style="margin-left:8px;"></span>
+            </div>
+            <label for="documento" class="control-label" style="display:none;">Modificado por: </label>
+            <div class="controls span4" style="display:none;">
                 <input disabled id="usuarioEditar" value="" style="background-color: #f5f5f5; border-color: transparent; height: 10px">
             </div>
             <button class="button btn btn-warning" data-dismiss="modal" aria-hidden="true" id="btnCancelarEditar" style="min-width: 110px">
@@ -770,6 +792,15 @@ echo number_format($soma_descontos_pagos, 2, ',', '.')?></strong></td>
     jQuery(document).ready(function($) {
 
         $(".money").maskMoney();
+
+        $("#tipo").on("change", function() {
+            var tipo = $(this).val();
+            if (tipo === "despesa") {
+                $("#labelRecebido").text("Pago?");
+            } else {
+                $("#labelRecebido").text("Recebido?");
+            }
+        }).trigger("change");
 
         $('#pago').click(function(event) {
             var flag = $(this).is(':checked');
