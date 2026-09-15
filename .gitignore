@@ -1,0 +1,36 @@
+# Dependências Composer
+/application/vendor/
+
+# Arquivos enviados/gerados pelo sistema
+/assets/anexos/*
+/assets/arquivos/*
+/assets/userImage/*
+
+# Logs
+/logs/*.php
+
+# Arquivos temporários e backups
+*.bak
+*.bak2
+*.bak3
+*.quebrado
+*.tmp
+
+# Arquivos de backup temporários
+*.sql
+*.sql.gz
+*.sql.gz.gpg
+
+# Arquivos .htaccess de backup
+.htaccess.*
+
+# Arquivos de backup de código
+*.bak
+*.bak2
+*.bak3
+*.quebrado
+
+# Composer na raiz - não versionar dependências
+/vendor/
+vendor.bak-*/
+
