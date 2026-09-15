@@ -34,3 +34,4 @@
 /vendor/
 vendor.bak-*/
 
+!/database/migrations/*.sql
