@@ -119,6 +119,21 @@ class Financeiro_model extends CI_Model
         return $this->db->count_all_results();
     }
 
+    public function calendario($start = null, $end = null)
+    {
+        $this->db->select('*');
+        $this->db->from('lancamentos');
+        if ($start) {
+            $this->db->where('data_vencimento >=', date('Y-m-d', strtotime($start)));
+        }
+        if ($end) {
+            $this->db->where('data_vencimento <=', date('Y-m-d', strtotime($end)));
+        }
+        $this->db->order_by('data_vencimento', 'asc');
+
+        return $this->db->get()->result();
+    }
+
     public function autoCompleteClienteFornecedor($q)
     {
         $this->db->select('DISTINCT(cliente_fornecedor) as cliente_fornecedor');
