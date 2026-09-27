@@ -44,7 +44,7 @@
                                         </div>
                                         <div class="span3">
                                             <label for="tecnico">Vendedor<span class="required">*</span></label>
-                                            <input id="tecnico" class="span12" type="text" name="tecnico" value="<?php echo $result->nome ?>" />
+                                            <input id="tecnico" class="span12" type="text" name="tecnico" value="<?php echo !empty($result->vendedor) ? $result->vendedor : $result->nome; ?>" />
                                             <input id="usuarios_id" class="span12" type="hidden" name="usuarios_id" value="<?php echo $result->usuarios_id ?>" />
                                         </div>
                                         <div class="span2">
@@ -72,7 +72,7 @@
 
                                     <div class="span6" style="padding: 1%; margin-left: 0">
                                         <label for="observacoes">
-                                            <h4>Observações Internas</h4>
+                                            <h4>Resultado</h4>
                                         </label>
                                         <textarea class="editor" name="observacoes" id="observacoes" cols="30" rows="5"><?php echo $result->observacoes ?></textarea>
                                     </div>
@@ -527,13 +527,20 @@ foreach ($produtos as $p) {
             minLength: 2,
             select: function(event, ui) {
                 $("#clientes_id").val(ui.item.id);
+                $.get("<?php echo base_url(); ?>index.php/vendas/getUltimoResultadoVisita", { clientes_id: ui.item.id }, function(resp) {
+                    if (resp && resp.resultado) {
+                        $('#observacoes').trumbowyg('html', resp.resultado);
+                    }
+                }, 'json');
             }
         });
         $("#tecnico").autocomplete({
-            source: "<?php echo base_url(); ?>index.php/os/autoCompleteUsuario",
+            source: "<?php echo base_url(); ?>index.php/vendas/autoCompleteVendedor",
             minLength: 2,
             select: function(event, ui) {
-                $("#usuarios_id").val(ui.item.id);
+                if (ui.item.source_type === 'usuario') {
+                    $("#usuarios_id").val(ui.item.id);
+                }
             }
         });
         $("#formVendas").validate({

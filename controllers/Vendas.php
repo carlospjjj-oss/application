@@ -98,6 +98,7 @@ class Vendas extends MY_Controller
                 'observacoes_cliente' => $this->input->post('observacoes_cliente'),
                 'clientes_id' => $this->input->post('clientes_id'),
                 'usuarios_id' => $this->input->post('usuarios_id'),
+                'vendedor' => $this->input->post('tecnico'),
                 'faturado' => 0,
                 'status' => $this->input->post('status'),
                 'garantia' => $this->input->post('garantia')
@@ -134,9 +135,17 @@ class Vendas extends MY_Controller
         $this->load->library('form_validation');
         $this->data['custom_error'] = '';
 
-        $this->data['editavel'] = $this->vendas_model->isEditable($this->input->post('idVendas'));
+        $idVendaAtual = $this->uri->segment(3);
+        $vendaAntiga = $this->vendas_model->getById($idVendaAtual);
+        $statusAntigo = $vendaAntiga ? $vendaAntiga->status : null;
+
+        $this->data['editavel'] = $this->vendas_model->isEditable($idVendaAtual);
         if (! $this->data['editavel']) {
-            $this->session->set_flashdata('error', 'Essa Venda já tem seu status Faturada e não pode ser alterado e nem suas informações atualizadas. Por favor abrir uma nova Venda.');
+            if ($vendaAntiga && $vendaAntiga->convertida) {
+                $this->session->set_flashdata('error', 'Essa Venda já foi convertida em Ordem de Serviço #' . $vendaAntiga->os_id . ' e não pode mais ser editada.');
+            } else {
+                $this->session->set_flashdata('error', 'Essa Venda já tem seu status Faturada e não pode ser alterado e nem suas informações atualizadas. Por favor abrir uma nova Venda.');
+            }
 
             redirect(site_url('vendas'));
         }
@@ -159,11 +168,21 @@ class Vendas extends MY_Controller
                 'observacoes_cliente' => $this->input->post('observacoes_cliente'),
                 'usuarios_id' => $this->input->post('usuarios_id'),
                 'clientes_id' => $this->input->post('clientes_id'),
+                'vendedor' => $this->input->post('tecnico'),
                 'status' => $this->input->post('status'),
                 'garantia' => $this->input->post('garantia')
             ];
 
             if ($this->vendas_model->edit('vendas', $data, 'idVendas', $this->input->post('idVendas')) == true) {
+                $novoStatus = $this->input->post('status');
+                if ($novoStatus === 'Aprovado' && $statusAntigo !== 'Aprovado') {
+                    $novoOsId = $this->vendas_model->converterParaOs($this->input->post('idVendas'));
+                    if ($novoOsId) {
+                        log_info('Venda convertida em OS. Venda ID: ' . $this->input->post('idVendas') . ' -> OS ID: ' . $novoOsId);
+                        $this->session->set_flashdata('success', 'Venda aprovada e convertida em Ordem de Serviço #' . $novoOsId . ' com sucesso!');
+                        redirect(site_url('os/editar/') . $novoOsId);
+                    }
+                }
                 $this->session->set_flashdata('success', 'Venda editada com sucesso!');
                 log_info('Alterou uma venda. ID: ' . $this->input->post('idVendas'));
                 redirect(site_url('vendas/editar/') . $this->input->post('idVendas'));
@@ -373,6 +392,26 @@ class Vendas extends MY_Controller
             $q = strtolower($_GET['term']);
             $this->vendas_model->autoCompleteUsuario($q);
         }
+    }
+
+    public function autoCompleteVendedor()
+    {
+        if (isset($_GET['term'])) {
+            $q = strtolower($_GET['term']);
+            $this->vendas_model->autoCompleteVendedor($q);
+        }
+    }
+
+    public function getUltimoResultadoVisita()
+    {
+        $clientes_id = $this->input->get('clientes_id');
+        if (!$clientes_id || !is_numeric($clientes_id)) {
+            echo json_encode(['resultado' => null]);
+            return;
+        }
+        $this->load->model('visita_tecnica_model');
+        $visita = $this->visita_tecnica_model->getUltimoResultado($clientes_id);
+        echo json_encode(['resultado' => $visita ? $visita->resultado : null]);
     }
 
     public function adicionarProduto()

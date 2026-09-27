@@ -66,7 +66,7 @@
 
                                     <div class="span6" style="padding: 1%; margin-left: 0">
                                         <label for="observacoes">
-                                            <h4>Observações Internas</h4>
+                                            <h4>Resultado</h4>
                                         </label>
                                         <textarea class="editor" name="observacoes" id="observacoes" cols="30" rows="5"></textarea>
                                     </div>
@@ -107,14 +107,21 @@
                     {
                         $("#clientes_id").val(ui.item.id);
                         $('.addclient').hide();
+                        $.get("<?php echo base_url(); ?>index.php/vendas/getUltimoResultadoVisita", { clientes_id: ui.item.id }, function(resp) {
+                            if (resp && resp.resultado) {
+                                $('#observacoes').trumbowyg('html', resp.resultado);
+                            }
+                        }, 'json');
                     }
             }
         });
         $("#tecnico").autocomplete({
-            source: "<?php echo base_url(); ?>index.php/vendas/autoCompleteUsuario",
+            source: "<?php echo base_url(); ?>index.php/vendas/autoCompleteVendedor",
             minLength: 1,
             select: function(event, ui) {
-                $("#usuarios_id").val(ui.item.id);
+                if (ui.item.source_type === 'usuario') {
+                    $("#usuarios_id").val(ui.item.id);
+                }
             }
         });
         $("#formVendas").validate({

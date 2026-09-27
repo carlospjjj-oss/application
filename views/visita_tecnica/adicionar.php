@@ -18,6 +18,17 @@
                         </div>
                     </div>
                     <div class="control-group">
+                        <label class="control-label">Técnico</label>
+                        <div class="controls">
+                            <select name="usuarios_id" class="span6">
+                                <option value="">Selecione...</option>
+                                <?php foreach ($usuariosAtivos as $u): ?>
+                                <option value="<?php echo $u->idUsuarios; ?>"><?php echo $u->nome; ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="control-group">
                         <label class="control-label">Data da Visita<span class="required">*</span></label>
                         <div class="controls">
                             <input id="data_visita" type="text" name="data_visita" class="datepicker" autocomplete="off" />
@@ -32,7 +43,7 @@
                     <div class="control-group">
                         <label class="control-label">Status<span class="required">*</span></label>
                         <div class="controls">
-                            <select name="status" class="span4">
+                            <select name="status" id="status" class="span4">
                                 <option value="Agendada">Agendada</option>
                                 <option value="Realizada">Realizada</option>
                                 <option value="Cancelada">Cancelada</option>
@@ -68,7 +79,7 @@
                     <div class="control-group">
                         <label class="control-label">Resultado</label>
                         <div class="controls">
-                            <textarea name="resultado" rows="3" class="span6"></textarea>
+                            <textarea name="resultado" id="resultado" rows="3" class="span6" readonly></textarea>
                         </div>
                     </div>
                     <div class="form-actions">
@@ -93,6 +104,17 @@
 <script src="<?php echo base_url() ?>assets/js/jquery.validate.js"></script>
 <script>
 $(document).ready(function() {
+    function toggleResultado() {
+        var status = $("#status").val();
+        if (status === "Realizada") {
+            $("#resultado").prop("readonly", false);
+        } else {
+            $("#resultado").prop("readonly", true);
+        }
+    }
+    $("#status").on("change", toggleResultado);
+    toggleResultado();
+
     $("#cliente").autocomplete({
         source: "<?php echo base_url(); ?>index.php/os/autoCompleteCliente",
         minLength: 1,

@@ -33,6 +33,9 @@ class Vendas_model extends CI_Model
         $this->db->limit($perpage, $start);
         $this->db->join('clientes', 'clientes.idClientes = ' . $table . '.clientes_id');
         $this->db->join('usuarios', 'usuarios.idUsuarios = ' . $table . '.usuarios_id');
+        if ($table === 'vendas') {
+            $this->db->where('vendas.convertida', 0);
+        }
         $this->db->order_by('idVendas', 'desc');
         
         // condicionais da pesquisa
@@ -139,6 +142,9 @@ class Vendas_model extends CI_Model
     public function isEditable($id = null)
     {
         if ($vendas = $this->getById($id)) {
+            if ($vendas->convertida) {
+                return false;
+            }
             if ($vendas->faturado) {
                 return $this->data['configuration']['control_edit_vendas'] == '1';
             }
@@ -219,7 +225,62 @@ class Vendas_model extends CI_Model
 
     public function count($table)
     {
-        return $this->db->count_all($table);
+        if ($table === 'vendas') {
+            $this->db->where('convertida', 0);
+        }
+        return $this->db->count_all_results($table);
+    }
+
+    public function converterParaOs($idVendas)
+    {
+        $venda = $this->getById($idVendas);
+        if (! $venda) {
+            return false;
+        }
+
+        $this->db->trans_start();
+
+        $osData = [
+            'dataInicial' => date('Y-m-d'),
+            'dataFinal' => null,
+            'garantia' => $venda->garantia,
+            'descricaoProduto' => 'Convertido da Venda #' . $venda->idVendas,
+            'status' => 'Aprovado',
+            'observacoes' => $venda->observacoes,
+            'valorTotal' => $venda->valorTotal,
+            'desconto' => $venda->desconto,
+            'valor_desconto' => $venda->valor_desconto,
+            'tipo_desconto' => $venda->tipo_desconto,
+            'clientes_id' => $venda->clientes_id,
+            'usuarios_id' => $venda->usuarios_id,
+            'faturado' => 0,
+        ];
+
+        $this->db->insert('os', $osData);
+        $novoOsId = $this->db->insert_id();
+
+        $itens = $this->getProdutos($idVendas);
+        foreach ($itens as $item) {
+            $this->db->insert('produtos_os', [
+                'quantidade' => $item->quantidade,
+                'descricao' => $item->descricao,
+                'preco' => $item->preco,
+                'os_id' => $novoOsId,
+                'produtos_id' => $item->produtos_id,
+                'subTotal' => $item->subTotal,
+            ]);
+        }
+
+        $this->db->where('idVendas', $idVendas);
+        $this->db->update('vendas', ['convertida' => 1, 'os_id' => $novoOsId]);
+
+        $this->db->trans_complete();
+
+        if ($this->db->trans_status() === false) {
+            return false;
+        }
+
+        return $novoOsId;
     }
 
     public function autoCompleteProduto($q)
@@ -252,6 +313,41 @@ class Vendas_model extends CI_Model
             $row_set[] = ['label' => 'Adicionar cliente...', 'id' => null];
             echo json_encode($row_set);
         }
+    }
+
+    public function autoCompleteVendedor($q)
+    {
+        $row_set = [];
+        $labelsUsados = [];
+
+        // Usuarios cadastrados no sistema (mantem o comportamento antigo de trocar o dono da venda)
+        $this->db->select('idUsuarios, nome');
+        $this->db->limit(10);
+        $this->db->like('nome', $q);
+        $this->db->where('situacao', 1);
+        $queryUsuarios = $this->db->get('usuarios');
+        if ($queryUsuarios->num_rows() > 0) {
+            foreach ($queryUsuarios->result_array() as $row) {
+                $row_set[] = ['label' => $row['nome'], 'id' => $row['idUsuarios'], 'source_type' => 'usuario'];
+                $labelsUsados[] = $row['nome'];
+            }
+        }
+
+        // Nomes ja digitados antes no campo Vendedor (texto livre, aprendido)
+        $this->db->select('DISTINCT(vendedor) as vendedor');
+        $this->db->limit(10);
+        $this->db->like('vendedor', $q);
+        $this->db->where('vendedor IS NOT NULL', null, false);
+        $queryVendedor = $this->db->get('vendas');
+        if ($queryVendedor->num_rows() > 0) {
+            foreach ($queryVendedor->result_array() as $row) {
+                if (!in_array($row['vendedor'], $labelsUsados)) {
+                    $row_set[] = ['label' => $row['vendedor'], 'id' => null, 'source_type' => 'texto'];
+                }
+            }
+        }
+
+        echo json_encode($row_set);
     }
 
     public function autoCompleteUsuario($q)

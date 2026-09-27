@@ -142,6 +142,10 @@
                                     <input type="checkbox" id="fornecedor" name="fornecedor" class="badgebox" value="1">
                                     <span class="badge">&check;</span>
                                 </label>
+                                <label for="terceiro" class="btn btn-default">Terceiro
+                                    <input type="checkbox" id="terceiro" name="terceiro" class="badgebox" value="1">
+                                    <span class="badge">&check;</span>
+                                </label>
                             </div>
                         </div>
                     </div>
@@ -216,15 +220,9 @@
                             </div>
                         </div>
                         <div class="control-group">
-                            <label for="concessionaria_energia" class="control-label">Concessionária de Energia</label>
+                            <label for="concessionaria_energia" class="control-label">Observação</label>
                             <div class="controls">
-                                <input id="concessionaria_energia" type="text" name="concessionaria_energia" value="<?php echo set_value('concessionaria_energia'); ?>" placeholder="Ex: Enel, CPFL, Cemig..." />
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <label for="numero_uc" class="control-label">Número da UC (Unidade Consumidora)</label>
-                            <div class="controls">
-                                <input id="numero_uc" type="text" name="numero_uc" value="<?php echo set_value('numero_uc'); ?>" placeholder="Código na conta de energia" />
+                                <textarea id="concessionaria_energia" name="concessionaria_energia" rows="4" class="span12" placeholder="Observações"><?php echo set_value('concessionaria_energia'); ?></textarea>
                             </div>
                         </div>
                     </div>
@@ -233,20 +231,6 @@
                             <label for="veiculo_marca_modelo" class="control-label">Veículo Elétrico (Marca/Modelo)</label>
                             <div class="controls">
                                 <input id="veiculo_marca_modelo" type="text" name="veiculo_marca_modelo" value="<?php echo set_value('veiculo_marca_modelo'); ?>" placeholder="Ex: BYD Dolphin, Volvo XC40..." />
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <label for="veiculo_tipo_conector" class="control-label">Tipo de Conector do Veículo</label>
-                            <div class="controls">
-                                <select id="veiculo_tipo_conector" name="veiculo_tipo_conector">
-                                    <option value="">Selecione...</option>
-                                    <option value="Type 2" <?php if(set_value('veiculo_tipo_conector')=='Type 2') echo 'selected'; ?>>Type 2 (Mennekes)</option>
-                                    <option value="CCS Combo 2" <?php if(set_value('veiculo_tipo_conector')=='CCS Combo 2') echo 'selected'; ?>>CCS Combo 2</option>
-                                    <option value="CHAdeMO" <?php if(set_value('veiculo_tipo_conector')=='CHAdeMO') echo 'selected'; ?>>CHAdeMO</option>
-                                    <option value="J1772" <?php if(set_value('veiculo_tipo_conector')=='J1772') echo 'selected'; ?>>J1772</option>
-                                    <option value="GB/T" <?php if(set_value('veiculo_tipo_conector')=='GB/T') echo 'selected'; ?>>GB/T</option>
-                                    <option value="Outro" <?php if(set_value('veiculo_tipo_conector')=='Outro') echo 'selected'; ?>>Outro</option>
-                                </select>
                             </div>
                         </div>
                         <div class="control-group">
