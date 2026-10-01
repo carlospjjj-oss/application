@@ -1,31 +1,38 @@
-# See https://help.github.com/ignore-files/ for more about ignoring files.
-# production
-/install/files
-/docker/data
-
-# misc
-.DS_Store
-.vscode
-
-/vendor/
+# Dependências Composer
 /application/vendor/
 
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+# Arquivos enviados/gerados pelo sistema
+/assets/anexos/*
+/assets/arquivos/*
+/assets/userImage/*
 
-!blank/.gitkeep
-desktop.ini
+# Logs
+/logs/*.php
 
-application/vendor/
-vendor/
-.idea/
-.php_cs.cache
-.php-cs-fixer.cache
-application/logs/*
-ci_sessions/
+# Arquivos temporários e backups
+*.bak
+*.bak2
+*.bak3
+*.quebrado
+*.tmp
 
-uploads
-application/.env
-assets/userImage
+# Arquivos de backup temporários
+*.sql
+*.sql.gz
+*.sql.gz.gpg
+
+# Arquivos .htaccess de backup
+.htaccess.*
+
+# Arquivos de backup de código
+*.bak
+*.bak2
+*.bak3
+*.quebrado
+
+# Composer na raiz - não versionar dependências
+/vendor/
+vendor.bak-*/
+
+!/database/migrations/*.sql
+/assets/visita_midia/*
