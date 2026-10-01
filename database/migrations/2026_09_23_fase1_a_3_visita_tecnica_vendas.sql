@@ -14,3 +14,6 @@ CREATE TABLE visita_tecnica_midia (
 -- Fase 3: Vendas -> OS
 ALTER TABLE vendas ADD COLUMN convertida TINYINT(1) NOT NULL DEFAULT 0 AFTER status;
 ALTER TABLE vendas ADD COLUMN os_id INT NULL AFTER convertida;
+
+-- Correcao: coluna vendedor (esquecida na migration original)
+ALTER TABLE vendas ADD COLUMN IF NOT EXISTS vendedor VARCHAR(255) NULL AFTER usuarios_id;
