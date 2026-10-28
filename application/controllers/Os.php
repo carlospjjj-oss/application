@@ -124,6 +124,16 @@ class Os extends MY_Controller
                 'status' => set_value('status'),
                 'observacoes' => $this->input->post('observacoes'),
                 'laudoTecnico' => $this->input->post('laudoTecnico'),
+                'carregador_marca_modelo' => $this->input->post('carregador_marca_modelo'),
+                'carregador_potencia' => $this->input->post('carregador_potencia'),
+                'carregador_numero_serie' => $this->input->post('carregador_numero_serie'),
+                'laudo_emitido' => $this->input->post('laudo_emitido') ? 1 : 0,
+                'check_quadro' => $this->input->post('check_quadro') ? 1 : 0,
+                'check_disjuntor' => $this->input->post('check_disjuntor') ? 1 : 0,
+                'check_cabos' => $this->input->post('check_cabos') ? 1 : 0,
+                'check_fixacao' => $this->input->post('check_fixacao') ? 1 : 0,
+                'check_teste' => $this->input->post('check_teste') ? 1 : 0,
+                'check_orientacao' => $this->input->post('check_orientacao') ? 1 : 0,
                 'faturado' => 0,
             ];
 
@@ -225,6 +235,16 @@ class Os extends MY_Controller
                 'status' => $this->input->post('status'),
                 'observacoes' => $this->input->post('observacoes'),
                 'laudoTecnico' => $this->input->post('laudoTecnico'),
+                'carregador_marca_modelo' => $this->input->post('carregador_marca_modelo'),
+                'carregador_potencia' => $this->input->post('carregador_potencia'),
+                'carregador_numero_serie' => $this->input->post('carregador_numero_serie'),
+                'laudo_emitido' => $this->input->post('laudo_emitido') ? 1 : 0,
+                'check_quadro' => $this->input->post('check_quadro') ? 1 : 0,
+                'check_disjuntor' => $this->input->post('check_disjuntor') ? 1 : 0,
+                'check_cabos' => $this->input->post('check_cabos') ? 1 : 0,
+                'check_fixacao' => $this->input->post('check_fixacao') ? 1 : 0,
+                'check_teste' => $this->input->post('check_teste') ? 1 : 0,
+                'check_orientacao' => $this->input->post('check_orientacao') ? 1 : 0,
                 'usuarios_id' => $this->input->post('usuarios_id'),
                 'clientes_id' => $this->input->post('clientes_id'),
             ];
@@ -307,7 +327,7 @@ class Os extends MY_Controller
     {
         if (! $this->uri->segment(3) || ! is_numeric($this->uri->segment(3))) {
             $this->session->set_flashdata('error', 'Item não pode ser encontrado, parâmetro não foi passado corretamente.');
-            redirect('proton');
+            redirect('mapos');
         }
 
         if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'vOs')) {
@@ -417,7 +437,7 @@ class Os extends MY_Controller
     {
         if (! $this->uri->segment(3) || ! is_numeric($this->uri->segment(3))) {
             $this->session->set_flashdata('error', 'Item não pode ser encontrado, parâmetro não foi passado corretamente.');
-            redirect('proton');
+            redirect('mapos');
         }
 
         if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'vOs')) {
@@ -450,7 +470,7 @@ class Os extends MY_Controller
     {
         if (! $this->uri->segment(3) || ! is_numeric($this->uri->segment(3))) {
             $this->session->set_flashdata('error', 'Item não pode ser encontrado, parâmetro não foi passado corretamente.');
-            redirect('proton');
+            redirect('mapos');
         }
 
         if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'vOs')) {
@@ -478,7 +498,7 @@ class Os extends MY_Controller
     {
         if (! $this->uri->segment(3) || ! is_numeric($this->uri->segment(3))) {
             $this->session->set_flashdata('error', 'Item não pode ser encontrado, parâmetro não foi passado corretamente.');
-            redirect('proton');
+            redirect('mapos');
         }
 
         if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'vOs')) {
@@ -841,10 +861,10 @@ class Os extends MY_Controller
         // If it exist, check if it's a directory
         if (! is_dir($directory . DIRECTORY_SEPARATOR . 'thumbs')) {
             // make directory for images and thumbs
-            try {
-                mkdir($directory . DIRECTORY_SEPARATOR . 'thumbs', 0755, true);
-            } catch (Exception $e) {
-                echo json_encode(['result' => false, 'mensagem' => $e->getMessage()]);
+            $result_mkdir = mkdir($directory . DIRECTORY_SEPARATOR . 'thumbs', 0755, true);
+            if (!$result_mkdir) {
+                $err = error_get_last();
+                echo json_encode(['result' => false, 'mensagem' => 'mkdir falhou: ' . ($err['message'] ?? 'unknown')]);
                 exit();
             }
         }
@@ -916,7 +936,7 @@ class Os extends MY_Controller
         }
 
         if (count($error) > 0) {
-            echo json_encode(['result' => false, 'mensagem' => 'Ocorreu um erro ao processar os arquivos.', 'errors' => $error]);
+            echo json_encode(['result' => false, 'mensagem' => 'Ocorreu um erro ao processar os arquivos.', 'errors' => $error, 'debug' => ['directory' => $directory, 'files' => array_keys($_FILES)]]);
         } else {
             log_info('Adicionou anexo(s) a uma OS. ID (OS): ' . $this->input->post('idOsServico'));
             echo json_encode(['result' => true, 'mensagem' => 'Arquivo(s) anexado(s) com sucesso.']);

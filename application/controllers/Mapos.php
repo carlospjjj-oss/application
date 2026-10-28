@@ -658,7 +658,38 @@ class Mapos extends MY_Controller
             ];
         }, $allLancamentos);
 
-        $events = array_merge($events, $eventosFinanceiro);
+        // Adiciona visitas tecnicas ao calendario
+        $this->load->model('visita_tecnica_model');
+        $allVisitas = $this->visita_tecnica_model->calendario($start, $end);
+
+        $eventosVisitas = array_map(function ($vt) {
+            switch ($vt->status) {
+                case 'Realizada':
+                    $cor = '#28a745';
+                    break;
+                case 'Cancelada':
+                    $cor = '#CD0000';
+                    break;
+                default:
+                    $cor = '#FF6600';
+                    break;
+            }
+            return [
+                'title' => 'Visita: ' . $vt->nomeCliente . ($vt->tecnico ? ' - ' . $vt->tecnico : ''),
+                'start' => $vt->data_visita,
+                'end' => $vt->data_visita,
+                'color' => $cor,
+                'extendedProps' => [
+                    'tipoEvento' => 'visita',
+                    'cliente' => '<b>Cliente:</b> ' . $vt->nomeCliente,
+                    'tecnico' => '<b>Técnico:</b> ' . ($vt->tecnico ?? '-'),
+                    'status' => '<b>Status:</b> ' . $vt->status,
+                    'observacoes' => '<b>Observações:</b> ' . strip_tags(html_entity_decode($vt->observacoes ?? '')),
+                ],
+            ];
+        }, $allVisitas);
+
+        $events = array_merge($events, $eventosFinanceiro, $eventosVisitas);
 
         return $this->output
             ->set_content_type('application/json')
