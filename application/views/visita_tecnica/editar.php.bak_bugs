@@ -73,7 +73,7 @@
                     <div class="control-group">
                         <label class="control-label">Observações</label>
                         <div class="controls">
-                            <textarea name="observacoes" rows="3" class="span6"><?php echo $result->observacoes ?></textarea>
+                            <textarea name="observacoes" id="observacoes" rows="3" class="span6"><?php echo $result->observacoes ?></textarea>
                         </div>
                     </div>
                     <div class="control-group">
@@ -106,7 +106,8 @@
                     <label for="inputMidia" class="btn btn-success">
                         <i class="fas fa-upload"></i> Anexar Foto/Vídeo
                     </label>
-                    <input type="file" id="inputMidia" accept=".jpg,.jpeg,.png,.mp4,.mov,.webm" style="display:none;">
+                    <!-- BUG 3 CORRIGIDO: adicionado multiple para selecionar vários arquivos -->
+                    <input type="file" id="inputMidia" accept=".jpg,.jpeg,.png,.mp4,.mov,.webm" style="display:none;" multiple>
                     <input type="hidden" id="csrfMidiaToken" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
                     <span id="uploadStatus" style="margin-left:10px;"></span>
                 </div>
@@ -132,16 +133,20 @@
 <script src="<?php echo base_url() ?>assets/js/jquery.validate.js"></script>
 <script>
 $(document).ready(function() {
-    function toggleResultado() {
+
+    // BUG 1 CORRIGIDO: trava observacoes E resultado quando status != Realizada
+    function toggleCampos() {
         var status = $("#status").val();
         if (status === "Realizada") {
+            $("#observacoes").prop("readonly", false);
             $("#resultado").prop("readonly", false);
         } else {
+            $("#observacoes").prop("readonly", true);
             $("#resultado").prop("readonly", true);
         }
     }
-    $("#status").on("change", toggleResultado);
-    toggleResultado();
+    $("#status").on("change", toggleCampos);
+    toggleCampos();
 
     $("#cliente").autocomplete({
         source: "<?php echo base_url(); ?>index.php/os/autoCompleteCliente",
@@ -157,75 +162,101 @@ $(document).ready(function() {
 
     var visitaId = <?php echo $result->id; ?>;
 
+    // BUG 2 e 3 CORRIGIDOS: processa múltiplos arquivos em fila
     $('#inputMidia').on('change', function() {
-        var file = this.files[0];
-        if (!file) return;
+        var files = Array.from(this.files);
+        if (!files.length) return;
 
-        var ext = file.name.split('.').pop().toLowerCase();
-        var isVideo = ['mp4', 'mov', 'webm'].indexOf(ext) !== -1;
+        var fila = files.slice();
+        var total = fila.length;
+        var enviados = 0;
+        var erros = 0;
 
-        function enviarUpload() {
-            $('#uploadStatus').text('Enviando...');
+        $('#uploadStatus').text('Enviando 0/' + total + '...');
 
-            $.get("<?php echo base_url(); ?>index.php/visita_tecnica/getCsrfToken", function(tokenResp) {
-                var formData = new FormData();
-                formData.append('midia', file);
-                formData.append('visita_tecnica_id', visitaId);
-                formData.append('<?php echo $this->security->get_csrf_token_name(); ?>', tokenResp.csrf_hash);
-
-                $.ajax({
-                    url: "<?php echo base_url(); ?>index.php/visita_tecnica/uploadMidia",
-                    type: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    dataType: 'json',
-                    success: function(resp) {
-                    if (resp.csrf_hash) {
-                        $('#csrfMidiaToken').val(resp.csrf_hash);
-                    }
-                    if (resp.success) {
-                        $('#uploadStatus').text('Enviado com sucesso!');
-                        var baseUrl = "<?php echo base_url(); ?>assets/visita_midia/";
-                        var mediaTag = resp.tipo === 'foto'
-                            ? '<img src="' + baseUrl + resp.arquivo + '" style="width:100%; height:100px; object-fit:cover; border-radius:4px;">'
-                            : '<video src="' + baseUrl + resp.arquivo + '" style="width:100%; height:100px; object-fit:cover; border-radius:4px;" controls></video>';
-                        $('#galeriaMidia').append(
-                            '<div class="midia-item" data-id="' + resp.id + '" style="width:150px; text-align:center; border:1px solid #ddd; border-radius:4px; padding:5px;">' +
-                            mediaTag +
-                            '<button type="button" class="btn btn-danger btn-mini btn-excluir-midia" data-id="' + resp.id + '" style="margin-top:5px; width:100%;"><i class="bx bx-trash"></i> Excluir</button>' +
-                            '</div>'
-                        );
-                    } else {
-                        $('#uploadStatus').text('Erro: ' + resp.message);
-                    }
-                        $('#inputMidia').val('');
-                        setTimeout(function() { $('#uploadStatus').text(''); }, 4000);
-                    },
-                    error: function() {
-                        $('#uploadStatus').text('Erro ao enviar arquivo.');
-                        $('#inputMidia').val('');
-                    }
-                });
-            }, 'json');
-        }
-
-        if (isVideo) {
-            var videoEl = document.createElement('video');
-            videoEl.preload = 'metadata';
-            videoEl.onloadedmetadata = function() {
-                window.URL.revokeObjectURL(videoEl.src);
-                if (videoEl.duration > 40) {
-                    alert('O vídeo deve ter no máximo 40 segundos. Duração atual: ' + Math.round(videoEl.duration) + 's');
-                    $('#inputMidia').val('');
+        function enviarProximo() {
+            if (fila.length === 0) {
+                $('#inputMidia').val('');
+                if (erros > 0) {
+                    $('#uploadStatus').text('Concluído: ' + enviados + ' enviado(s), ' + erros + ' erro(s).');
                 } else {
-                    enviarUpload();
+                    $('#uploadStatus').text('Todos os ' + enviados + ' arquivo(s) enviados!');
                 }
-            };
-            videoEl.src = URL.createObjectURL(file);
-        } else {
-            enviarUpload();
+                setTimeout(function() { $('#uploadStatus').text(''); }, 4000);
+                return;
+            }
+
+            var file = fila.shift();
+            var ext = file.name.split('.').pop().toLowerCase();
+            var isVideo = ['mp4', 'mov', 'webm'].indexOf(ext) !== -1;
+
+            function enviarUpload() {
+                $('#uploadStatus').text('Enviando ' + (enviados + erros + 1) + '/' + total + '...');
+
+                $.get("<?php echo base_url(); ?>index.php/visita_tecnica/getCsrfToken", function(tokenResp) {
+                    var formData = new FormData();
+                    formData.append('midia', file);
+                    formData.append('visita_tecnica_id', visitaId);
+                    formData.append('<?php echo $this->security->get_csrf_token_name(); ?>', tokenResp.csrf_hash);
+
+                    $.ajax({
+                        url: "<?php echo base_url(); ?>index.php/visita_tecnica/uploadMidia",
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        dataType: 'json',
+                        success: function(resp) {
+                            if (resp.csrf_hash) {
+                                $('#csrfMidiaToken').val(resp.csrf_hash);
+                            }
+                            if (resp.success) {
+                                enviados++;
+                                var baseUrl = "<?php echo base_url(); ?>assets/visita_midia/";
+                                var mediaTag = resp.tipo === 'foto'
+                                    ? '<img src="' + baseUrl + resp.arquivo + '" style="width:100%; height:100px; object-fit:cover; border-radius:4px;">'
+                                    : '<video src="' + baseUrl + resp.arquivo + '" style="width:100%; height:100px; object-fit:cover; border-radius:4px;" controls></video>';
+                                $('#galeriaMidia').append(
+                                    '<div class="midia-item" data-id="' + resp.id + '" style="width:150px; text-align:center; border:1px solid #ddd; border-radius:4px; padding:5px;">' +
+                                    mediaTag +
+                                    '<button type="button" class="btn btn-danger btn-mini btn-excluir-midia" data-id="' + resp.id + '" style="margin-top:5px; width:100%;"><i class="bx bx-trash"></i> Excluir</button>' +
+                                    '</div>'
+                                );
+                            } else {
+                                erros++;
+                                console.error('Erro ao enviar ' + file.name + ': ' + resp.message);
+                            }
+                            enviarProximo();
+                        },
+                        error: function() {
+                            erros++;
+                            console.error('Erro de conexão ao enviar ' + file.name);
+                            enviarProximo();
+                        }
+                    });
+                }, 'json');
+            }
+
+            if (isVideo) {
+                var videoEl = document.createElement('video');
+                videoEl.preload = 'metadata';
+                videoEl.onloadedmetadata = function() {
+                    window.URL.revokeObjectURL(videoEl.src);
+                    if (videoEl.duration > 40) {
+                        alert('O vídeo "' + file.name + '" deve ter no máximo 40 segundos. Duração: ' + Math.round(videoEl.duration) + 's');
+                        erros++;
+                        enviarProximo();
+                    } else {
+                        enviarUpload();
+                    }
+                };
+                videoEl.src = URL.createObjectURL(file);
+            } else {
+                enviarUpload();
+            }
         }
+
+        enviarProximo();
     });
 
     $(document).on('click', '.btn-excluir-midia', function() {
