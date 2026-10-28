@@ -861,11 +861,16 @@ class Os extends MY_Controller
         // If it exist, check if it's a directory
         if (! is_dir($directory . DIRECTORY_SEPARATOR . 'thumbs')) {
             // make directory for images and thumbs
-            $result_mkdir = mkdir($directory . DIRECTORY_SEPARATOR . 'thumbs', 0755, true);
+            $result_mkdir = mkdir($directory . DIRECTORY_SEPARATOR . 'thumbs', 0775, true);
             if (!$result_mkdir) {
-                $err = error_get_last();
-                echo json_encode(['result' => false, 'mensagem' => 'mkdir falhou: ' . ($err['message'] ?? 'unknown')]);
-                exit();
+                // Tenta criar com permissao alternativa
+                @mkdir($directory, 0775, true);
+                @mkdir($directory . DIRECTORY_SEPARATOR . 'thumbs', 0775, true);
+                if (!is_dir($directory . DIRECTORY_SEPARATOR . 'thumbs')) {
+                    $err = error_get_last();
+                    echo json_encode(['result' => false, 'mensagem' => 'mkdir falhou: ' . ($err['message'] ?? 'unknown')]);
+                    exit();
+                }
             }
         }
 
