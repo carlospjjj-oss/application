@@ -18,7 +18,7 @@
     </a>
     <!-- Start Pesquisar-->
     <li class="search-box">
-        <form style="display: flex" action="<?= site_url('proton/pesquisar') ?>">
+        <form style="display: flex" action="<?= site_url('mapos/pesquisar') ?>">
         <button style="background:transparent;border:transparent" type="submit" class="tip-bottom" title="">
                 <i class='bx bx-search iconX'></i></button>
                 <input style="background:transparent;<?= $configuration['app_theme'] == 'white' ? 'color:#313030;' : 'color:#fff;' ?>border:transparent" type="search" name="termo" placeholder="Pesquise aqui...">
@@ -94,6 +94,14 @@
                         </a>
                     </li>
                 <?php } ?>
+
+                <li class="<?php if (isset($menuVisitaTecnica)) { echo 'active'; }; ?>">
+                    <a class="tip-bottom" title="" href="<?= site_url('visita_tecnica') ?>">
+                        <i class='bx bx-clipboard iconX'></i>
+                        <span class="title">Visitas Técnicas</span>
+                        <span class="title-tooltip">Visitas</span>
+                    </a>
+                </li>
 
                 <?php if ($this->permission->checkPermission($this->session->userdata('permissao'), 'vGarantia')) { ?>
                     <li class="<?php if (isset($menuGarantia)) {

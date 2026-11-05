@@ -91,6 +91,13 @@ class Clientes extends MY_Controller
                 'cep' => set_value('cep'),
                 'dataCadastro' => date('Y-m-d'),
                 'fornecedor' => $this->input->post('fornecedor') ? 1 : 0,
+                'terceiro' => $this->input->post('terceiro') ? 1 : 0,
+                'tipo_imovel' => $this->input->post('tipo_imovel'),
+                'concessionaria_energia' => $this->input->post('concessionaria_energia'),
+                'numero_uc' => $this->input->post('numero_uc'),
+                'veiculo_marca_modelo' => $this->input->post('veiculo_marca_modelo'),
+                'veiculo_tipo_conector' => $this->input->post('veiculo_tipo_conector'),
+                'carregador_atual' => $this->input->post('carregador_atual'),
             ];
 
                 if ($this->clientes_model->add('clientes', $data) == true) {
@@ -152,6 +159,13 @@ class Clientes extends MY_Controller
                         'estado' => $this->input->post('estado'),
                         'cep' => $this->input->post('cep'),
                         'fornecedor' => (set_value('fornecedor') == true ? 1 : 0),
+                        'terceiro' => (set_value('terceiro') == true ? 1 : 0),
+                        'tipo_imovel' => $this->input->post('tipo_imovel'),
+                        'concessionaria_energia' => $this->input->post('concessionaria_energia'),
+                        'numero_uc' => $this->input->post('numero_uc'),
+                        'veiculo_marca_modelo' => $this->input->post('veiculo_marca_modelo'),
+                        'veiculo_tipo_conector' => $this->input->post('veiculo_tipo_conector'),
+                        'carregador_atual' => $this->input->post('carregador_atual'),
                     ];
                 } else {
                     $data = [
@@ -169,6 +183,13 @@ class Clientes extends MY_Controller
                         'estado' => $this->input->post('estado'),
                         'cep' => $this->input->post('cep'),
                         'fornecedor' => (set_value('fornecedor') == true ? 1 : 0),
+                        'terceiro' => (set_value('terceiro') == true ? 1 : 0),
+                        'tipo_imovel' => $this->input->post('tipo_imovel'),
+                        'concessionaria_energia' => $this->input->post('concessionaria_energia'),
+                        'numero_uc' => $this->input->post('numero_uc'),
+                        'veiculo_marca_modelo' => $this->input->post('veiculo_marca_modelo'),
+                        'veiculo_tipo_conector' => $this->input->post('veiculo_tipo_conector'),
+                        'carregador_atual' => $this->input->post('carregador_atual'),
                     ];
                 }
 
@@ -192,7 +213,7 @@ class Clientes extends MY_Controller
     {
         if (! $this->uri->segment(3) || ! is_numeric($this->uri->segment(3))) {
             $this->session->set_flashdata('error', 'Item não pode ser encontrado, parâmetro não foi passado corretamente.');
-            redirect('proton');
+            redirect('mapos');
         }
 
         if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'vCliente')) {

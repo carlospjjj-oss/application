@@ -44,6 +44,12 @@
                             <input id="codDeBarra" type="text" name="codDeBarra" value="<?php echo $result->codDeBarra; ?>" />
                         </div>
                     </div>
+                                        <div class="control-group">
+                        <label for="ncm" class="control-label">NCM/SH<span class="required">*</span></label>
+                        <div class="controls">
+                            <input id="ncm" type="text" name="ncm" maxlength="10" placeholder="00000000" value="<?php echo $result->ncm; ?>" />
+                        </div>
+                    </div>
                     <div class="control-group">
                         <label for="descricao" class="control-label">Descrição<span class="required">*</span></label>
                         <div class="controls">

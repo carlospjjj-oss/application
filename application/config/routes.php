@@ -42,7 +42,9 @@ if (! defined('BASEPATH')) {
 |
 */
 
-$route['default_controller'] = 'proton';
+$route['default_controller'] = 'mapos';
+$route['visita_tecnica'] = 'visita_tecnica/index';
+$route['visita_tecnica/(:any)'] = 'visita_tecnica/$1';
 $route['404_override'] = '';
 
 // Rotas da API

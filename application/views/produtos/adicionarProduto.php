@@ -43,6 +43,12 @@
                             <input id="codDeBarra" type="text" name="codDeBarra" value="<?php echo set_value('codDeBarra'); ?>" />
                         </div>
                     </div>
+                                        <div class="control-group">
+                        <label for="ncm" class="control-label">NCM/SH<span class="required">*</span></label>
+                        <div class="controls">
+                            <input id="ncm" type="text" name="ncm" maxlength="10" placeholder="00000000" value="<?php echo set_value('ncm'); ?>" />
+                        </div>
+                    </div>
                     <div class="control-group">
                         <label for="descricao" class="control-label">Descrição<span class="required">*</span></label>
                         <div class="controls">
@@ -200,9 +206,8 @@
                 precoVenda: {
                     required: true
                 },
-                estoque: {
-                    required: true
-                }
+                estoque: { required: true },
+                ncm:     { required: true }
             },
             messages: {
                 descricao: {
@@ -217,9 +222,8 @@
                 precoVenda: {
                     required: 'Campo Requerido.'
                 },
-                estoque: {
-                    required: 'Campo Requerido.'
-                }
+                estoque: { required: 'Campo Requerido.' },
+                ncm:     { required: 'Campo Requerido.' }
             },
             errorClass: "help-inline",
             errorElement: "span",

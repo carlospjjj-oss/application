@@ -92,7 +92,7 @@
                 <div class="widget-content nopadding tab-content">
                     <div class="span6">
                         <div class="control-group">
-                            <label for="documento" class="control-label">CPF/CNPJ</label>
+                            <label for="documento" class="control-label">CPF/CNPJ<span class="required">*</span></label>
                             <div class="controls">
                                 <input id="documento" class="cpfcnpj" type="text" name="documento" value="<?php echo set_value('documento'); ?>" />
                                 <button id="buscar_info_cnpj" class="btn btn-xs" type="button">Buscar(CNPJ)</button>
@@ -105,25 +105,25 @@
                             </div>
                         </div>
                         <div class="control-group">
-                            <label for="contato" class="control-label">Contato:</label>
+                            <label for="contato" class="control-label">Contato:<span class="required">*</span></label>
                             <div class="controls">
                                 <input class="contato" type="text" name="contato" value="<?php echo set_value('contato'); ?>" />
                             </div>
                         </div>
                         <div class="control-group">
-                            <label for="telefone" class="control-label">Telefone</label>
+                            <label for="telefone" class="control-label">Telefone<span class="required">*</span></label>
                             <div class="controls">
                                 <input id="telefone" type="text" name="telefone" value="<?php echo set_value('telefone'); ?>" />
                             </div>
                         </div>
                         <div class="control-group">
-                            <label for="celular" class="control-label">Celular</label>
+                            <label for="celular" class="control-label">Celular<span class="required">*</span></label>
                             <div class="controls">
                                 <input id="celular" type="text" name="celular" value="<?php echo set_value('celular'); ?>" />
                             </div>
                         </div>
                         <div class="control-group">
-                            <label for="email" class="control-label">Email</label>
+                            <label for="email" class="control-label">Email<span class="required">*</span></label>
                             <div class="controls">
                                 <input id="email" type="text" name="email" value="<?php echo set_value('email'); ?>" autocomplete="off" />
                             </div>
@@ -142,13 +142,17 @@
                                     <input type="checkbox" id="fornecedor" name="fornecedor" class="badgebox" value="1">
                                     <span class="badge">&check;</span>
                                 </label>
+                                <label for="terceiro" class="btn btn-default">Terceiro
+                                    <input type="checkbox" id="terceiro" name="terceiro" class="badgebox" value="1">
+                                    <span class="badge">&check;</span>
+                                </label>
                             </div>
                         </div>
                     </div>
 
                     <div class="span6">
                         <div class="control-group" class="control-label">
-                            <label for="cep" class="control-label">CEP</label>
+                            <label for="cep" class="control-label">CEP<span class="required">*</span></label>
                             <div class="controls">
                                 <input id="cep" type="text" name="cep" value="<?php echo set_value('cep'); ?>" />
                             </div>
@@ -160,13 +164,13 @@
                             </div>
                         </div>
                         <div class="control-group">
-                            <label for="numero" class="control-label">Número</label>
+                            <label for="numero" class="control-label">Número<span class="required">*</span></label>
                             <div class="controls">
                                 <input id="numero" type="text" name="numero" value="<?php echo set_value('numero'); ?>" />
                             </div>
                         </div>
                         <div class="control-group">
-                            <label for="complemento" class="control-label">Complemento</label>
+                            <label for="complemento" class="control-label">Complemento<span class="required">*</span></label>
                             <div class="controls">
                                 <input id="complemento" type="text" name="complemento" value="<?php echo set_value('complemento'); ?>" />
                             </div>
@@ -193,6 +197,52 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- ===== SEÇÃO: DADOS ELÉTRICOS E VEÍCULO ===== -->
+                <div class="widget-content nopadding">
+                    <div class="span12" style="padding: 10px 0 0 10px;">
+                        <h4 style="border-bottom:1px solid #ddd; padding-bottom:8px; margin-bottom:12px;">
+                            <i class="fas fa-bolt" style="color:#f0ad4e"></i> Dados do Imóvel e Veículo Elétrico
+                        </h4>
+                    </div>
+                    <div class="span6">
+                        <div class="control-group">
+                            <label for="tipo_imovel" class="control-label">Tipo de Imóvel</label>
+                            <div class="controls">
+                                <select id="tipo_imovel" name="tipo_imovel" class="">
+                                    <option value="">Selecione...</option>
+                                    <option value="Casa" <?php if(set_value('tipo_imovel')=='Casa') echo 'selected'; ?>>Casa</option>
+                                    <option value="Apartamento" <?php if(set_value('tipo_imovel')=='Apartamento') echo 'selected'; ?>>Apartamento</option>
+                                    <option value="Condomínio" <?php if(set_value('tipo_imovel')=='Condomínio') echo 'selected'; ?>>Condomínio</option>
+                                    <option value="Empresa" <?php if(set_value('tipo_imovel')=='Empresa') echo 'selected'; ?>>Empresa</option>
+                                    <option value="Outro" <?php if(set_value('tipo_imovel')=='Outro') echo 'selected'; ?>>Outro</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label for="concessionaria_energia" class="control-label">Observação</label>
+                            <div class="controls">
+                                <textarea id="concessionaria_energia" name="concessionaria_energia" rows="4" class="span12" placeholder="Observações"><?php echo set_value('concessionaria_energia'); ?></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="span6">
+                        <div class="control-group">
+                            <label for="veiculo_marca_modelo" class="control-label">Veículo Elétrico (Marca/Modelo)</label>
+                            <div class="controls">
+                                <input id="veiculo_marca_modelo" type="text" name="veiculo_marca_modelo" value="<?php echo set_value('veiculo_marca_modelo'); ?>" placeholder="Ex: BYD Dolphin, Volvo XC40..." />
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label for="carregador_atual" class="control-label">Carregador Atual (se houver)</label>
+                            <div class="controls">
+                                <input id="carregador_atual" type="text" name="carregador_atual" value="<?php echo set_value('carregador_atual'); ?>" placeholder="Marca/modelo já instalado" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- ===== FIM SEÇÃO EV ===== -->
+
                 <div class="form-actions">
                     <div class="span12">
                         <div class="span6 offset3" style="display:flex;justify-content: center">

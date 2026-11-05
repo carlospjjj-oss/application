@@ -19,6 +19,12 @@
                             </td>
                         </tr>
                         <tr>
+                            <td style="text-align: right; width: 30%"><strong>NCM/SH</strong></td>
+                            <td>
+                                <?php echo $result->ncm ?>
+                            </td>
+                        </tr>
+                        <tr>
                             <td style="text-align: right; width: 30%"><strong>Descrição</strong></td>
                             <td>
                                 <?php echo $result->descricao ?>

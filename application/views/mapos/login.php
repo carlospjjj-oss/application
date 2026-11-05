@@ -72,8 +72,8 @@
                 <div class="center">
                   <button id="btn-acessar">Acessar</button>
                 </div>
-                <div class="links-uteis"><a href="https://protonmobilidade.com.br/">
-                    <p><?= date('Y'); ?> &copy; Proton Mobilidade</p>
+                <div class="links-uteis"><a href="https://github.com/RamonSilva20/mapos">
+                    <p><?= date('Y'); ?> &copy; Ramon Silva</p>
                   </a>
                 </div>
                 <a href="#notification" id="call-modal" role="button" class="btn" data-toggle="modal" style="display: none ">notification</a>
@@ -145,7 +145,7 @@
             dataType: 'json',
             success: function(data) {
                 if (data.result == true) {
-                    window.location.href = "<?= site_url('proton'); ?>";
+                    window.location.href = "<?= site_url('mapos'); ?>";
                 } else {
                     $('#btn-acessar').removeClass('disabled');
                     $('#progress-acessar').addClass('hide');

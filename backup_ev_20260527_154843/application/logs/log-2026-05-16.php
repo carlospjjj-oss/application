@@ -1,0 +1,35 @@
+<?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
+
+ERROR - 2026-05-16 09:31:56 --> 404 Page Not Found: Console/index
+ERROR - 2026-05-16 09:31:56 --> 404 Page Not Found: Server/index
+ERROR - 2026-05-16 09:31:57 --> 404 Page Not Found: Server-status/index
+ERROR - 2026-05-16 09:31:59 --> 404 Page Not Found: About/index
+ERROR - 2026-05-16 09:32:00 --> 404 Page Not Found: Loginaction/index
+ERROR - 2026-05-16 09:32:02 --> 404 Page Not Found: ___proxy_subdomain_whm/login
+ERROR - 2026-05-16 09:32:03 --> 404 Page Not Found: ___proxy_subdomain_cpanel/index
+ERROR - 2026-05-16 09:32:04 --> 404 Page Not Found: V2/_catalog
+ERROR - 2026-05-16 09:32:05 --> 404 Page Not Found: DS_Store/index
+ERROR - 2026-05-16 09:32:06 --> 404 Page Not Found: Env/index
+ERROR - 2026-05-16 09:32:08 --> 404 Page Not Found: Ecp/Current
+ERROR - 2026-05-16 09:32:12 --> 404 Page Not Found: api//index
+ERROR - 2026-05-16 09:32:13 --> 404 Page Not Found: api/Graphql/index
+ERROR - 2026-05-16 09:32:15 --> 404 Page Not Found: api/Gql/index
+ERROR - 2026-05-16 09:32:17 --> 404 Page Not Found: Configjson/index
+ERROR - 2026-05-16 09:32:18 --> 404 Page Not Found: Telescope/requests
+ERROR - 2026-05-16 09:32:20 --> 404 Page Not Found: Well-known/security.txt
+ERROR - 2026-05-16 09:32:21 --> 404 Page Not Found: Actuator/env
+ERROR - 2026-05-16 09:32:23 --> 404 Page Not Found: Swagger-uihtml/index
+ERROR - 2026-05-16 09:32:24 --> 404 Page Not Found: Swagger/index.html
+ERROR - 2026-05-16 09:32:25 --> 404 Page Not Found: Swagger/swagger-ui.html
+ERROR - 2026-05-16 09:32:26 --> 404 Page Not Found: Webjars/swagger-ui
+ERROR - 2026-05-16 09:32:27 --> 404 Page Not Found: Swaggerjson/index
+ERROR - 2026-05-16 09:32:28 --> 404 Page Not Found: Swagger/v1
+ERROR - 2026-05-16 09:32:29 --> 404 Page Not Found: V2/api-docs
+ERROR - 2026-05-16 09:32:30 --> 404 Page Not Found: V3/api-docs
+ERROR - 2026-05-16 09:32:31 --> 404 Page Not Found: Api-docs/swagger.json
+ERROR - 2026-05-16 09:32:32 --> 404 Page Not Found: api/Swaggerjson/index
+ERROR - 2026-05-16 09:32:33 --> 404 Page Not Found: Traceaxd/index
+ERROR - 2026-05-16 09:32:36 --> 404 Page Not Found: Vscode/sftp.json
+ERROR - 2026-05-16 09:32:39 --> 404 Page Not Found: Debug/default
+ERROR - 2026-05-16 11:24:27 --> 404 Page Not Found: Faviconico/index
+ERROR - 2026-05-16 14:28:41 --> 404 Page Not Found: Env/index

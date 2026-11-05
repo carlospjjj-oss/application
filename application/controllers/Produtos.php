@@ -74,6 +74,7 @@ class Produtos extends MY_Controller
                 'estoqueMinimo' => set_value('estoqueMinimo'),
                 'saida' => set_value('saida'),
                 'entrada' => set_value('entrada'),
+                'ncm' => $this->input->post('ncm'),
             ];
 
             if ($this->produtos_model->add('produtos', $data) == true) {
@@ -120,6 +121,7 @@ class Produtos extends MY_Controller
                 'estoqueMinimo' => $this->input->post('estoqueMinimo'),
                 'saida' => set_value('saida'),
                 'entrada' => set_value('entrada'),
+                'ncm' => $this->input->post('ncm'),
             ];
 
             if ($this->produtos_model->edit('produtos', $data, 'idProdutos', $this->input->post('idProdutos')) == true) {
@@ -142,7 +144,7 @@ class Produtos extends MY_Controller
     {
         if (! $this->uri->segment(3) || ! is_numeric($this->uri->segment(3))) {
             $this->session->set_flashdata('error', 'Item não pode ser encontrado, parâmetro não foi passado corretamente.');
-            redirect('proton');
+            redirect('mapos');
         }
 
         if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'vProduto')) {

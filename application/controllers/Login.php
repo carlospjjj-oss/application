@@ -10,7 +10,7 @@ class Login extends CI_Controller
 
     public function index()
     {
-        $this->load->view('proton/login');
+        $this->load->view('mapos/login');
     }
 
     public function sair()

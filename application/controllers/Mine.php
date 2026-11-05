@@ -449,7 +449,7 @@ class Mine extends CI_Controller
 
         if (! $this->uri->segment(3) || ! is_numeric($this->uri->segment(3))) {
             $this->session->set_flashdata('error', 'Item não pode ser encontrado, parâmetro não foi passado corretamente.');
-            redirect('proton');
+            redirect('mapos');
         }
 
         if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'eCobranca')) {
@@ -471,7 +471,7 @@ class Mine extends CI_Controller
 
         if (! $this->uri->segment(3) || ! is_numeric($this->uri->segment(3))) {
             $this->session->set_flashdata('error', 'Item não pode ser encontrado, parâmetro não foi passado corretamente.');
-            redirect('proton');
+            redirect('mapos');
         }
 
         if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'eCobranca')) {
@@ -1106,7 +1106,7 @@ class Mine extends CI_Controller
         $arrFont = ['font-ZXX_Noise.otf', 'font-karabine.ttf', 'font-capture.ttf', 'font-captcha.ttf'];
         shuffle($arrFont);
 
-        $codigoCaptcha = substr(md5(time()), 0, 7);
+        $codigoCaptcha = substr(bin2hex(random_bytes(4)), 0, 7);
         $img = imagecreatefromjpeg('./assets/img/captcha_bg.jpg');
         $corCaptcha = imagecolorallocate($img, 255, 0, 0);
         $font = './assets/font-awesome/' . $arrFont[0];
