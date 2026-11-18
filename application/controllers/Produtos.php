@@ -212,4 +212,62 @@ class Produtos extends MY_Controller
             $this->data['custom_error'] = '<div class="alert">Ocorreu um erro.</div>';
         }
     }
+
+    public function modeloPlanilha()
+    {
+        require_once APPPATH . 'third_party/SimpleXLSXGen.php';
+        $rows = [
+            ['Código de Barra', 'Descrição', 'Unidade', 'Preço Compra', 'Preço Venda', 'Estoque', 'Estoque Mínimo'],
+            ['7891234560001', 'Exemplo Produto', 'UN', '10,00', '15,00', '100', '5'],
+        ];
+        $xlsx = \Shuchkin\SimpleXLSXGen::fromArray($rows);
+        $xlsx->downloadAs('modelo_importacao_produtos.xlsx');
+    }
+
+    public function importarPlanilha()
+    {
+        if (!$this->permission->checkPermission($this->session->userdata('permissao'), 'aProduto')) {
+            $this->session->set_flashdata('error', 'Você não tem permissão para importar produtos.');
+            redirect(base_url());
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['planilha'])) {
+            require_once APPPATH . 'third_party/SimpleXLSX.php';
+            $file = $_FILES['planilha']['tmp_name'];
+            if ($xlsx = \Shuchkin\SimpleXLSX::parse($file)) {
+                $rows = $xlsx->rows();
+                $importados = 0;
+                $erros = 0;
+                foreach ($rows as $i => $row) {
+                    if ($i === 0) continue; // pular cabeçalho
+                    if (empty($row[1])) continue; // sem descrição, pular
+                    $precoCompra = str_replace(',', '.', isset($row[3]) ? $row[3] : '0');
+                    $precoVenda  = str_replace(',', '.', isset($row[4]) ? $row[4] : '0');
+                    $data = [
+                        'codDeBarra'    => isset($row[0]) ? $row[0] : '',
+                        'descricao'     => $row[1],
+                        'unidade'       => isset($row[2]) ? $row[2] : 'UN',
+                        'precoCompra'   => floatval($precoCompra),
+                        'precoVenda'    => floatval($precoVenda),
+                        'estoque'       => isset($row[5]) ? intval($row[5]) : 0,
+                        'estoqueMinimo' => isset($row[6]) ? intval($row[6]) : 0,
+                        'saida'         => 0,
+                        'entrada'       => 0,
+                    ];
+                    if ($this->produtos_model->add('produtos', $data)) {
+                        $importados++;
+                    } else {
+                        $erros++;
+                    }
+                }
+                $this->session->set_flashdata('success', "Importação concluída: $importados produto(s) importado(s)" . ($erros ? ", $erros erro(s)." : "."));
+            } else {
+                $this->session->set_flashdata('error', 'Erro ao ler a planilha. Verifique o formato.');
+            }
+            redirect(site_url('produtos'));
+        }
+
+        $this->data['view'] = 'produtos/importarProdutos';
+        $this->load->view('themes/' . $this->data['theme'] . '/index', $this->data);
+    }
 }
