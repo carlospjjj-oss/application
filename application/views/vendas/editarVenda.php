@@ -127,7 +127,7 @@
                                         </div>
                                         <div class="span1">
                                             <label for="">% Margem</label>
-                                            <input type="number" placeholder="0" id="margem" name="margem" class="span12" value="0" min="0" step="0.01" />
+                                            <input type="text" placeholder="0,00" id="margem" name="margem" class="span12" value="<?= isset($margem) ? $margem : '0' ?>" />
                                         </div>
                                         <div class="span1">
                                             <label for="">Total c/ Margem</label>
@@ -192,7 +192,7 @@ foreach ($produtos as $p) {
     echo '<td>' . $p->descricao . '</td>';
     echo '<td><div align="center">' . $p->quantidade . '</td>';
     echo '<td><div align="center">R$: ' . number_format($preco, 2, '.', '') . '</td>';
-    echo '<td><div align="center"><span class="margem-valor" id="margem-' . $p->idItens . '">' . number_format($margem, 0) . ' %</span> <input type="number" class="margem-input" id="margem-input-' . $p->idItens . '" value="' . $margem . '" min="0" step="0.01" style="display:none;width:60px;" /></div></td>';
+    echo '<td><div align="center"><span class="margem-valor" id="margem-' . $p->idItens . '">' . number_format($margem, 2, ',', '') . ' %</span> <input type="text" class="margem-input" id="margem-input-' . $p->idItens . '" value="' . number_format($margem, 2, ',', '') . '" style="display:none;width:60px;" /></div></td>';
     echo '<td><div align="center"><a href="#" idAcao="' . $p->idItens . '" prodAcao="' . $p->idProdutos . '" precoAcao="' . $preco . '" quantAcao="' . $p->quantidade . '" title="Editar Margem" class="btn-editar-margem btn btn-primary btn-sm" style="margin-right:3px"><i class="bx bx-edit"></i></a><a href="" idAcao="' . $p->idItens . '" prodAcao="' . $p->idProdutos . '" quantAcao="' . $p->quantidade . '" title="Excluir Produto" class="btn-nwe4"><i class="bx bx-trash-alt"></i></a></div></td>';
     echo '<td><div align="center" id="subtotal-' . $p->idItens . '">R$: ' . number_format($subTotal, 2, '.', '') . '</div></td>';
     echo '</tr>';
@@ -593,10 +593,13 @@ foreach ($produtos as $p) {
             }
         });
         // Calcula Total c/ Margem no formulário
+        function parseMargem(val) {
+            return parseFloat((val || "0").toString().replace(",", ".")) || 0;
+        }
         function calcTotalMargem() {
             var preco = parseFloat($("#preco").val()) || 0;
             var qtd = parseFloat($("#quantidade").val()) || 0;
-            var margem = parseFloat($("#margem").val()) || 0;
+            var margem = parseMargem($("#margem").val());
             var desconto = parseFloat($("#desconto").val()) || 0;
             var tipoDesconto = $("#tipoDesconto").val();
             var total = preco * qtd * (1 + margem / 100);
@@ -620,7 +623,7 @@ foreach ($produtos as $p) {
             var $input = $("#margem-input-" + idItem);
             if ($input.is(":visible")) {
                 // Salvar
-                var novaMargem = parseFloat($input.val()) || 0;
+                var novaMargem = parseFloat(($input.val() || "0").replace(",", ".")) || 0;
                 var preco = parseFloat($(this).attr("precoAcao")) || 0;
                 var qtd = parseFloat($(this).attr("quantAcao")) || 1;
                 var novoSubtotal = preco * qtd * (1 + novaMargem / 100);
