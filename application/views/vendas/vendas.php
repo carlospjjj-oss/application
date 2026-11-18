@@ -121,8 +121,15 @@
             } else {
                 $valorProdutos = isset($r->totalProdutos) ? $r->totalProdutos : 0.00;
                 $desconto = isset($r->desconto) ? $r->desconto : 0.00;
-                $valorComDesconto = $valorProdutos - $desconto;
-                            
+                $tipoDesc = isset($r->tipo_desconto) ? $r->tipo_desconto : 'real';
+                if ($tipoDesc == 'porcento') {
+                    $valorDescontoReal = $valorProdutos * $desconto / 100;
+                    $valorComDesconto = $valorProdutos - $valorDescontoReal;
+                } else {
+                    $valorComDesconto = $valorProdutos - $desconto;
+                }
+                if ($valorComDesconto < 0) $valorComDesconto = 0;
+
                 echo '<td>R$ ' . number_format($valorProdutos, 2, ',', '.') . '</td>';
                 echo '<td>R$ ' . number_format($desconto, 2, ',', '.') . '</td>';
                 echo '<td>R$ ' . number_format($valorComDesconto, 2, ',', '.') . '</td>';
