@@ -456,6 +456,7 @@ class Vendas extends MY_Controller
                 'subTotal' => $subtotal,
                 'produtos_id' => $produto,
                 'preco' => $preco,
+                'margem' => $margem,
                 'vendas_id' => $idVenda,
                 'margem' => $margem,
             ];

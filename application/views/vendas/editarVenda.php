@@ -133,7 +133,7 @@
                                             <label for="">% Margem</label>
                                             <input type="number" placeholder="0" id="margem" name="margem" class="span12" value="0" min="0" step="0.01" />
                                         </div>
-                                        <div class="span2">
+                                        <div class="span1">
                                             <label for="">Total c/ Margem</label>
                                             <input type="text" id="totalMargem" class="span12" readonly />
                                         </div>
@@ -190,20 +190,21 @@
 foreach ($produtos as $p) {
     $preco = $p->preco ?: $p->precoVenda;
     $margem = isset($p->margem) ? $p->margem : 0;
-    $total = $total + $p->subTotal;
+    $subTotal = isset($p->subTotal) ? $p->subTotal : ($preco * $p->quantidade * (1 + $margem/100));
+    $total = $total + $subTotal;
     echo '<tr id="linha-produto-' . $p->idItens . '">';
     echo '<td>' . $p->descricao . '</td>';
     echo '<td><div align="center">' . $p->quantidade . '</td>';
     echo '<td><div align="center">R$: ' . number_format($preco, 2, '.', '') . '</td>';
-    echo '<td><div align="center" style="white-space:nowrap;"><input type="number" class="margem-inline" id="margem-input-' . $p->idItens . '" data-iditem="' . $p->idItens . '" data-preco="' . $preco . '" data-qtd="' . $p->quantidade . '" value="' . $margem . '" min="0" step="1" style="width:55px;text-align:center;display:inline-block;" />&nbsp;%</div></td>';
-    echo '<td><div align="center"><a href="" idAcao="' . $p->idItens . '" prodAcao="' . $p->idProdutos . '" quantAcao="' . $p->quantidade . '" class="btn-nwe4"><i class="bx bx-trash-alt"></i></a></div></td>';
-    echo '<td><div align="center" id="subtotal-' . $p->idItens . '">R$: ' . number_format($p->subTotal, 2, '.', '') . '</div></td>';
+    echo '<td><div align="center"><span class="margem-valor" id="margem-' . $p->idItens . '">' . number_format($margem, 0) . ' %</span> <input type="number" class="margem-input" id="margem-input-' . $p->idItens . '" value="' . $margem . '" min="0" step="0.01" style="display:none;width:60px;" /></div></td>';
+    echo '<td><div align="center"><a href="#" idAcao="' . $p->idItens . '" prodAcao="' . $p->idProdutos . '" precoAcao="' . $preco . '" quantAcao="' . $p->quantidade . '" title="Editar Margem" class="btn-editar-margem btn btn-primary btn-sm" style="margin-right:3px"><i class="bx bx-edit"></i></a><a href="" idAcao="' . $p->idItens . '" prodAcao="' . $p->idProdutos . '" quantAcao="' . $p->quantidade . '" title="Excluir Produto" class="btn-nwe4"><i class="bx bx-trash-alt"></i></a></div></td>';
+    echo '<td><div align="center" id="subtotal-' . $p->idItens . '">R$: ' . number_format($subTotal, 2, '.', '') . '</div></td>';
     echo '</tr>';
 } ?>
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <td colspan="4" style="text-align: right"><strong>Total:</strong></td>
+                                            <td colspan="5" style="text-align: right"><strong>Total:</strong></td>
                                             <td>
                                                 <div align="center"><strong>R$: <?php echo number_format($total, 2, '.', ''); ?></strong></div> <input type="hidden" id="total-venda" value="<?php echo number_format($total, 2, '.', ''); ?>">
                                             </td>
@@ -243,7 +244,7 @@ foreach ($produtos as $p) {
                                             <input type="text" placeholder="Preço" id="precoServico" name="precoServico" class="span12 money" />
                                         </div>
                                         <div class="span2">
-                                            <label for="">Qtd</label>
+                                            <label for="">Quantidade</label>
                                             <input type="text" placeholder="Quantidade" id="quantidadeServico" name="quantidadeServico" class="span12" value="1" />
                                         </div>
                                         <div class="span2">
@@ -578,7 +579,7 @@ foreach ($produtos as $p) {
                 }
             }
         });
-        // Calcula Total c/ Margem
+        // Calcula Total c/ Margem no formulário
         function calcTotalMargem() {
             var preco = parseFloat($("#preco").val()) || 0;
             var qtd = parseFloat($("#quantidade").val()) || 0;
@@ -588,18 +589,33 @@ foreach ($produtos as $p) {
         }
         $("#preco, #quantidade, #margem").on("input change", calcTotalMargem);
 
-        // Salvar margem ao sair do campo
-        $(document).on("change", ".margem-inline", function() {
-            var idItem = $(this).data("iditem");
-            var preco = parseFloat($(this).data("preco")) || 0;
-            var qtd = parseFloat($(this).data("qtd")) || 1;
-            var novaMargem = parseFloat($(this).val()) || 0;
-            var novoSubtotal = preco * qtd * (1 + novaMargem / 100);
-            $.post("<?php echo base_url(); ?>index.php/vendas/atualizarMargem", {
-                idItem: idItem, margem: novaMargem, subTotal: novoSubtotal
-            }, function(data) {
-                if (data.result) { window.location.reload(); }
-            }, "json");
+        // Editar margem inline
+        $(document).on("click", ".btn-editar-margem", function(e) {
+            e.preventDefault();
+            var idItem = $(this).attr("idAcao");
+            var $span = $("#margem-" + idItem);
+            var $input = $("#margem-input-" + idItem);
+            if ($input.is(":visible")) {
+                // Salvar
+                var novaMargem = parseFloat($input.val()) || 0;
+                var preco = parseFloat($(this).attr("precoAcao")) || 0;
+                var qtd = parseFloat($(this).attr("quantAcao")) || 1;
+                var novoSubtotal = preco * qtd * (1 + novaMargem / 100);
+                $.post("<?php echo base_url(); ?>index.php/vendas/atualizarMargem", {
+                    idItem: idItem,
+                    margem: novaMargem,
+                    subTotal: novoSubtotal
+                }, function(data) {
+                    if (data.result) {
+                        $span.text(novaMargem.toFixed(0) + " %");
+                        $("#subtotal-" + idItem).text("R$: " + novoSubtotal.toFixed(2));
+                        $span.show(); $input.hide();
+                        window.location.reload();
+                    }
+                }, "json");
+            } else {
+                $span.hide(); $input.show().focus();
+            }
         });
 
         $("#produto").autocomplete({
@@ -610,6 +626,7 @@ foreach ($produtos as $p) {
                 $("#estoque").val(ui.item.estoque);
                 $("#preco").val(ui.item.preco);
                 $("#quantidade").focus();
+                calcTotalMargem();
             }
         });
         $("#servico").autocomplete({
