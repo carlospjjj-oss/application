@@ -631,6 +631,14 @@ foreach ($produtos as $p) {
             }, function(data) {
                 if (data.result) {
                     $("#subtotal-" + idItem).text("R$: " + novoSubtotal.toFixed(2));
+                    // Recalcular total somando todos os subtotais
+                    var novoTotal = 0;
+                    $("[id^='subtotal-']").each(function() {
+                        var val = parseFloat($(this).text().replace("R$: ", "").replace(",", ".")) || 0;
+                        novoTotal += val;
+                    });
+                    $("#total-venda").val(novoTotal.toFixed(2));
+                    $("#total-venda").closest("td").find("strong").text("R$: " + novoTotal.toFixed(2));
                 }
             }, "json");
         });
