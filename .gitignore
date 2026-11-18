@@ -36,3 +36,4 @@ vendor.bak-*/
 
 !/database/migrations/*.sql
 /assets/visita_midia/*
+.github/
