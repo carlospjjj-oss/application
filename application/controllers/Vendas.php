@@ -193,6 +193,7 @@ class Vendas extends MY_Controller
 
         $this->data['result'] = $this->vendas_model->getById($this->uri->segment(3));
         $this->data['produtos'] = $this->vendas_model->getProdutos($this->uri->segment(3));
+        $this->data['servicos'] = $this->vendas_model->getServicos($this->uri->segment(3));
         $this->data['view'] = 'vendas/editarVenda';
 
         return $this->layout();
@@ -527,6 +528,71 @@ class Vendas extends MY_Controller
             $this->db->trans_complete();
             log_info('Removeu produto da venda. ID da Venda: ' . $idVendas . ', ID do Produto: ' . $idProduto);
             echo json_encode(['result' => true, 'messages' => 'Produto removido com sucesso']);
+        }
+    }
+
+    public function adicionarServico()
+    {
+        if (!$this->permission->checkPermission($this->session->userdata('permissao'), 'eVenda')) {
+            $this->session->set_flashdata('error', 'Você não tem permissão para editar Vendas.');
+            redirect(base_url());
+        }
+
+        $idServico = $this->input->post('idServico');
+        $preco = $this->input->post('precoServico');
+        $quantidade = $this->input->post('quantidadeServico');
+        $idVendas = $this->input->post('idVendasServico');
+
+        if (!$idServico || !$preco || !$quantidade || !$idVendas) {
+            echo json_encode(['result' => false, 'messages' => 'Dados inválidos']);
+            return;
+        }
+
+        $editavel = $this->vendas_model->isEditable($idVendas);
+        if (!$editavel) {
+            return $this->output
+                ->set_content_type('application/json')
+                ->set_status_header(422)
+                ->set_output(json_encode(['result' => false, 'messages' => '<br /><br /> <strong>Motivo:</strong> Venda já faturada']));
+        }
+
+        $subTotal = $preco * $quantidade;
+
+        $data = [
+            'servicos_id' => $idServico,
+            'vendas_id'   => $idVendas,
+            'preco'       => $preco,
+            'quantidade'  => $quantidade,
+            'subTotal'    => $subTotal,
+        ];
+
+        if ($this->vendas_model->add('servicos_vendas', $data)) {
+            log_info('Adicionou serviço à venda com ID: ' . $idVendas);
+            echo json_encode(['result' => true]);
+        } else {
+            echo json_encode(['result' => false, 'messages' => 'Erro ao adicionar serviço']);
+        }
+    }
+
+    public function excluirServico()
+    {
+        if (!$this->permission->checkPermission($this->session->userdata('permissao'), 'eVenda')) {
+            $this->session->set_flashdata('error', 'Você não tem permissão para editar Vendas.');
+            redirect(base_url());
+        }
+
+        $idServicos_venda = $this->input->post('idServicos_venda');
+
+        if (!$idServicos_venda) {
+            echo json_encode(['result' => false, 'messages' => 'Dados inválidos']);
+            return;
+        }
+
+        if ($this->vendas_model->delete('servicos_vendas', 'idServicos_venda', $idServicos_venda)) {
+            log_info('Removeu serviço da venda. ID: ' . $idServicos_venda);
+            echo json_encode(['result' => true, 'messages' => 'Serviço removido com sucesso']);
+        } else {
+            echo json_encode(['result' => false, 'messages' => 'Erro ao excluir serviço']);
         }
     }
 

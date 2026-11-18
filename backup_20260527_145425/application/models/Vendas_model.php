@@ -171,6 +171,16 @@ class Vendas_model extends CI_Model
         return $this->db->get()->result();
     }
 
+    public function getServicos($id = null)
+    {
+        $this->db->select('servicos_vendas.*, servicos.nome, servicos.preco as precoVenda');
+        $this->db->from('servicos_vendas');
+        $this->db->join('servicos', 'servicos.idServicos = servicos_vendas.servicos_id');
+        $this->db->where('vendas_id', $id);
+
+        return $this->db->get()->result();
+    }
+
     public function getCobrancas($id = null)
     {
         $this->db->select('cobrancas.*');

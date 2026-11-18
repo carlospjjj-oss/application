@@ -22,6 +22,7 @@
                     <ul class="nav nav-tabs">
                         <li class="active" id="tabDetalhes"><a href="#tab1" data-toggle="tab">Detalhes da Venda</a></li>
                         <li id="tabProdutos"><a href="#tab2" data-toggle="tab">Produtos</a></li>
+                        <li id="tabServicos"><a href="#tab3" data-toggle="tab">Serviços</a></li>
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane active" id="tab1">
@@ -213,6 +214,60 @@ foreach ($produtos as $p) {
                                         <?php
                                         } ?>
                                     </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="tab3">
+                            <div class="span12 well" style="padding: 1%; margin-left: 0">
+                                <div class="span11">
+                                    <form id="formServicos" action="<?php echo base_url(); ?>index.php/vendas/adicionarServico" method="post">
+                                        <div class="span6">
+                                            <input type="hidden" name="idServico" id="idServico" />
+                                            <input type="hidden" name="idVendasServico" id="idVendasServico" value="<?php echo $result->idVendas ?>" />
+                                            <label for="">Serviço</label>
+                                            <input type="text" class="span12" name="servico" id="servico" placeholder="Digite o nome do serviço" />
+                                        </div>
+                                        <div class="span2">
+                                            <label for="">Preço</label>
+                                            <input type="text" placeholder="Preço" id="precoServico" name="precoServico" class="span12 money" />
+                                        </div>
+                                        <div class="span2">
+                                            <label for="">Quantidade</label>
+                                            <input type="text" placeholder="Quantidade" id="quantidadeServico" name="quantidadeServico" class="span12" value="1" />
+                                        </div>
+                                        <div class="span2">
+                                            <label for="">&nbsp</label>
+                                            <button class="button btn btn-success" id="btnAdicionarServico" type="button">
+                                                <span class="button__icon"><i class='bx bx-plus-circle'></i></span><span class="button__text2">Adicionar</span></button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="span12" id="divServicos" style="margin-left: 0">
+                                <table class="table table-bordered" id="tblServicos">
+                                    <thead>
+                                        <tr>
+                                            <th>Serviço</th>
+                                            <th width="8%">Quantidade</th>
+                                            <th width="10%">Preço</th>
+                                            <th width="6%">Ações</th>
+                                            <th width="10%">Sub-total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php if (!empty($servicos)): foreach ($servicos as $s):
+                                            $precoS = $s->preco ?? 0;
+                                            $subS = $precoS * $s->quantidade;
+                                        ?>
+                                        <tr>
+                                            <td><?php echo $s->nome ?></td>
+                                            <td><div align="center"><?php echo $s->quantidade ?></div></td>
+                                            <td><div align="center">R$: <?php echo number_format($precoS,2,'.','')?></div></td>
+                                            <td><div align="center"><a href="#" idAcao="<?php echo $s->idServicos_venda ?>" title="Excluir Serviço" class="btn-excluir-servico"><i class="bx bx-trash-alt"></i></a></div></td>
+                                            <td><div align="center">R$: <?php echo number_format($subS,2,'.','')?></div></td>
+                                        </tr>
+                                        <?php endforeach; endif; ?>
+                                    </tbody>
                                 </table>
                             </div>
                         </div>
@@ -521,6 +576,60 @@ foreach ($produtos as $p) {
                 $("#preco").val(ui.item.preco);
                 $("#quantidade").focus();
             }
+        });
+        $("#servico").autocomplete({
+            source: "<?php echo base_url(); ?>index.php/os/autoCompleteServico",
+            minLength: 2,
+            select: function(event, ui) {
+                $("#idServico").val(ui.item.id);
+                $("#precoServico").val(ui.item.preco);
+                $("#quantidadeServico").focus();
+            }
+        });
+        $("#btnAdicionarServico").on("click", function(e) {
+            e.preventDefault();
+            var idServico = $("#idServico").val();
+            var preco = $("#precoServico").val();
+            var quantidade = $("#quantidadeServico").val();
+            var idVendas = $("#idVendasServico").val();
+            if (!idServico || !preco || !quantidade) {
+                alert('Preencha o serviço, preço e quantidade.');
+                return;
+            }
+            $.ajax({
+                url: "<?php echo base_url(); ?>index.php/vendas/adicionarServico",
+                type: 'POST',
+                data: { idServico: idServico, precoServico: preco, quantidadeServico: quantidade, idVendasServico: idVendas },
+                dataType: 'json',
+                success: function(data) {
+                    if (data.result) {
+                        $("#divServicos").load("<?php echo current_url(); ?> #divServicos", function() {
+                            $("#servico").val('').focus();
+                            $("#idServico").val('');
+                            $("#precoServico").val('');
+                            $("#quantidadeServico").val('1');
+                        });
+                    } else {
+                        alert('Erro ao adicionar serviço: ' + data.messages);
+                    }
+                }
+            });
+        });
+        $(document).on("click", ".btn-excluir-servico", function(e) {
+            e.preventDefault();
+            var idAcao = $(this).attr('idAcao');
+            if (!confirm('Deseja excluir este serviço?')) return;
+            $.ajax({
+                url: "<?php echo base_url(); ?>index.php/vendas/excluirServico",
+                type: 'POST',
+                data: { idServicos_venda: idAcao },
+                dataType: 'json',
+                success: function(data) {
+                    if (data.result) {
+                        $("#divServicos").load("<?php echo current_url(); ?> #divServicos");
+                    }
+                }
+            });
         });
         $("#cliente").autocomplete({
             source: "<?php echo base_url(); ?>index.php/os/autoCompleteCliente",
