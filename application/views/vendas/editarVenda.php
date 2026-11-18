@@ -612,6 +612,11 @@ foreach ($produtos as $p) {
         $("#preco, #quantidade, #margem, #desconto, #tipoDesconto").on("input change", calcTotalMargem);
 
         // Editar margem inline na tabela de produtos
+        $(document).on("keydown", ".margem-inline", function(e) {
+            if (e.key === "Enter" || e.keyCode === 9) {
+                $(this).trigger("blur");
+            }
+        });
         $(document).on("change blur", ".margem-inline", function() {
             var $input = $(this);
             var idItem = $input.data("iditem");
