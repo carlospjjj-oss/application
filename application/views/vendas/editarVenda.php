@@ -52,14 +52,10 @@
                                             <label for="status">Status<span class="required">*</span></label>
                                             <select class="span12" name="status" id="status" value="">
                                                 <option <?= $result->status == 'Orçamento' ? 'selected' : '' ?> value="Orçamento">Orçamento</option>
-                                                <option <?= $result->status == 'Aberto' ? 'selected' : '' ?> value="Aberto">Aberto</option>
-                                                <option <?= $result->status == 'Faturado' ? 'selected' : '' ?> value="Faturado">Faturado</option>
-                                                <option <?= $result->status == 'Negociação' ? 'selected' : '' ?> value="Negociação">Negociação</option>
                                                 <option <?= $result->status == 'Em Andamento' ? 'selected' : '' ?> value="Em Andamento">Em Andamento</option>
+                                                <option <?= $result->status == 'Aprovado' ? 'selected' : '' ?> value="Aprovado">Aprovado</option>
                                                 <option <?= $result->status == 'Finalizado' ? 'selected' : '' ?> value="Finalizado">Finalizado</option>
                                                 <option <?= $result->status == 'Cancelado' ? 'selected' : '' ?> value="Cancelado">Cancelado</option>
-                                                <option <?= $result->status == 'Aguardando Peças' ? 'selected' : '' ?>value="Aguardando Peças">Aguardando Peças</option>
-                                                <option <?= $result->status == 'Aprovado' ? 'selected' : '' ?> value="Aprovado">Aprovado</option>
                                             </select>
                                         </div>
                                         <div class="span2">
@@ -444,7 +440,7 @@ foreach ($produtos as $p) {
 
         function toggleCamposVenda() {
             var status = $("#status").val();
-            var statusFinalizado = ['Finalizado', 'Faturado', 'Cancelado', 'Aprovado'];
+            var statusFinalizado = ['Finalizado', 'Cancelado', 'Aprovado'];
             if (statusFinalizado.indexOf(status) !== -1) {
                 // Status finalizado: bloqueia observacoes internas (Resultado)
                 $("#observacoes").prop("readonly", true).css("background", "#f5f5f5");
