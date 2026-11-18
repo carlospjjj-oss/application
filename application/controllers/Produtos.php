@@ -268,6 +268,6 @@ class Produtos extends MY_Controller
         }
 
         $this->data['view'] = 'produtos/importarProdutos';
-        $this->load->view('themes/' . $this->data['theme'] . '/index', $this->data);
+        return $this->layout();
     }
 }
