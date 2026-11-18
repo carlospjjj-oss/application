@@ -192,8 +192,8 @@ foreach ($produtos as $p) {
     echo '<td>' . $p->descricao . '</td>';
     echo '<td><div align="center">' . $p->quantidade . '</td>';
     echo '<td><div align="center">R$: ' . number_format($preco, 2, '.', '') . '</td>';
-    echo '<td><div align="center"><span class="margem-valor" id="margem-' . $p->idItens . '">' . number_format($margem, 2, ',', '') . ' %</span> <input type="text" class="margem-input" id="margem-input-' . $p->idItens . '" value="' . number_format($margem, 2, ',', '') . '" style="display:none;width:60px;" /></div></td>';
-    echo '<td><div align="center"><a href="#" idAcao="' . $p->idItens . '" prodAcao="' . $p->idProdutos . '" precoAcao="' . $preco . '" quantAcao="' . $p->quantidade . '" title="Editar Margem" class="btn-editar-margem btn btn-primary btn-sm" style="margin-right:3px"><i class="bx bx-edit"></i></a><a href="" idAcao="' . $p->idItens . '" prodAcao="' . $p->idProdutos . '" quantAcao="' . $p->quantidade . '" title="Excluir Produto" class="btn-nwe4"><i class="bx bx-trash-alt"></i></a></div></td>';
+    echo '<td><div align="center"><input type="text" class="margem-inline" id="margem-inline-' . $p->idItens . '" data-iditem="' . $p->idItens . '" data-preco="' . $preco . '" data-qtd="' . $p->quantidade . '" value="' . number_format($margem, 2, ',', '') . '" style="width:65px;text-align:center;" /></div></td>';
+    echo '<td><div align="center"><a href="" idAcao="' . $p->idItens . '" prodAcao="' . $p->idProdutos . '" quantAcao="' . $p->quantidade . '" title="Excluir Produto" class="btn-nwe4"><i class="bx bx-trash-alt"></i></a></div></td>';
     echo '<td><div align="center" id="subtotal-' . $p->idItens . '">R$: ' . number_format($subTotal, 2, '.', '') . '</div></td>';
     echo '</tr>';
 } ?>
@@ -615,33 +615,23 @@ foreach ($produtos as $p) {
         }
         $("#preco, #quantidade, #margem, #desconto, #tipoDesconto").on("input change", calcTotalMargem);
 
-        // Editar margem inline
-        $(document).on("click", ".btn-editar-margem", function(e) {
-            e.preventDefault();
-            var idItem = $(this).attr("idAcao");
-            var $span = $("#margem-" + idItem);
-            var $input = $("#margem-input-" + idItem);
-            if ($input.is(":visible")) {
-                // Salvar
-                var novaMargem = parseFloat(($input.val() || "0").replace(",", ".")) || 0;
-                var preco = parseFloat($(this).attr("precoAcao")) || 0;
-                var qtd = parseFloat($(this).attr("quantAcao")) || 1;
-                var novoSubtotal = novaMargem >= 100 ? 0 : (preco * qtd) / (1 - novaMargem / 100);
-                $.post("<?php echo base_url(); ?>index.php/vendas/atualizarMargem", {
-                    idItem: idItem,
-                    margem: novaMargem,
-                    subTotal: novoSubtotal
-                }, function(data) {
-                    if (data.result) {
-                        $span.text(novaMargem.toFixed(0) + " %");
-                        $("#subtotal-" + idItem).text("R$: " + novoSubtotal.toFixed(2));
-                        $span.show(); $input.hide();
-                        window.location.reload();
-                    }
-                }, "json");
-            } else {
-                $span.hide(); $input.show().focus();
-            }
+        // Editar margem inline na tabela de produtos
+        $(document).on("change blur", ".margem-inline", function() {
+            var $input = $(this);
+            var idItem = $input.data("iditem");
+            var preco = parseFloat($input.data("preco")) || 0;
+            var qtd = parseFloat($input.data("qtd")) || 1;
+            var novaMargem = parseFloat(($input.val() || "0").replace(",", ".")) || 0;
+            var novoSubtotal = novaMargem >= 100 ? 0 : (preco * qtd) / (1 - novaMargem / 100);
+            $.post("<?php echo base_url(); ?>index.php/vendas/atualizarMargem", {
+                idItem: idItem,
+                margem: novaMargem,
+                subTotal: novoSubtotal
+            }, function(data) {
+                if (data.result) {
+                    $("#subtotal-" + idItem).text("R$: " + novoSubtotal.toFixed(2));
+                }
+            }, "json");
         });
 
         $("#produto").autocomplete({
