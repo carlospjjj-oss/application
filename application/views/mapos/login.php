@@ -47,8 +47,7 @@
           </div>
         </div>
       <?php } ?>
-      <div class="d-flex flex-column">
-        <div class="right-login">
+      <div class="right-login">
           <div class="container">
             <div class="card">
               <div class="content">
@@ -88,7 +87,6 @@
             </div>
           </div>
         </div>
-      </div>
       <a href="#notification" id="call-modal" role="button" class="btn" data-toggle="modal" style="display: none ">notification</a>
       <div id="notification" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-header">
