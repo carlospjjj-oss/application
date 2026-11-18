@@ -368,7 +368,7 @@ foreach ($produtos as $p) {
             $('#resultado').val('');
         }
         if ($("#desconto").val() != "" || $("#desconto").val() != null) {
-            $('#resultado').val(calcDesconto(Number($("#total-venda").val()), Number($("#desconto").val())));
+            $('#resultado').val(calcDesconto(Number($("#total-venda").val()), Number($("#desconto").val()), $("#tipoDesconto").val()));
             $('#resultado').val(validarDesconto(Number($('#resultado').val()), Number($("#total-venda").val())));
         }
     });
