@@ -382,7 +382,7 @@ foreach ($produtos as $p) {
 
     $("#desconto").keyup(function() {
 
-        this.value = this.value.replace(/[^0-9.]/g, '');
+        this.value = this.value.replace(/[^0-9.,]/g, '').replace(',', '.');
         if ($("#total-venda").val() == null || $("#total-venda").val() == '') {
             $('#errorAlert').text('Valor não pode ser apagado.').css("display", "inline").fadeOut(5000);
             $('#desconto').val('');
@@ -390,8 +390,8 @@ foreach ($produtos as $p) {
             $("#total-venda").val(valorBackup);
             $("#desconto").focus();
 
-        } else if (Number($("#desconto").val()) >= 0) {
-            $('#resultado').val(calcDesconto(Number($("#total-venda").val()), Number($("#desconto").val()), $("#tipoDesconto").val()));
+        } else if (Number($("#desconto").val().replace(',','.')) >= 0) {
+            $('#resultado').val(calcDesconto(Number($("#total-venda").val()), Number($("#desconto").val().replace(',','.')), $("#tipoDesconto").val()));
             $('#resultado').val(validarDesconto(Number($('#resultado').val()), Number($("#total-venda").val())));
         } else {
             $('#errorAlert').text('Erro desconhecido.').css("display", "inline").fadeOut(5000);
@@ -400,8 +400,8 @@ foreach ($produtos as $p) {
         }
     });
     $('#tipoDesconto').on('change', function() {
-        if (Number($("#desconto").val()) >= 0) {
-            $('#resultado').val(calcDesconto(Number($("#total-venda").val()), Number($("#desconto").val()), $("#tipoDesconto").val()));
+        if (Number($("#desconto").val().replace(',','.')) >= 0) {
+            $('#resultado').val(calcDesconto(Number($("#total-venda").val()), Number($("#desconto").val().replace(',','.')), $("#tipoDesconto").val()));
             $('#resultado').val(validarDesconto(Number($('#resultado').val()), Number($("#total-venda").val())));
         }
     });
@@ -412,11 +412,11 @@ foreach ($produtos as $p) {
             $('#errorAlert').text('Você não pode apagar o valor.').css("display", "inline").fadeOut(6000);
             $('#resultado').val('');
             $("#total-venda").val(valorBackup);
-            $('#resultado').val(calcDesconto(Number($("#total-venda").val()), Number($("#desconto").val()), $("#tipoDesconto").val()));
+            $('#resultado').val(calcDesconto(Number($("#total-venda").val()), Number($("#desconto").val().replace(',','.')), $("#tipoDesconto").val()));
             $('#resultado').val(validarDesconto(Number($('#resultado').val()), Number($("#total-venda").val())));
             $("#desconto").focus();
         } else {
-            $('#resultado').val(calcDesconto(Number($("#total-venda").val()), Number($("#desconto").val()), $("#tipoDesconto").val()));
+            $('#resultado').val(calcDesconto(Number($("#total-venda").val()), Number($("#desconto").val().replace(',','.')), $("#tipoDesconto").val()));
             $('#resultado').val(validarDesconto(Number($('#resultado').val()), Number($("#total-venda").val())));
         }
     });
@@ -427,7 +427,7 @@ foreach ($produtos as $p) {
             $('#resultado').val('');
         }
         if ($("#desconto").val() != "" || $("#desconto").val() != null) {
-            $('#resultado').val(calcDesconto(Number($("#total-venda").val()), Number($("#desconto").val()), $("#tipoDesconto").val()));
+            $('#resultado').val(calcDesconto(Number($("#total-venda").val()), Number($("#desconto").val().replace(',','.')), $("#tipoDesconto").val()));
             $('#resultado').val(validarDesconto(Number($('#resultado').val()), Number($("#total-venda").val())));
         }
     });
