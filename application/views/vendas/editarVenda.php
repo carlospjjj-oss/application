@@ -179,11 +179,11 @@ foreach ($produtos as $p) {
                                         <?php if ($result->valor_desconto != 0 && $result->desconto != 0) {
                                             ?>
                                             <tr>
-                                                <td colspan="4" style="text-align: right"><strong>Desconto:</strong></td>
-                                                <td style="text-align: right"><strong><?php echo $result->tipo_desconto == "real" ? "R$ " : ""; ?><?php echo number_format($result->desconto, 2, '.', ''); ?><?php echo $result->tipo_desconto == "porcento" ? " %" : ""; ?></strong></td>
+                                                <td colspan="5" style="text-align: right"><strong>Desconto:</strong></td>
+                                                <td style="text-align: right; white-space:nowrap;"><strong><?php echo $result->tipo_desconto == "real" ? "R$ " : ""; ?><?php echo number_format($result->desconto, 2, '.', ''); ?><?php echo $result->tipo_desconto == "porcento" ? " %" : ""; ?></strong></td>
                                             </tr>
                                             <tr>
-                                                <td colspan="4" style="text-align: right"><strong>Total Com Desconto:</strong></td>
+                                                <td colspan="5" style="text-align: right"><strong>Total Com Desconto:</strong></td>
                                                 <td style="text-align: right; white-space:nowrap;"><strong>R$: <?php echo number_format($result->valor_desconto, 2, '.', ''); ?></strong><input type="hidden" id="total-desconto" value="<?php echo number_format($result->valor_desconto, 2, '.', ''); ?>"></td>
                                             </tr>
                                         <?php
