@@ -45,7 +45,9 @@ body * {
 }
 
 #newlog .icon2 {
-  width: 42px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 #newlog .title01 {
