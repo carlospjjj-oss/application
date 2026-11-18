@@ -194,6 +194,13 @@ class Vendas extends MY_Controller
         $this->data['result'] = $this->vendas_model->getById($this->uri->segment(3));
         $this->data['produtos'] = $this->vendas_model->getProdutos($this->uri->segment(3));
         $this->data['servicos'] = $this->vendas_model->getServicos($this->uri->segment(3));
+        if (empty($this->data['result']->observacoes) && !empty($this->data['result']->clientes_id)) {
+            $this->load->model('visita_tecnica_model');
+            $ultimaVisita = $this->visita_tecnica_model->getUltimoResultado($this->data['result']->clientes_id);
+            if ($ultimaVisita && !empty($ultimaVisita->resultado)) {
+                $this->data['result']->observacoes = $ultimaVisita->resultado;
+            }
+        }
         $this->data['view'] = 'vendas/editarVenda';
 
         return $this->layout();
@@ -441,7 +448,8 @@ class Vendas extends MY_Controller
         } else {
             $preco = $this->input->post('preco');
             $quantidade = $this->input->post('quantidade');
-            $subtotal = $preco * $quantidade;
+            $margem = (float)$this->input->post('margem') ?: 0;
+            $subtotal = $preco * $quantidade * (1 + $margem / 100);
             $produto = $this->input->post('idProduto');
             $data = [
                 'quantidade' => $quantidade,
@@ -449,6 +457,7 @@ class Vendas extends MY_Controller
                 'produtos_id' => $produto,
                 'preco' => $preco,
                 'vendas_id' => $idVenda,
+                'margem' => $margem,
             ];
 
             if ($this->vendas_model->add('itens_de_vendas', $data) == true) {
@@ -529,6 +538,23 @@ class Vendas extends MY_Controller
             log_info('Removeu produto da venda. ID da Venda: ' . $idVendas . ', ID do Produto: ' . $idProduto);
             echo json_encode(['result' => true, 'messages' => 'Produto removido com sucesso']);
         }
+    }
+
+    public function atualizarMargem()
+    {
+        $idItem = (int)$this->input->post('idItem');
+        $margem = (float)$this->input->post('margem');
+        $subTotal = (float)$this->input->post('subTotal');
+
+        if (!$idItem) {
+            echo json_encode(['result' => false]);
+            return;
+        }
+
+        $this->db->where('idItens', $idItem);
+        $this->db->update('itens_de_vendas', ['margem' => $margem, 'subTotal' => $subTotal]);
+
+        echo json_encode(['result' => true]);
     }
 
     public function adicionarServico()

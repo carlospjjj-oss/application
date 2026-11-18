@@ -125,9 +125,17 @@
                                             <label for="">Preço</label>
                                             <input type="text" placeholder="Preço" id="preco" name="preco" class="span12 money" />
                                         </div>
+                                        <div class="span1">
+                                            <label for="">Qtd</label>
+                                            <input type="text" placeholder="Qtd" id="quantidade" name="quantidade" class="span12" />
+                                        </div>
+                                        <div class="span1">
+                                            <label for="">% Margem</label>
+                                            <input type="number" placeholder="0" id="margem" name="margem" class="span12" value="0" min="0" step="0.01" />
+                                        </div>
                                         <div class="span2">
-                                            <label for="">Quantidade</label>
-                                            <input type="text" placeholder="Quantidade" id="quantidade" name="quantidade" class="span12" />
+                                            <label for="">Total c/ Margem</label>
+                                            <input type="text" id="totalMargem" class="span12" readonly />
                                         </div>
                                         <div class="span2">
                                             <label for="">&nbsp</label>
@@ -171,6 +179,7 @@
                                             <th>Produto</th>
                                             <th width="8%">Quantidade</th>
                                             <th width="10%">Preço</th>
+                                            <th width="8%">% Margem</th>
                                             <th width="6%">Ações</th>
                                             <th width="10%">Sub-total</th>
                                         </tr>
@@ -180,13 +189,15 @@
                                         $total = 0;
 foreach ($produtos as $p) {
     $preco = $p->preco ?: $p->precoVenda;
+    $margem = isset($p->margem) ? $p->margem : 0;
     $total = $total + $p->subTotal;
-    echo '<tr>';
+    echo '<tr id="linha-produto-' . $p->idItens . '">';
     echo '<td>' . $p->descricao . '</td>';
     echo '<td><div align="center">' . $p->quantidade . '</td>';
-    echo '<td><div align="center">R$: ' . $preco . '</td>';
-    echo '<td><div align="center"><a href="" idAcao="' . $p->idItens . '" prodAcao="' . $p->idProdutos . '" quantAcao="' . $p->quantidade . '" title="Excluir Produto" class="btn-nwe4"><i class="bx bx-trash-alt"></i></a></td>';
-    echo '<td><div align="center">R$: ' . number_format($p->subTotal, 2, '.', '') . '</td>';
+    echo '<td><div align="center">R$: ' . number_format($preco, 2, '.', '') . '</td>';
+    echo '<td><div align="center" style="white-space:nowrap;"><input type="number" class="margem-inline" id="margem-input-' . $p->idItens . '" data-iditem="' . $p->idItens . '" data-preco="' . $preco . '" data-qtd="' . $p->quantidade . '" value="' . $margem . '" min="0" step="1" style="width:55px;text-align:center;display:inline-block;" />&nbsp;%</div></td>';
+    echo '<td><div align="center"><a href="" idAcao="' . $p->idItens . '" prodAcao="' . $p->idProdutos . '" quantAcao="' . $p->quantidade . '" class="btn-nwe4"><i class="bx bx-trash-alt"></i></a></div></td>';
+    echo '<td><div align="center" id="subtotal-' . $p->idItens . '">R$: ' . number_format($p->subTotal, 2, '.', '') . '</div></td>';
     echo '</tr>';
 } ?>
                                     </tbody>
@@ -232,7 +243,7 @@ foreach ($produtos as $p) {
                                             <input type="text" placeholder="Preço" id="precoServico" name="precoServico" class="span12 money" />
                                         </div>
                                         <div class="span2">
-                                            <label for="">Quantidade</label>
+                                            <label for="">Qtd</label>
                                             <input type="text" placeholder="Quantidade" id="quantidadeServico" name="quantidadeServico" class="span12" value="1" />
                                         </div>
                                         <div class="span2">
@@ -567,6 +578,30 @@ foreach ($produtos as $p) {
                 }
             }
         });
+        // Calcula Total c/ Margem
+        function calcTotalMargem() {
+            var preco = parseFloat($("#preco").val()) || 0;
+            var qtd = parseFloat($("#quantidade").val()) || 0;
+            var margem = parseFloat($("#margem").val()) || 0;
+            var total = preco * qtd * (1 + margem / 100);
+            $("#totalMargem").val("R$: " + total.toFixed(2));
+        }
+        $("#preco, #quantidade, #margem").on("input change", calcTotalMargem);
+
+        // Salvar margem ao sair do campo
+        $(document).on("change", ".margem-inline", function() {
+            var idItem = $(this).data("iditem");
+            var preco = parseFloat($(this).data("preco")) || 0;
+            var qtd = parseFloat($(this).data("qtd")) || 1;
+            var novaMargem = parseFloat($(this).val()) || 0;
+            var novoSubtotal = preco * qtd * (1 + novaMargem / 100);
+            $.post("<?php echo base_url(); ?>index.php/vendas/atualizarMargem", {
+                idItem: idItem, margem: novaMargem, subTotal: novoSubtotal
+            }, function(data) {
+                if (data.result) { window.location.reload(); }
+            }, "json");
+        });
+
         $("#produto").autocomplete({
             source: "<?php echo base_url(); ?>index.php/os/autoCompleteProdutoSaida",
             minLength: 2,
