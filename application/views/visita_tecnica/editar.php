@@ -134,19 +134,10 @@
 <script>
 $(document).ready(function() {
 
-    // BUG 1 CORRIGIDO: trava observacoes E resultado quando status != Realizada
+    // resultado sempre editável; observacoes livre também
     function toggleCampos() {
-        var status = $("#status").val();
-        if (status === "Realizada") {
-            $("#observacoes").prop("readonly", false);
-            $("#resultado").prop("readonly", false);
-        } else {
-            $("#observacoes").prop("readonly", true);
-            $("#resultado").prop("readonly", true);
-        }
+        // sem bloqueio - todos os campos são editáveis
     }
-    $("#status").on("change", toggleCampos);
-    toggleCampos();
 
     $("#cliente").autocomplete({
         source: "<?php echo base_url(); ?>index.php/os/autoCompleteCliente",

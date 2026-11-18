@@ -196,7 +196,6 @@ class Os_model extends CI_Model
         $this->db->limit(25);
         $this->db->like('codDeBarra', $q);
         $this->db->or_like('descricao', $q);
-        $this->db->where('saida', 1);
         $query = $this->db->get('produtos');
         if ($query->num_rows() > 0) {
             foreach ($query->result_array() as $row) {
