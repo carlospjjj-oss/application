@@ -110,7 +110,7 @@
                             <div class="span12 well" style="padding: 1%; margin-left: 0">
                                 <div class="span11">
                                     <form id="formProdutos" action="<?php echo base_url(); ?>index.php/vendas/adicionarProduto" method="post">
-                                        <div class="span6">
+                                        <div class="span5">
                                             <input type="hidden" name="idProduto" id="idProduto" />
                                             <input type="hidden" name="idVendasProduto" id="idVendasProduto" value="<?php echo $result->idVendas ?>" />
                                             <input type="hidden" name="estoque" id="estoque" value="" />
@@ -125,7 +125,7 @@
                                             <label for="">Qtd</label>
                                             <input type="text" placeholder="Qtd" id="quantidade" name="quantidade" class="span12" />
                                         </div>
-                                        <div class="span1">
+                                        <div class="span2">
                                             <label for="">% Margem</label>
                                             <input type="text" placeholder="0,00" id="margem" name="margem" class="span12" value="<?= isset($margem) ? $margem : '0' ?>" />
                                         </div>
