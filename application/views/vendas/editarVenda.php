@@ -597,10 +597,20 @@ foreach ($produtos as $p) {
             var preco = parseFloat($("#preco").val()) || 0;
             var qtd = parseFloat($("#quantidade").val()) || 0;
             var margem = parseFloat($("#margem").val()) || 0;
+            var desconto = parseFloat($("#desconto").val()) || 0;
+            var tipoDesconto = $("#tipoDesconto").val();
             var total = preco * qtd * (1 + margem / 100);
+            if (desconto > 0) {
+                if (tipoDesconto === 'porcento') {
+                    total = total - (total * desconto / 100);
+                } else {
+                    total = total - desconto;
+                }
+            }
+            if (total < 0) total = 0;
             $("#totalMargem").val("R$: " + total.toFixed(2));
         }
-        $("#preco, #quantidade, #margem").on("input change", calcTotalMargem);
+        $("#preco, #quantidade, #margem, #desconto, #tipoDesconto").on("input change", calcTotalMargem);
 
         // Editar margem inline
         $(document).on("click", ".btn-editar-margem", function(e) {
