@@ -54,10 +54,7 @@
               <div class="content">
                 <div id="newlog">
                   <div class="icon2">
-                    <img src="<?php echo base_url() ?>assets/img/logo-two.png">
-                  </div>
-                  <div class="title01">
-                    <?= '<img src="' . base_url() . 'assets/img/logo-mapos-branco.png">'; ?>
+                    <img src="<?php echo base_url() ?>assets/img/logo-proton-mobilidade.png" style="max-width:180px;">
                   </div>
                 </div>
                 <div id="mcell">Versão: <?= $this->config->item('app_version'); ?></div>
@@ -72,9 +69,8 @@
                 <div class="center">
                   <button id="btn-acessar">Acessar</button>
                 </div>
-                <div class="links-uteis"><a href="https://github.com/RamonSilva20/mapos">
-                    <p><?= date('Y'); ?> &copy; Ramon Silva</p>
-                  </a>
+                <div class="links-uteis">
+                    <p><?= date('Y'); ?> &copy; Supremasti</p>
                 </div>
                 <a href="#notification" id="call-modal" role="button" class="btn" data-toggle="modal" style="display: none ">notification</a>
                 <div id="notification" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

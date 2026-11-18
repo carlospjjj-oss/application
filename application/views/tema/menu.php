@@ -2,10 +2,9 @@
 <nav id="sidebar">
     <div id="newlog">
         <div class="icon2">
-            <img src="<?php echo base_url() ?>assets/img/logo-two.png">
+            <img src="<?php echo base_url() ?>assets/img/logo-proton-mobilidade.png" style="max-width:140px;">
         </div>
         <div class="title1">
-            <?= $configuration['app_theme'] == 'white' ||  $configuration['app_theme'] == 'whitegreen' ? '<img src="' . base_url() . 'assets/img/logo-mapos.png">' : '<img src="' . base_url() . 'assets/img/logo-mapos-branco.png">'; ?>
         </div>
     </div>
     <a href="#" class="visible-phone">
