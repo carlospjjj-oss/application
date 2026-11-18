@@ -602,7 +602,7 @@ foreach ($produtos as $p) {
             var margem = parseMargem($("#margem").val());
             var desconto = parseFloat($("#desconto").val()) || 0;
             var tipoDesconto = $("#tipoDesconto").val();
-            var total = preco * qtd * (1 + margem / 100);
+            var total = margem >= 100 ? 0 : (preco * qtd) / (1 - margem / 100);
             if (desconto > 0) {
                 if (tipoDesconto === 'porcento') {
                     total = total - (total * desconto / 100);
@@ -626,7 +626,7 @@ foreach ($produtos as $p) {
                 var novaMargem = parseFloat(($input.val() || "0").replace(",", ".")) || 0;
                 var preco = parseFloat($(this).attr("precoAcao")) || 0;
                 var qtd = parseFloat($(this).attr("quantAcao")) || 1;
-                var novoSubtotal = preco * qtd * (1 + novaMargem / 100);
+                var novoSubtotal = novaMargem >= 100 ? 0 : (preco * qtd) / (1 - novaMargem / 100);
                 $.post("<?php echo base_url(); ?>index.php/vendas/atualizarMargem", {
                     idItem: idItem,
                     margem: novaMargem,
