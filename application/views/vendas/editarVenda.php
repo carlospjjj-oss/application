@@ -159,7 +159,7 @@
 foreach ($produtos as $p) {
     $preco = $p->preco ?: $p->precoVenda;
     $margem = isset($p->margem) ? $p->margem : 0;
-    $subTotal = isset($p->subTotal) ? $p->subTotal : ($margem >= 100 ? 0 : ($preco * $p->quantidade) / (1 - $margem/100));
+    $subTotal = isset($p->subTotal) ? $p->subTotal : ($preco * $p->quantidade * (1 + $margem/100));
     $total = $total + $subTotal;
     echo '<tr id="linha-produto-' . $p->idItens . '">';
     echo '<td>' . $p->descricao . '</td>';
@@ -598,7 +598,7 @@ foreach ($produtos as $p) {
             var margem = parseMargem($("#margem").val());
             var desconto = parseFloat($("#desconto").val()) || 0;
             var tipoDesconto = $("#tipoDesconto").val();
-            var total = margem >= 100 ? 0 : (preco * qtd) / (1 - margem / 100);
+            var total = preco * qtd * (1 + margem / 100);
             if (desconto > 0) {
                 if (tipoDesconto === 'porcento') {
                     total = total - (total * desconto / 100);
@@ -623,7 +623,7 @@ foreach ($produtos as $p) {
             var preco = parseFloat($input.data("preco")) || 0;
             var qtd = parseFloat($input.data("qtd")) || 1;
             var novaMargem = parseFloat(($input.val() || "0").replace(",", ".")) || 0;
-            var novoSubtotal = novaMargem >= 100 ? 0 : (preco * qtd) / (1 - novaMargem / 100);
+            var novoSubtotal = preco * qtd * (1 + novaMargem / 100);
             $.post("<?php echo base_url(); ?>index.php/vendas/atualizarMargem", {
                 idItem: idItem,
                 margem: novaMargem,

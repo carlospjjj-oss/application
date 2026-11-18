@@ -449,7 +449,7 @@ class Vendas extends MY_Controller
             $preco = $this->input->post('preco');
             $quantidade = $this->input->post('quantidade');
             $margem = (float)$this->input->post('margem') ?: 0;
-            $subtotal = $margem >= 100 ? 0 : ($preco * $quantidade) / (1 - $margem / 100);
+            $subtotal = $preco * $quantidade * (1 + $margem / 100);
             $produto = $this->input->post('idProduto');
             $data = [
                 'quantidade' => $quantidade,
