@@ -159,7 +159,7 @@
 foreach ($produtos as $p) {
     $preco = $p->preco ?: $p->precoVenda;
     $margem = isset($p->margem) ? $p->margem : 0;
-    $subTotal = isset($p->subTotal) ? $p->subTotal : ($preco * $p->quantidade * (1 + $margem/100));
+    $subTotal = isset($p->subTotal) ? $p->subTotal : ($margem >= 100 ? 0 : ($preco * $p->quantidade) / (1 - $margem/100));
     $total = $total + $subTotal;
     echo '<tr id="linha-produto-' . $p->idItens . '">';
     echo '<td>' . $p->descricao . '</td>';
@@ -365,8 +365,9 @@ foreach ($produtos as $p) {
             resultado = valor - desconto;
         }
         if (tipoDesconto == 'porcento') {
-            resultado = (valor - desconto * valor / 100).toFixed(2);
+            resultado = valor - (desconto * valor / 100);
         }
+        if (resultado < 0) resultado = 0;
         return resultado;
     }
 
