@@ -441,6 +441,23 @@ foreach ($produtos as $p) {
     });
 
     $(document).ready(function() {
+
+        function toggleCamposVenda() {
+            var status = $("#status").val();
+            var statusFinalizado = ['Finalizado', 'Faturado', 'Cancelado', 'Aprovado'];
+            if (statusFinalizado.indexOf(status) !== -1) {
+                // Status finalizado: bloqueia observacoes internas (Resultado)
+                $("#observacoes").prop("readonly", true).css("background", "#f5f5f5");
+                $("#observacoes_cliente").prop("readonly", false).css("background", "");
+            } else {
+                // Status em andamento (Negociação, Agendado, etc): bloqueia observacoes_cliente
+                $("#observacoes").prop("readonly", false).css("background", "");
+                $("#observacoes_cliente").prop("readonly", true).css("background", "#f5f5f5");
+            }
+        }
+        toggleCamposVenda();
+        $("#status").on("change", toggleCamposVenda);
+
         $(".money").maskMoney();
         $('#recebido').click(function(event) {
             var flag = $(this).is(':checked');
