@@ -1,11 +1,8 @@
 <!--sidebar-menu-->
 <nav id="sidebar">
     <div id="newlog">
-        <div class="icon2">
-            <img src="<?php echo base_url() ?>assets/img/logo-two.png" style="width:38px;">
-        </div>
-        <div class="title1">
-            <img src="<?php echo base_url() ?>assets/img/logo-proton-mobilidade.png" style="max-width:120px;">
+        <div class="title1" style="width:auto;">
+            <img src="<?php echo base_url() ?>assets/img/logo-proton-mobilidade.png" style="max-width:150px;">
         </div>
     </div>
     <a href="#" class="visible-phone">
