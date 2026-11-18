@@ -413,7 +413,13 @@ class Vendas_model extends CI_Model
         $total = 0;
 
         foreach ($produtos as $produto) {
-            $total += $produto->quantidade * $produto->preco;
+            if (isset($produto->subTotal) && $produto->subTotal > 0) {
+                $total += $produto->subTotal;
+            } else {
+                $margem = isset($produto->margem) ? floatval($produto->margem) : 0;
+                $subtotal = $margem >= 100 ? 0 : ($produto->preco * $produto->quantidade) / (1 - $margem / 100);
+                $total += $subtotal;
+            }
         }
 
         return $total;
