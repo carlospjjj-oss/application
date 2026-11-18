@@ -129,10 +129,6 @@
                                             <label for="">% Margem</label>
                                             <input type="text" placeholder="0,00" id="margem" name="margem" class="span12" value="<?= isset($margem) ? $margem : '0' ?>" />
                                         </div>
-                                        <div class="span1">
-                                            <label for="">Total c/ Margem</label>
-                                            <input type="text" id="totalMargem" class="span12" readonly />
-                                        </div>
                                         <div class="span2">
                                             <label for="">&nbsp</label>
                                             <button class="button btn btn-success" id="btnAdicionarProduto">
