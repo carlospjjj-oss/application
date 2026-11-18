@@ -51,27 +51,13 @@
                     </li>
                 <?php } ?>
 
-                <?php if ($this->permission->checkPermission($this->session->userdata('permissao'), 'vProduto')) { ?>
-                    <li class="<?php if (isset($menuProdutos)) {
-                        echo 'active';
-                    }; ?>">
-                        <a class="tip-bottom" title="" href="<?= site_url('produtos') ?>"><i class='bx bx-basket iconX'></i>
-                            <span class="title">Produtos</span>
-                            <span class="title-tooltip">Produtos</span>
-                        </a>
-                    </li>
-                <?php } ?>
-
-                <?php if ($this->permission->checkPermission($this->session->userdata('permissao'), 'vServico')) { ?>
-                    <li class="<?php if (isset($menuServicos)) {
-                        echo 'active';
-                    }; ?>">
-                        <a class="tip-bottom" title="" href="<?= site_url('servicos') ?>"><i class='bx bx-wrench iconX'></i>
-                            <span class="title">Serviços</span>
-                            <span class="title-tooltip">Serviços</span>
-                        </a>
-                    </li>
-                <?php } ?>
+                <li class="<?php if (isset($menuVisitaTecnica)) { echo 'active'; }; ?>">
+                    <a class="tip-bottom" title="" href="<?= site_url('visita_tecnica') ?>">
+                        <i class='bx bx-clipboard iconX'></i>
+                        <span class="title">Visitas Técnicas</span>
+                        <span class="title-tooltip">Visitas</span>
+                    </a>
+                </li>
 
                 <?php if ($this->permission->checkPermission($this->session->userdata('permissao'), 'vVenda')) { ?>
                     <li class="<?php if (isset($menuVendas)) {
@@ -95,13 +81,27 @@
                     </li>
                 <?php } ?>
 
-                <li class="<?php if (isset($menuVisitaTecnica)) { echo 'active'; }; ?>">
-                    <a class="tip-bottom" title="" href="<?= site_url('visita_tecnica') ?>">
-                        <i class='bx bx-clipboard iconX'></i>
-                        <span class="title">Visitas Técnicas</span>
-                        <span class="title-tooltip">Visitas</span>
-                    </a>
-                </li>
+                <?php if ($this->permission->checkPermission($this->session->userdata('permissao'), 'vProduto')) { ?>
+                    <li class="<?php if (isset($menuProdutos)) {
+                        echo 'active';
+                    }; ?>">
+                        <a class="tip-bottom" title="" href="<?= site_url('produtos') ?>"><i class='bx bx-basket iconX'></i>
+                            <span class="title">Produtos</span>
+                            <span class="title-tooltip">Produtos</span>
+                        </a>
+                    </li>
+                <?php } ?>
+
+                <?php if ($this->permission->checkPermission($this->session->userdata('permissao'), 'vServico')) { ?>
+                    <li class="<?php if (isset($menuServicos)) {
+                        echo 'active';
+                    }; ?>">
+                        <a class="tip-bottom" title="" href="<?= site_url('servicos') ?>"><i class='bx bx-wrench iconX'></i>
+                            <span class="title">Serviços</span>
+                            <span class="title-tooltip">Serviços</span>
+                        </a>
+                    </li>
+                <?php } ?>
 
                 <?php if ($this->permission->checkPermission($this->session->userdata('permissao'), 'vGarantia')) { ?>
                     <li class="<?php if (isset($menuGarantia)) {
