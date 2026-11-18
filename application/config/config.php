@@ -10,7 +10,7 @@ $config['app_version'] = '4.53.2';
 /**
  * Nome do sistema
  */
-$config['app_name'] = $_ENV['APP_NAME'] ?? 'Map-OS';
+$config['app_name'] = $_ENV['APP_NAME'] ?? 'Proton Mobilidade';
 
 /**
  * Descrição do sistema
