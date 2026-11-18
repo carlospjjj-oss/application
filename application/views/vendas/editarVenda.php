@@ -180,15 +180,11 @@ foreach ($produtos as $p) {
                                             ?>
                                             <tr>
                                                 <td colspan="4" style="text-align: right"><strong>Desconto:</strong></td>
-                                                <td>
-                                                    <div align="center"><strong><?php echo $result->tipo_desconto == "real" ? "R$ " : ""; ?> <?php echo number_format($result->desconto, 2, '.', ''); ?> <?php echo $result->tipo_desconto == "porcento" ? " %" : ""; ?></strong></div>
-                                                </td>
+                                                <td style="text-align: right"><strong><?php echo $result->tipo_desconto == "real" ? "R$ " : ""; ?><?php echo number_format($result->desconto, 2, '.', ''); ?><?php echo $result->tipo_desconto == "porcento" ? " %" : ""; ?></strong></td>
                                             </tr>
                                             <tr>
                                                 <td colspan="4" style="text-align: right"><strong>Total Com Desconto:</strong></td>
-                                                <td>
-                                                    <div align="center"><strong>R$: <?php echo number_format($result->valor_desconto, 2, '.', ''); ?></strong></div><input type="hidden" id="total-desconto" value="<?php echo number_format($result->valor_desconto, 2, '.', ''); ?>">
-                                                </td>
+                                                <td style="text-align: right"><strong>R$: <?php echo number_format($result->valor_desconto, 2, '.', ''); ?></strong><input type="hidden" id="total-desconto" value="<?php echo number_format($result->valor_desconto, 2, '.', ''); ?>"></td>
                                             </tr>
                                         <?php
                                         } ?>
@@ -198,7 +194,7 @@ foreach ($produtos as $p) {
                             <div class="span12" style="margin-left: 0; margin-top: 10px;">
                                 <form id="formDesconto" action="<?php echo base_url(); ?>index.php/vendas/adicionarDesconto" method="POST">
                                     <input type="hidden" name="idVendas" id="idVendas" value="<?php echo $result->idVendas; ?>" />
-                                    <div style="display:flex; align-items:flex-end; gap:10px;">
+                                    <div style="display:flex; align-items:flex-end; gap:10px; justify-content:flex-end;">
                                         <div>
                                             <label for="">Desconto</label>
                                             <input style="width: 6em;" id="desconto" name="desconto" type="text" placeholder="0.00" maxlength="6" />
