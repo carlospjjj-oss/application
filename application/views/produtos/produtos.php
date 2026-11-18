@@ -12,14 +12,14 @@
     </div>
     <div class="span12" style="margin-left: 0">
         <?php if ($this->permission->checkPermission($this->session->userdata('permissao'), 'aProduto')) : ?>
-            <div class="span3 flexxn" style="display: flex;">
-                <a href="<?= base_url() ?>index.php/produtos/adicionar" class="button btn btn-mini btn-success" style="max-width: 160px">
-                    <span class="button__icon"><i class='bx bx-plus-circle'></i></span><span class="button__text2"> Produtos</span>
+            <div class="span6" style="display:flex; gap:6px; flex-wrap:wrap;">
+                <a href="<?= base_url() ?>index.php/produtos/adicionar" class="button btn btn-mini btn-success">
+                    <span class="button__icon"><i class='bx bx-plus-circle'></i></span><span class="button__text2">Novo Produto</span>
                 </a>
-                <a href="#modal-etiquetas" role="button" data-toggle="modal" class="button btn btn-mini btn-warning" style="max-width: 160px">
-                    <span class="button__icon"><i class='bx bx-barcode-reader' ></i></span><span class="button__text2">Gerar Etiquetas</span>
+                <a href="#modal-etiquetas" role="button" data-toggle="modal" class="button btn btn-mini btn-warning">
+                    <span class="button__icon"><i class='bx bx-barcode-reader'></i></span><span class="button__text2">Gerar Etiquetas</span>
                 </a>
-                <a href="<?= site_url('produtos/importarPlanilha') ?>" class="button btn btn-mini btn-info" style="max-width: 160px">
+                <a href="<?= site_url('produtos/importarPlanilha') ?>" class="button btn btn-mini btn-info">
                     <span class="button__icon"><i class='bx bx-import'></i></span><span class="button__text2">Importar Planilha</span>
                 </a>
             </div>
