@@ -1,6 +1,6 @@
 <div class="row-fluid">
     <div id="footer" class="span12">
-        <span class="pecolor"><?= date('Y') ?> &copy; Supremasti - Versão: <?= $this->config->item('app_version') ?></span>
+        <a class="pecolor" href="https://www.supremasti.com.br" target="_blank"><?= date('Y') ?> &copy; Supremasti</a> - Versão: <?= $this->config->item('app_version') ?>
     </div>
 </div>
 <!--end-Footer-part-->
