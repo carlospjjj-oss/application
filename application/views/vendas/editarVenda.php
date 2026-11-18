@@ -174,7 +174,7 @@ foreach ($produtos as $p) {
                                     <tfoot>
                                         <tr>
                                             <td colspan="5" style="text-align: right"><strong>Total:</strong></td>
-                                            <td style="text-align: right"><strong>R$: <?php echo number_format($total, 2, '.', ''); ?></strong><input type="hidden" id="total-venda" value="<?php echo number_format($total, 2, '.', ''); ?>"></td>
+                                            <td style="text-align: right; white-space:nowrap;"><strong>R$: <?php echo number_format($total, 2, '.', ''); ?></strong><input type="hidden" id="total-venda" value="<?php echo number_format($total, 2, '.', ''); ?>"></td>
                                         </tr>
                                         <?php if ($result->valor_desconto != 0 && $result->desconto != 0) {
                                             ?>
@@ -184,7 +184,7 @@ foreach ($produtos as $p) {
                                             </tr>
                                             <tr>
                                                 <td colspan="4" style="text-align: right"><strong>Total Com Desconto:</strong></td>
-                                                <td style="text-align: right"><strong>R$: <?php echo number_format($result->valor_desconto, 2, '.', ''); ?></strong><input type="hidden" id="total-desconto" value="<?php echo number_format($result->valor_desconto, 2, '.', ''); ?>"></td>
+                                                <td style="text-align: right; white-space:nowrap;"><strong>R$: <?php echo number_format($result->valor_desconto, 2, '.', ''); ?></strong><input type="hidden" id="total-desconto" value="<?php echo number_format($result->valor_desconto, 2, '.', ''); ?>"></td>
                                             </tr>
                                         <?php
                                         } ?>
