@@ -82,20 +82,6 @@
                             <textarea name="resultado" id="resultado" rows="3" class="span6"><?php echo $result->resultado ?></textarea>
                         </div>
                     </div>
-                    <div class="form-actions">
-                        <div class="span12">
-                            <div class="span6 offset3" style="display:flex;justify-content:center">
-                                <button type="submit" class="button btn btn-primary">
-                                    <span class="button__icon"><i class="bx bx-sync"></i></span>
-                                    <span class="button__text2">Atualizar</span>
-                                </button>
-                                <a href="<?php echo site_url('visita_tecnica/gerenciar') ?>" class="button btn btn-mini btn-warning">
-                                    <span class="button__icon"><i class="bx bx-undo"></i></span>
-                                    <span class="button__text2">Voltar</span>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
                 </form>
 
                 <hr>
@@ -126,6 +112,24 @@
                         </div>
                     <?php endforeach; ?>
                 </div>
+
+                <div class="form-actions" style="margin-top:20px;">
+                    <div class="span12">
+                        <div class="span6 offset3" style="display:flex;justify-content:center">
+                            <form action="<?php echo base_url(); ?>index.php/visita_tecnica/editar/<?php echo $result->id; ?>" method="post" style="display:inline;">
+                                <?php echo $this->security->get_csrf_field(); ?>
+                                <button type="submit" class="button btn btn-primary">
+                                    <span class="button__icon"><i class="bx bx-sync"></i></span>
+                                    <span class="button__text2">Atualizar</span>
+                                </button>
+                            </form>
+                            <a href="<?php echo site_url('visita_tecnica/gerenciar') ?>" class="button btn btn-mini btn-warning" style="margin-left:10px;">
+                                <span class="button__icon"><i class="bx bx-undo"></i></span>
+                                <span class="button__text2">Voltar</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -134,10 +138,18 @@
 <script>
 $(document).ready(function() {
 
-    // resultado sempre editável; observacoes livre também
     function toggleCampos() {
-        // sem bloqueio - todos os campos são editáveis
+        var status = $("#status").val();
+        if (status === 'Realizada') {
+            $("#observacoes").prop("readonly", true).css("background", "#f5f5f5");
+            $("#resultado").prop("readonly", false).css("background", "");
+        } else {
+            $("#observacoes").prop("readonly", false).css("background", "");
+            $("#resultado").prop("readonly", true).css("background", "#f5f5f5");
+        }
     }
+    toggleCampos();
+    $("#status").on("change", toggleCampos);
 
     $("#cliente").autocomplete({
         source: "<?php echo base_url(); ?>index.php/os/autoCompleteCliente",
