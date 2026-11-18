@@ -169,7 +169,7 @@ class Vendas_model extends CI_Model
 
     public function getProdutos($id = null)
     {
-        $this->db->select('itens_de_vendas.*, produtos.descricao, produtos.precoVenda, produtos.unidade, produtos.codDeBarra, itens_de_vendas.preco as preco, itens_de_vendas.quantidade as quantidade, itens_de_vendas.margem as margem, itens_de_vendas.subTotal as subTotal');
+        $this->db->select('itens_de_vendas.*, produtos.idProdutos, produtos.descricao, produtos.precoVenda, produtos.unidade, produtos.codDeBarra, itens_de_vendas.preco as preco, itens_de_vendas.quantidade as quantidade, itens_de_vendas.margem as margem, itens_de_vendas.subTotal as subTotal');
         $this->db->from('itens_de_vendas');
         $this->db->join('produtos', 'produtos.idProdutos = itens_de_vendas.produtos_id');
         $this->db->where('vendas_id', $id);
