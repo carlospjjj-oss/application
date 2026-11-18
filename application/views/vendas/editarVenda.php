@@ -140,33 +140,6 @@
                                         </div>
                                     </form>
                                 </div>
-                                <div class="span11">
-                                    <form id="formDesconto" action="<?php echo base_url(); ?>index.php/vendas/adicionarDesconto" method="POST">
-                                        <div class="span1">
-                                            <input type="hidden" name="idVendas" id="idVendas" value="<?php echo $result->idVendas; ?>" />
-                                            <label for="">Desconto</label>
-                                            <input style="width: 4em;" id="desconto" name="desconto" type="text" placeholder="0.00" maxlength="6" size="2" /><br />
-                                            <strong><span style="color: red" id="errorAlert"></span></strong>
-                                        </div>
-                                        <div class="span1">
-                                        <label for="">Tipo Desc.</label>
-                                        <select style="width: 4em;" name="tipoDesconto" id="tipoDesconto">
-                                            <option value="real">R$</option>
-                                            <option value="porcento" <?=$result->tipo_desconto == "porcento" ? "selected" : "" ?>>%</option>
-                                        </select>
-                                        <strong><span style="color: red" id="errorAlert"></span></strong>
-                                        </div>
-                                        <div class="span2">
-                                            <label for="">Total com Desconto</label>
-                                            <input class="span12 money" id="resultado" type="text" data-affixes-stay="true" data-thousands="" data-decimal="." name="resultado" value="" readonly />
-                                        </div>
-                                        <div class="span2">
-                                            <label for="">&nbsp;</label>
-                                            <button class="button btn btn-success" id="btnAdicionarDesconto">
-                                                <span class="button__icon"><i class='bx bx-plus-circle'></i></span><span class="button__text2">Aplicar</span></button>
-                                        </div>
-                                    </form>
-                                </div>
                             </div>
                             <div class="span12" id="divProdutos" style="margin-left: 0">
                                 <table class="table table-bordered" id="tblProdutos">
@@ -201,9 +174,7 @@ foreach ($produtos as $p) {
                                     <tfoot>
                                         <tr>
                                             <td colspan="5" style="text-align: right"><strong>Total:</strong></td>
-                                            <td>
-                                                <div align="center"><strong>R$: <?php echo number_format($total, 2, '.', ''); ?></strong></div> <input type="hidden" id="total-venda" value="<?php echo number_format($total, 2, '.', ''); ?>">
-                                            </td>
+                                            <td style="text-align: right"><strong>R$: <?php echo number_format($total, 2, '.', ''); ?></strong><input type="hidden" id="total-venda" value="<?php echo number_format($total, 2, '.', ''); ?>"></td>
                                         </tr>
                                         <?php if ($result->valor_desconto != 0 && $result->desconto != 0) {
                                             ?>
@@ -223,6 +194,34 @@ foreach ($produtos as $p) {
                                         } ?>
                                     </tfoot>
                                 </table>
+                            </div>
+                            <div class="span12" style="margin-left: 0; margin-top: 10px;">
+                                <form id="formDesconto" action="<?php echo base_url(); ?>index.php/vendas/adicionarDesconto" method="POST">
+                                    <input type="hidden" name="idVendas" id="idVendas" value="<?php echo $result->idVendas; ?>" />
+                                    <div style="display:flex; align-items:flex-end; gap:10px;">
+                                        <div>
+                                            <label for="">Desconto</label>
+                                            <input style="width: 6em;" id="desconto" name="desconto" type="text" placeholder="0.00" maxlength="6" />
+                                            <strong><span style="color: red" id="errorAlert"></span></strong>
+                                        </div>
+                                        <div>
+                                            <label for="">Tipo</label>
+                                            <select style="width: 5em;" name="tipoDesconto" id="tipoDesconto">
+                                                <option value="real">R$</option>
+                                                <option value="porcento" <?=$result->tipo_desconto == "porcento" ? "selected" : "" ?>>%</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label for="">Total com Desconto</label>
+                                            <input class="money" id="resultado" type="text" data-affixes-stay="true" data-thousands="" data-decimal="." name="resultado" value="" readonly style="width:9em;" />
+                                        </div>
+                                        <div>
+                                            <button class="button btn btn-success" id="btnAdicionarDesconto">
+                                                <span class="button__icon"><i class='bx bx-plus-circle'></i></span><span class="button__text2">Aplicar</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                         <div class="tab-pane" id="tab3">
