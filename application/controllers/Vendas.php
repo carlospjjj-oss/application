@@ -476,7 +476,7 @@ class Vendas extends MY_Controller
                 $this->db->update('vendas');
 
                 // Registra a ação nos logs com o ID da venda
-                log_info('Adicionou produto à venda com ID: ' . $idVenda);
+                log_info('Adicionou produto à venda com ID: ' . $idVenda . ' | Preço: ' . $preco . ' | Qtd: ' . $quantidade . ' | Margem: ' . $margem . '% | SubTotal: ' . number_format($subtotal, 2, '.', ''));
 
                 echo json_encode(['result' => true]);
             } else {
@@ -554,6 +554,8 @@ class Vendas extends MY_Controller
 
         $this->db->where('idItens', $idItem);
         $this->db->update('itens_de_vendas', ['margem' => $margem, 'subTotal' => $subTotal]);
+
+        log_info('Atualizou margem inline | Item: ' . $idItem . ' | Margem: ' . $margem . '% | SubTotal: ' . number_format($subTotal, 2, '.', ''));
 
         echo json_encode(['result' => true]);
     }
