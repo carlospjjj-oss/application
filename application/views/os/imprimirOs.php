@@ -96,24 +96,6 @@ $totalProdutos = 0;
                     </div>
                 </div>
 
-                <?php if ($result->descricaoProduto) : ?>
-                    <div class="subtitle">DESCRIÇÃO</div>
-                    <div class="dados">
-                        <div style="text-align: justify;">
-                            <?= printSafeHtml($result->descricaoProduto) ?>
-                        </div>
-                    </div>
-                <?php endif; ?>
-
-                <?php if ($result->defeito) : ?>
-                    <div class="subtitle">DEFEITO APRESENTADO</div>
-                    <div class="dados">
-                        <div style="text-align: justify;">
-                            <?= printSafeHtml($result->defeito) ?>
-                        </div>
-                    </div>
-                <?php endif; ?>
-
                 <?php if ($result->observacoes) : ?>
                     <div class="subtitle">OBSERVAÇÕES</div>
                     <div class="dados">
@@ -152,12 +134,14 @@ $totalProdutos = 0;
                             </thead>
                             <tbody>
                                 <?php foreach ($produtos as $p) :
-                                    $totalProdutos = $totalProdutos + $p->subTotal;
+                                    $precoReal = floatval($p->precoVenda);
+                                    $subtotalReal = $precoReal * $p->quantidade;
+                                    $totalProdutos = $totalProdutos + $subtotalReal;
                                     echo '<tr>';
                                     echo '  <td>' . $p->descricao . '</td>';
                                     echo '  <td class="text-center">' . $p->quantidade . '</td>';
-                                    echo '  <td class="text-center">' . number_format($p->preco ?: $p->precoVenda, 2, ',', '.') . '</td>';
-                                    echo '  <td class="text-end">R$ ' . number_format($p->subTotal, 2, ',', '.') . '</td>';
+                                    echo '  <td class="text-center">R$ ' . number_format($precoReal, 2, ',', '.') . '</td>';
+                                    echo '  <td class="text-end">R$ ' . number_format($subtotalReal, 2, ',', '.') . '</td>';
                                     echo '</tr>';
                                 endforeach; ?>
                                 <tr>
@@ -226,25 +210,10 @@ $totalProdutos = 0;
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php if ($result->valor_desconto != 0) : ?>
-                                            <tr>
-                                                <td width="65%">SUBTOTAL</td>
-                                                <td>R$ <b><?= number_format($totalProdutos + $totalServico, 2, ',', '.') ?></b></td>
-                                            </tr>
-                                            <tr>
-                                                <td>DESCONTO</td>
-                                                <td>R$ <b><?= number_format($result->valor_desconto != 0 ? $result->valor_desconto - ($totalProdutos + $totalServico) : 0.00, 2, ',', '.') ?></b></td>
-                                            </tr>
-                                            <tr>
-                                                <td>TOTAL</td>
-                                                <td>R$ <?= number_format($result->valor_desconto, 2, ',', '.') ?></td>
-                                            </tr>
-                                        <?php else : ?>
-                                            <tr>
-                                                <td style="width:290px">TOTAL</td>
-                                                <td>R$ <?= number_format($totalProdutos + $totalServico, 2, ',', '.') ?></td>
-                                            </tr>
-                                        <?php endif; ?>
+                                        <tr>
+                                            <td style="width:290px">TOTAL</td>
+                                            <td>R$ <?= number_format($totalProdutos + $totalServico, 2, ',', '.') ?></td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -351,24 +320,6 @@ $totalProdutos = 0; ?>
                         </div>
                     </div>
 
-                    <?php if ($result->descricaoProduto) : ?>
-                        <div class="subtitle">DESCRIÇÃO</div>
-                        <div class="dados">
-                            <div>
-                                <?= printSafeHtml($result->descricaoProduto) ?>
-                            </div>
-                        </div>
-                    <?php endif; ?>
-
-                    <?php if ($result->defeito) : ?>
-                        <div class="subtitle">DEFEITO APRESENTADO</div>
-                        <div class="dados">
-                            <div>
-                                <?= printSafeHtml($result->defeito) ?>
-                            </div>
-                        </div>
-                    <?php endif; ?>
-
                     <?php if ($result->observacoes) : ?>
                         <div class="subtitle">OBSERVAÇÕES</div>
                         <div class="dados">
@@ -407,12 +358,14 @@ $totalProdutos = 0; ?>
                                 </thead>
                                 <tbody>
                                     <?php foreach ($produtos as $p) :
-                                        $totalProdutos = $totalProdutos + $p->subTotal;
+                                        $precoReal = floatval($p->precoVenda);
+                                        $subtotalReal = $precoReal * $p->quantidade;
+                                        $totalProdutos = $totalProdutos + $subtotalReal;
                                         echo '<tr>';
                                         echo '  <td>' . $p->descricao . '</td>';
                                         echo '  <td class="text-center">' . $p->quantidade . '</td>';
-                                        echo '  <td class="text-center">' . number_format($p->preco ?: $p->precoVenda, 2, ',', '.') . '</td>';
-                                        echo '  <td class="text-end">R$ ' . number_format($p->subTotal, 2, ',', '.') . '</td>';
+                                        echo '  <td class="text-center">R$ ' . number_format($precoReal, 2, ',', '.') . '</td>';
+                                        echo '  <td class="text-end">R$ ' . number_format($subtotalReal, 2, ',', '.') . '</td>';
                                         echo '</tr>';
                                     endforeach; ?>
                                     <tr>
@@ -481,25 +434,10 @@ $totalProdutos = 0; ?>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <?php if ($result->valor_desconto != 0) : ?>
-                                                <tr>
-                                                    <td width="65%">SUBTOTAL</td>
-                                                    <td>R$ <b><?= number_format($totalProdutos + $totalServico, 2, ',', '.') ?></b></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>DESCONTO</td>
-                                                    <td>R$ <b><?= number_format($result->valor_desconto != 0 ? $result->valor_desconto - ($totalProdutos + $totalServico) : 0.00, 2, ',', '.') ?></b></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>TOTAL</td>
-                                                    <td>R$ <?= number_format($result->valor_desconto, 2, ',', '.') ?></td>
-                                                </tr>
-                                            <?php else : ?>
-                                                <tr>
-                                                    <td style="width:290px">TOTAL</td>
-                                                    <td>R$ <?= number_format($totalProdutos + $totalServico, 2, ',', '.') ?></td>
-                                                </tr>
-                                            <?php endif; ?>
+                                            <tr>
+                                                <td style="width:290px">TOTAL</td>
+                                                <td>R$ <?= number_format($totalProdutos + $totalServico, 2, ',', '.') ?></td>
+                                            </tr>
                                         </tbody>
                                     </table>
                                 </div>

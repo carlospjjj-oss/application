@@ -61,7 +61,6 @@
                 <div class="span12" id="divProdutosServicos" style=" margin-left: 0">
                     <ul class="nav nav-tabs">
                         <li class="active" id="tabDetalhes"><a href="#tab1" data-toggle="tab">Detalhes da OS</a></li>
-                        <li id="tabDesconto"><a href="#tab2" data-toggle="tab">Desconto</a></li>
                         <li id="tabProdutos"><a href="#tab3" data-toggle="tab">Produtos</a></li>
                         <li id="tabServicos"><a href="#tab4" data-toggle="tab">Serviços</a></li>
                         <li id="tabAnexos"><a href="#tab5" data-toggle="tab">Anexos</a></li>
@@ -136,14 +135,8 @@
                                             <input id="garantias_id" class="span12" type="hidden" name="garantias_id" value="<?php echo $result->garantias_id ?>" />
                                         </div>
                                     </div>
-                                    <div class="span6" style="padding: 1%; margin-left: 0">
-                                        <label for="descricaoProduto"><h4>Descrição Produto/Serviço</h4></label>
-                                        <textarea class="span12 editor" name="descricaoProduto" id="descricaoProduto" cols="30" rows="5"><?php echo $result->descricaoProduto ?></textarea>
-                                    </div>
-                                    <div class="span6" style="padding: 1%; margin-left: 0">
-                                        <label for="defeito"><h4>Defeito</h4></label>
-                                        <textarea class="span12 editor" name="defeito" id="defeito" cols="30" rows="5"><?php echo $result->defeito ?></textarea>
-                                    </div>
+                                    <input type="hidden" name="descricaoProduto" value="<?php echo htmlspecialchars($result->descricaoProduto) ?>">
+                                    <input type="hidden" name="defeito" value="<?php echo htmlspecialchars($result->defeito) ?>">
                                     <div class="span6" style="padding: 1%; margin-left: 0">
                                         <label for="observacoes"><h4>Observações</h4></label>
                                         <textarea class="span12 editor" name="observacoes" id="observacoes" cols="30" rows="5"><?php echo $result->observacoes ?></textarea>
@@ -313,13 +306,15 @@ foreach ($servicos as $s) {
                                             <?php
                     $total = 0;
 foreach ($produtos as $p) {
-    $total = $total + $p->subTotal;
+    $precoReal = floatval($p->precoVenda);
+    $subtotalReal = $precoReal * $p->quantidade;
+    $total = $total + $subtotalReal;
     echo '<tr>';
     echo '<td>' . $p->descricao . '</td>';
     echo '<td><div align="center">' . $p->quantidade . '</td>';
-    echo '<td><div align="center">R$: ' . ($p->preco ?: $p->precoVenda) . '</td>';
+    echo '<td><div align="center">R$: ' . number_format($precoReal, 2, ',', '.') . '</td>';
     echo (strtolower($result->status) != "cancelado") ? '<td><div align="center"><a href="" idAcao="' . $p->idProdutos_os . '" prodAcao="' . $p->idProdutos . '" quantAcao="' . $p->quantidade . '" title="Excluir Produto" class="btn-nwe4"><i class="bx bx-trash-alt"></i></a></td>' : '<td></td>';
-    echo '<td><div align="center">R$: ' . number_format($p->subTotal, 2, ',', '.') . '</td>';
+    echo '<td><div align="center">R$: ' . number_format($subtotalReal, 2, ',', '.') . '</td>';
     echo '</tr>';
 } ?>
                                         </tbody>
