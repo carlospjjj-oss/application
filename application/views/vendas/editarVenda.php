@@ -760,13 +760,16 @@ foreach ($produtos as $p) {
             dataType: 'json',
             success: function(data) {
                 if (data.result) {
-                    window.location.reload(true);
+                    Swal.fire({ icon: 'success', title: 'Sucesso', text: 'Desconto adicionado com sucesso!' });
+                    $("#divServicos").load("<?php echo current_url(); ?> #divServicos");
+                    $("#descontoServico").val('');
+                    $("#resultadoServico").val('');
                 } else {
-                    alert('Erro ao aplicar desconto: ' + (data.messages || ''));
+                    Swal.fire({ icon: 'error', title: 'Atenção', text: data.messages || 'Erro ao aplicar desconto.' });
                 }
             },
             error: function(xhr) {
-                alert('Erro: ' + xhr.status + ' - ' + xhr.responseText);
+                Swal.fire({ icon: 'error', title: 'Erro', text: 'Servidor retornou: ' + xhr.status + ' - ' + xhr.responseText });
             }
         });
     });
