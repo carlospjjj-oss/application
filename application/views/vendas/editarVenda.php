@@ -698,7 +698,9 @@ foreach ($produtos as $p) {
 
     $(document).off('click', '#btnAdicionarDesconto').on('click', '#btnAdicionarDesconto', function(e) {
         e.preventDefault();
+        console.log('[DESCONTO] botao clicado');
         var desconto = $("#desconto").val();
+        console.log('[DESCONTO] desconto=', desconto, 'idVendas=', $("#idVendas").val());
         var resultado = $("#resultado").val();
         var tipoDesconto = $("#tipoDesconto").val();
         var idVendas = $("#idVendas").val();
