@@ -449,82 +449,56 @@ foreach ($produtos as $p) {
                                         $valEntrega = isset($result->cond_entrega_serv) ? floatval($result->cond_entrega_serv) : 0;
                                         $valPix = isset($result->cond_pix) ? floatval($result->cond_pix) : 0;
                                         ?>
-                                        <table class="table" style="margin-bottom:8px;">
-                                            <thead>
-                                                <tr style="background:#f5f5f5;">
-                                                    <th style="width:40px;"></th>
-                                                    <th>Condição</th>
-                                                    <th style="width:80px; text-align:center;">%</th>
-                                                    <th style="width:160px; text-align:center;">Valor R$</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td style="vertical-align:middle;">
-                                                        <input type="checkbox" id="chkAceite" <?php echo $valAceite > 0 ? 'checked' : '' ?> />
-                                                    </td>
-                                                    <td style="vertical-align:middle;">Condição Especial - Pagamento no Aceite</td>
-                                                    <td>
-                                                        <div id="wrapAceite" style="<?php echo $valAceite > 0 ? '' : 'display:none;' ?>">
-                                                            <input type="number" id="condAceitePct" min="0" max="100" step="0.01" placeholder="%" value="<?php echo $pctAceite > 0 ? $pctAceite : '' ?>" style="width:70px;" />
-                                                            <span>%</span>
-                                                        </div>
-                                                    </td>
-                                                    <td style="text-align:right; vertical-align:middle;">
-                                                        <strong id="condAceiteLabel" style="color:#2f2b53;"><?php echo $valAceite > 0 ? 'R$ '.number_format($valAceite,2,',','.') : '' ?></strong>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td style="vertical-align:middle;">
-                                                        <input type="checkbox" id="chkEntregaServ" <?php echo $valEntrega > 0 ? 'checked' : '' ?> />
-                                                    </td>
-                                                    <td style="vertical-align:middle;">Condição Especial - Pagamento na Entrega dos Serviços</td>
-                                                    <td>
-                                                        <div id="wrapEntregaServ" style="<?php echo $valEntrega > 0 ? '' : 'display:none;' ?>">
-                                                            <input type="number" id="condEntregaServPct" min="0" max="100" step="0.01" placeholder="%" value="<?php echo $pctEntrega > 0 ? $pctEntrega : '' ?>" style="width:70px;" />
-                                                            <span>%</span>
-                                                        </div>
-                                                    </td>
-                                                    <td style="text-align:right; vertical-align:middle;">
-                                                        <strong id="condEntregaServLabel" style="color:#2f2b53;"><?php echo $valEntrega > 0 ? 'R$ '.number_format($valEntrega,2,',','.') : '' ?></strong>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td style="vertical-align:middle;">
-                                                        <input type="checkbox" id="chkPix" <?php echo $valPix > 0 ? 'checked' : '' ?> />
-                                                    </td>
-                                                    <td style="vertical-align:middle;">Condição Especial - Pagamento PIX</td>
-                                                    <td>
-                                                        <div id="wrapPix" style="<?php echo $valPix > 0 ? '' : 'display:none;' ?>">
-                                                            <input type="number" id="condPixPct" min="0" max="100" step="0.01" placeholder="%" value="<?php echo $pctPix > 0 ? $pctPix : '' ?>" style="width:70px;" />
-                                                            <span>%</span>
-                                                        </div>
-                                                    </td>
-                                                    <td style="text-align:right; vertical-align:middle;">
-                                                        <strong id="condPixLabel" style="color:#2f2b53;"><?php echo $valPix > 0 ? 'R$ '.number_format($valPix,2,',','.') : '' ?></strong>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td style="vertical-align:middle;">
-                                                        <input type="checkbox" id="chkParcelado" <?php echo $result->cond_parcelado > 0 ? 'checked' : '' ?> />
-                                                    </td>
-                                                    <td style="vertical-align:middle;">Condição Especial - Pagamento em
-                                                        <input type="number" id="condParcelas" min="1" max="24" value="<?php echo $result->cond_parcelas > 0 ? $result->cond_parcelas : '' ?>" placeholder="Nº" style="width:48px; display:inline-block;" />
-                                                        x Sem Juros
-                                                    </td>
-                                                    <td></td>
-                                                    <td style="text-align:right; vertical-align:middle;">
-                                                        <div id="wrapParcelado" style="<?php echo $result->cond_parcelado > 0 ? '' : 'display:none;' ?>">
-                                                            <div style="display:flex; align-items:center; gap:4px; justify-content:flex-end;">
-                                                                <span>R$</span>
-                                                                <input type="text" id="condParcelado" placeholder="0,00" value="<?php echo $result->cond_parcelado > 0 ? number_format($result->cond_parcelado,2,',','.') : '' ?>" style="width:100px;" />
-                                                            </div>
-                                                            <small id="condParceladoLabel" style="color:#2f2b53; font-weight:bold; display:block; margin-top:3px; text-align:right;"></small>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
+                                        <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:12px;">
+
+                                            <?php // Linha Aceite ?>
+                                            <div style="display:flex; align-items:center; gap:12px; padding:8px 10px; background:#fff; border:1px solid #e0e0e0; border-radius:4px;">
+                                                <input type="checkbox" id="chkAceite" <?php echo $valAceite > 0 ? 'checked' : '' ?> style="margin:0;" />
+                                                <span style="flex:1;">Condição Especial - Pagamento no Aceite</span>
+                                                <div id="wrapAceite" style="display:flex; align-items:center; gap:4px; <?php echo $valAceite > 0 ? '' : 'visibility:hidden;' ?>">
+                                                    <input type="number" id="condAceitePct" min="0" max="100" step="0.01" placeholder="0" value="<?php echo $pctAceite > 0 ? $pctAceite : '' ?>" style="width:60px; text-align:right;" />
+                                                    <span style="color:#666;">%</span>
+                                                </div>
+                                                <strong id="condAceiteLabel" style="color:#2f2b53; min-width:110px; text-align:right;"><?php echo $valAceite > 0 ? 'R$ '.number_format($valAceite,2,',','.') : '' ?></strong>
+                                            </div>
+
+                                            <?php // Linha Entrega Serviços ?>
+                                            <div style="display:flex; align-items:center; gap:12px; padding:8px 10px; background:#fff; border:1px solid #e0e0e0; border-radius:4px;">
+                                                <input type="checkbox" id="chkEntregaServ" <?php echo $valEntrega > 0 ? 'checked' : '' ?> style="margin:0;" />
+                                                <span style="flex:1;">Condição Especial - Pagamento na Entrega dos Serviços</span>
+                                                <div id="wrapEntregaServ" style="display:flex; align-items:center; gap:4px; <?php echo $valEntrega > 0 ? '' : 'visibility:hidden;' ?>">
+                                                    <input type="number" id="condEntregaServPct" min="0" max="100" step="0.01" placeholder="0" value="<?php echo $pctEntrega > 0 ? $pctEntrega : '' ?>" style="width:60px; text-align:right;" />
+                                                    <span style="color:#666;">%</span>
+                                                </div>
+                                                <strong id="condEntregaServLabel" style="color:#2f2b53; min-width:110px; text-align:right;"><?php echo $valEntrega > 0 ? 'R$ '.number_format($valEntrega,2,',','.') : '' ?></strong>
+                                            </div>
+
+                                            <?php // Linha PIX ?>
+                                            <div style="display:flex; align-items:center; gap:12px; padding:8px 10px; background:#fff; border:1px solid #e0e0e0; border-radius:4px;">
+                                                <input type="checkbox" id="chkPix" <?php echo $valPix > 0 ? 'checked' : '' ?> style="margin:0;" />
+                                                <span style="flex:1;">Condição Especial - Pagamento PIX <small style="color:#888;">(% de desconto)</small></span>
+                                                <div id="wrapPix" style="display:flex; align-items:center; gap:4px; <?php echo $valPix > 0 ? '' : 'visibility:hidden;' ?>">
+                                                    <input type="number" id="condPixPct" min="0" max="100" step="0.01" placeholder="0" value="<?php echo $pctPix > 0 ? $pctPix : '' ?>" style="width:60px; text-align:right;" />
+                                                    <span style="color:#666;">%</span>
+                                                </div>
+                                                <strong id="condPixLabel" style="color:#2f2b53; min-width:110px; text-align:right;"><?php echo $valPix > 0 ? 'R$ '.number_format($valPix,2,',','.') : '' ?></strong>
+                                            </div>
+
+                                            <?php // Linha Parcelado ?>
+                                            <div style="display:flex; align-items:center; gap:12px; padding:8px 10px; background:#fff; border:1px solid #e0e0e0; border-radius:4px;">
+                                                <input type="checkbox" id="chkParcelado" <?php echo $result->cond_parcelado > 0 ? 'checked' : '' ?> style="margin:0;" />
+                                                <span style="flex:1;">Condição Especial - Pagamento em
+                                                    <input type="number" id="condParcelas" min="1" max="24" value="<?php echo $result->cond_parcelas > 0 ? $result->cond_parcelas : '' ?>" placeholder="Nº" style="width:44px; display:inline-block; text-align:center;" />
+                                                    x Sem Juros
+                                                </span>
+                                                <div id="wrapParcelado" style="display:flex; align-items:center; gap:4px; <?php echo $result->cond_parcelado > 0 ? '' : 'visibility:hidden;' ?>">
+                                                    <span style="color:#666;">R$</span>
+                                                    <input type="text" id="condParcelado" placeholder="0,00" value="<?php echo $result->cond_parcelado > 0 ? number_format($result->cond_parcelado,2,',','.') : '' ?>" style="width:100px; text-align:right;" />
+                                                </div>
+                                                <strong id="condParceladoLabel" style="color:#2f2b53; min-width:110px; text-align:right;"></strong>
+                                            </div>
+
+                                        </div>
                                         <div style="text-align:right; margin-top:4px;">
                                             <button class="button btn btn-success" id="btnSalvarCondicoes" type="button">
                                                 <span class="button__icon"><i class='bx bx-save'></i></span><span class="button__text2">Salvar Condições</span>
