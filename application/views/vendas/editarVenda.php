@@ -23,6 +23,7 @@
                         <li class="active" id="tabDetalhes"><a href="#tab1" data-toggle="tab">Detalhes da Venda</a></li>
                         <li id="tabProdutos"><a href="#tab2" data-toggle="tab">Produtos</a></li>
                         <li id="tabServicos"><a href="#tab3" data-toggle="tab">Serviços</a></li>
+                        <li id="tabTotal"><a href="#tab4" data-toggle="tab"><strong>Total</strong></a></li>
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane active" id="tab1">
@@ -337,6 +338,99 @@ foreach ($produtos as $p) {
                                 </form>
                             </div>
                         </div>
+
+                        <!-- Aba Total -->
+                        <div class="tab-pane" id="tab4">
+                            <div class="span12" style="margin-left: 0; padding: 10px 0;">
+                                <?php
+                                // Calcular totais de produtos
+                                $totalProdutos = 0;
+                                foreach ($produtos as $p) {
+                                    $precoP = $p->preco ?: $p->precoVenda;
+                                    $margemP = isset($p->margem) ? floatval($p->margem) : 0;
+                                    $totalProdutos += isset($p->subTotal) && $p->subTotal > 0 ? $p->subTotal : ($precoP * $p->quantidade * (1 + $margemP / 100));
+                                }
+                                // Calcular totais de serviços
+                                $totalServicosGeral = 0;
+                                if (!empty($servicos)) {
+                                    foreach ($servicos as $s) {
+                                        $precoSG = $s->preco ?? 0;
+                                        $margemSG = isset($s->margem) ? floatval($s->margem) : 0;
+                                        $totalServicosGeral += isset($s->subTotal) && $s->subTotal > 0 ? $s->subTotal : ($precoSG * $s->quantidade * (1 + $margemSG / 100));
+                                    }
+                                }
+                                $totalGeral = $totalProdutos + $totalServicosGeral;
+                                // Descontos
+                                $descontoProd = isset($result->desconto) ? floatval($result->desconto) : 0;
+                                $tipoProd = isset($result->tipo_desconto) ? $result->tipo_desconto : 'real';
+                                $valorDescontoProd = isset($result->valor_desconto) ? floatval($result->valor_desconto) : 0;
+                                $descontoServ = isset($result->desconto_servico) ? floatval($result->desconto_servico) : 0;
+                                $tipoServ = isset($result->tipo_desconto_servico) ? $result->tipo_desconto_servico : 'real';
+                                $valorDescontoServ = isset($result->valor_desconto_servico) ? floatval($result->valor_desconto_servico) : 0;
+                                // Total final considerando descontos
+                                $totalFinalProd = $valorDescontoProd > 0 ? $valorDescontoProd : $totalProdutos;
+                                $totalFinalServ = $valorDescontoServ > 0 ? $valorDescontoServ : $totalServicosGeral;
+                                $totalFinal = $totalFinalProd + $totalFinalServ;
+                                ?>
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr style="background:#f5f5f5;">
+                                            <th>Descrição</th>
+                                            <th width="15%" style="text-align:right;">Valor</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach ($produtos as $p):
+                                            $precoP = $p->preco ?: $p->precoVenda;
+                                            $margemP = isset($p->margem) ? floatval($p->margem) : 0;
+                                            $subP = isset($p->subTotal) && $p->subTotal > 0 ? $p->subTotal : ($precoP * $p->quantidade * (1 + $margemP / 100));
+                                        ?>
+                                        <tr>
+                                            <td><?php echo $p->descricao ?> <small style="color:#888;">(<?php echo $p->quantidade ?>x · <?php echo $margemP > 0 ? $margemP.'% margem' : 'sem margem' ?>)</small></td>
+                                            <td style="text-align:right;">R$ <?php echo number_format($subP, 2, ',', '.') ?></td>
+                                        </tr>
+                                        <?php endforeach; ?>
+                                        <?php if (!empty($servicos)): foreach ($servicos as $s):
+                                            $precoSG = $s->preco ?? 0;
+                                            $margemSG = isset($s->margem) ? floatval($s->margem) : 0;
+                                            $subSG = isset($s->subTotal) && $s->subTotal > 0 ? $s->subTotal : ($precoSG * $s->quantidade * (1 + $margemSG / 100));
+                                        ?>
+                                        <tr>
+                                            <td><?php echo $s->nome ?> <small style="color:#888;">(<?php echo $s->quantidade ?>x · <?php echo $margemSG > 0 ? $margemSG.'% margem' : 'sem margem' ?>)</small></td>
+                                            <td style="text-align:right;">R$ <?php echo number_format($subSG, 2, ',', '.') ?></td>
+                                        </tr>
+                                        <?php endforeach; endif; ?>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr style="background:#f9f9f9;">
+                                            <td style="text-align:right;"><strong>Subtotal Materiais/Produtos</strong></td>
+                                            <td style="text-align:right;"><strong>R$ <?php echo number_format($totalProdutos, 2, ',', '.') ?></strong></td>
+                                        </tr>
+                                        <?php if ($descontoProd > 0): ?>
+                                        <tr>
+                                            <td style="text-align:right; color:#c0392b;">Desconto Produtos (<?php echo $tipoProd == 'real' ? 'R$ '.number_format($descontoProd,2,',','.') : number_format($descontoProd,2,',','.').'%' ?>)</td>
+                                            <td style="text-align:right; color:#c0392b;">- R$ <?php echo number_format($totalProdutos - $valorDescontoProd, 2, ',', '.') ?></td>
+                                        </tr>
+                                        <?php endif; ?>
+                                        <tr style="background:#f9f9f9;">
+                                            <td style="text-align:right;"><strong>Subtotal Serviços</strong></td>
+                                            <td style="text-align:right;"><strong>R$ <?php echo number_format($totalServicosGeral, 2, ',', '.') ?></strong></td>
+                                        </tr>
+                                        <?php if ($descontoServ > 0): ?>
+                                        <tr>
+                                            <td style="text-align:right; color:#c0392b;">Desconto Serviços (<?php echo $tipoServ == 'real' ? 'R$ '.number_format($descontoServ,2,',','.') : number_format($descontoServ,2,',','.').'%' ?>)</td>
+                                            <td style="text-align:right; color:#c0392b;">- R$ <?php echo number_format($totalServicosGeral - $valorDescontoServ, 2, ',', '.') ?></td>
+                                        </tr>
+                                        <?php endif; ?>
+                                        <tr style="background:#2f2b53; color:#fff;">
+                                            <td style="text-align:right; font-size:1.1em;"><strong>Total Geral Materiais e Serviços</strong></td>
+                                            <td style="text-align:right; font-size:1.2em;"><strong>R$ <?php echo number_format($totalFinal, 2, ',', '.') ?></strong></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
                 &nbsp
