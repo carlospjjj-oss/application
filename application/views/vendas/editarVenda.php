@@ -690,7 +690,34 @@ foreach ($produtos as $p) {
 
     $("#btnAdicionarDesconto").on("click", function(e) {
         e.preventDefault();
-        $('#formDesconto').trigger('submit');
+        var desconto = $("#desconto").val();
+        var resultado = $("#resultado").val();
+        var tipoDesconto = $("#tipoDesconto").val();
+        var idVendas = $("#idVendas").val();
+        if (!desconto || parseFloat(desconto) <= 0) {
+            alert('Informe um valor de desconto.');
+            return;
+        }
+        Swal.fire({ title: 'Processando', text: 'Registrando desconto...', icon: 'info', showConfirmButton: false, allowOutsideClick: false });
+        $.ajax({
+            url: "<?php echo base_url(); ?>index.php/vendas/adicionarDesconto",
+            type: 'POST',
+            data: { idVendas: idVendas, desconto: desconto, tipoDesconto: tipoDesconto, resultado: resultado },
+            dataType: 'json',
+            success: function(response) {
+                if (response.result) {
+                    Swal.fire({ type: 'success', title: 'Sucesso', text: response.messages });
+                    $("#divProdutos").load("<?php echo current_url(); ?> #divProdutos");
+                    $("#desconto").val('');
+                    $("#resultado").val('');
+                } else {
+                    Swal.fire({ type: 'error', title: 'Atenção', text: response.messages });
+                }
+            },
+            error: function() {
+                Swal.fire({ type: 'error', title: 'Erro', text: 'Erro ao comunicar com o servidor.' });
+            }
+        });
     });
 
     $("#btnAdicionarDescontoServico").on("click", function(e) {
