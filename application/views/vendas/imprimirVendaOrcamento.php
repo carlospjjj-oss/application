@@ -20,18 +20,20 @@ $totalProdutos = 0;
                         Você precisa configurar os dados do emitente. >>> <a href="<?=base_url()?>index.php/mapos/emitente">Configurar</a>
                     </div>
                 <?php else : ?>
-                    <div class="imgLogo" style="display:flex;align-items:center;">
-                        <img src="<?= $emitente->url_logo ?>" class="img-fluid" style="width:70px;height:70px;object-fit:contain;">
-                    </div>
-                    <div class="emitente">
-                        <span style="font-size: 16px;"><b><?= $emitente->nome ?></b></span><br>
-                        <?php if ($emitente->cnpj != "00.000.000/0000-00") : ?>
-                            <span class="align-middle">CNPJ: <?= $emitente->cnpj ?></span><br>
-                        <?php endif; ?>
-                        <span class="align-middle">
-                            <?= $emitente->rua.', '.$emitente->numero.', '.$emitente->bairro ?><br>
-                            <?= $emitente->cidade.' - '.$emitente->uf.' - '.$emitente->cep ?>
-                        </span>
+                    <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0;">
+                        <div class="imgLogo">
+                            <img src="<?= $emitente->url_logo ?>" style="width:60px;height:60px;object-fit:contain;display:block;">
+                        </div>
+                        <div class="emitente">
+                            <span style="font-size: 15px;"><b><?= $emitente->nome ?></b></span><br>
+                            <?php if ($emitente->cnpj != "00.000.000/0000-00") : ?>
+                                <span>CNPJ: <?= $emitente->cnpj ?></span><br>
+                            <?php endif; ?>
+                            <span>
+                                <?= $emitente->rua.', '.$emitente->numero.', '.$emitente->bairro ?><br>
+                                <?= $emitente->cidade.' - '.$emitente->uf.' - '.$emitente->cep ?>
+                            </span>
+                        </div>
                     </div>
                     <div class="contatoEmitente">
                         <span style="font-weight: bold;">Tel: <?= $emitente->telefone ?></span><br>
