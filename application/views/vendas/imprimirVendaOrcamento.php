@@ -21,7 +21,7 @@ $totalProdutos = 0;
                     </div>
                 <?php else : ?>
                     <div class="imgLogo" style="display:flex;align-items:center;">
-                        <img src="<?= base_url() ?>assets/img/logo-proton.png" class="img-fluid" style="width:90px;height:90px;object-fit:contain;">
+                        <img src="<?= $emitente->url_logo ?>" class="img-fluid" style="width:70px;height:70px;object-fit:contain;">
                     </div>
                     <div class="emitente">
                         <span style="font-size: 16px;"><b><?= $emitente->nome ?></b></span><br>
