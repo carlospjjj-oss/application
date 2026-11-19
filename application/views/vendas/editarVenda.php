@@ -1045,6 +1045,10 @@ foreach ($produtos as $p) {
                 }
             }
         });
+        $('#btnContinuar').on('click', function() {
+            $("#formVendas").submit();
+        });
+
         $("#formVendas").validate({
             rules: {
                 cliente: {
