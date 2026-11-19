@@ -725,6 +725,30 @@ class Vendas extends MY_Controller
         }
     }
 
+    public function salvarCondicoesPagamento()
+    {
+        $idVendas = $this->input->post('idVendas');
+        if (!$idVendas) {
+            echo json_encode(['result' => false, 'messages' => 'ID inválido']);
+            return;
+        }
+
+        $data = [
+            'cond_aceite'       => floatval(str_replace(',', '.', $this->input->post('cond_aceite'))),
+            'cond_entrega_serv' => floatval(str_replace(',', '.', $this->input->post('cond_entrega_serv'))),
+            'cond_pix'          => floatval(str_replace(',', '.', $this->input->post('cond_pix'))),
+            'cond_parcelado'    => floatval(str_replace(',', '.', $this->input->post('cond_parcelado'))),
+            'cond_parcelas'     => intval($this->input->post('cond_parcelas')) ?: 5,
+        ];
+
+        if ($this->vendas_model->edit('vendas', $data, 'idVendas', $idVendas)) {
+            log_info('Condições de pagamento salvas na Venda ID: ' . $idVendas);
+            echo json_encode(['result' => true]);
+        } else {
+            echo json_encode(['result' => false, 'messages' => 'Erro ao salvar']);
+        }
+    }
+
     public function faturar()
     {
         if (!$this->permission->checkPermission($this->session->userdata('permissao'), 'eVenda')) {

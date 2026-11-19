@@ -315,7 +315,7 @@ foreach ($produtos as $p) {
                                 </table>
                             </div>
                             <div class="span12" style="margin-left: 0; margin-top: 10px;">
-                                <form id="formDescontoServico" action="<?php echo base_url(); ?>index.php/vendas/adicionarDescontoServico" method="POST">
+                                <form id="formDescontoServico" action="<?php echo base_url(); ?>index.php/vendas/adicionarDescontoServico" method="POST" onsubmit="return false;">
                                     <input type="hidden" name="idVendasDesc" id="idVendasDescServico" value="<?php echo $result->idVendas; ?>" />
                                     <div style="display:flex; align-items:flex-end; gap:10px; justify-content:flex-end;">
                                         <div>
@@ -432,6 +432,85 @@ foreach ($produtos as $p) {
                                         </tr>
                                     </tfoot>
                                 </table>
+
+                                <!-- Condições de Pagamento -->
+                                <div style="margin-top:18px; border:1px solid #ddd; border-radius:6px; padding:16px; background:#fafafa;">
+                                    <h4 style="margin:0 0 14px 0; color:#2f2b53; font-size:1em; border-bottom:2px solid #2f2b53; padding-bottom:6px;">Condições de Pagamento</h4>
+                                    <form id="formCondicoesPagamento" onsubmit="return false;">
+                                        <input type="hidden" id="condVendasId" value="<?php echo $result->idVendas; ?>" />
+                                        <table class="table" style="margin-bottom:8px;">
+                                            <tbody>
+                                                <tr>
+                                                    <td style="vertical-align:middle; width:40px;">
+                                                        <input type="checkbox" id="chkAceite" <?php echo $result->cond_aceite > 0 ? 'checked' : '' ?> />
+                                                    </td>
+                                                    <td style="vertical-align:middle;">Condição Especial - Pagamento no Aceite</td>
+                                                    <td style="width:160px;">
+                                                        <div class="cond-valor-wrap" id="wrapAceite" style="<?php echo $result->cond_aceite > 0 ? '' : 'display:none;' ?>">
+                                                            <div style="display:flex; align-items:center; gap:4px;">
+                                                                <span>R$</span>
+                                                                <input type="text" id="condAceite" class="cond-valor" placeholder="0,00" value="<?php echo $result->cond_aceite > 0 ? number_format($result->cond_aceite,2,',','.') : '' ?>" style="width:100px;" />
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="vertical-align:middle;">
+                                                        <input type="checkbox" id="chkEntregaServ" <?php echo $result->cond_entrega_serv > 0 ? 'checked' : '' ?> />
+                                                    </td>
+                                                    <td style="vertical-align:middle;">Condição Especial - Pagamento na Entrega dos Serviços</td>
+                                                    <td>
+                                                        <div class="cond-valor-wrap" id="wrapEntregaServ" style="<?php echo $result->cond_entrega_serv > 0 ? '' : 'display:none;' ?>">
+                                                            <div style="display:flex; align-items:center; gap:4px;">
+                                                                <span>R$</span>
+                                                                <input type="text" id="condEntregaServ" class="cond-valor" placeholder="0,00" value="<?php echo $result->cond_entrega_serv > 0 ? number_format($result->cond_entrega_serv,2,',','.') : '' ?>" style="width:100px;" />
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="vertical-align:middle;">
+                                                        <input type="checkbox" id="chkPix" <?php echo $result->cond_pix > 0 ? 'checked' : '' ?> />
+                                                    </td>
+                                                    <td style="vertical-align:middle;">Condição Especial - Pagamento PIX</td>
+                                                    <td>
+                                                        <div class="cond-valor-wrap" id="wrapPix" style="<?php echo $result->cond_pix > 0 ? '' : 'display:none;' ?>">
+                                                            <div style="display:flex; align-items:center; gap:4px;">
+                                                                <span>R$</span>
+                                                                <input type="text" id="condPix" class="cond-valor" placeholder="0,00" value="<?php echo $result->cond_pix > 0 ? number_format($result->cond_pix,2,',','.') : '' ?>" style="width:100px;" />
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="vertical-align:middle;">
+                                                        <input type="checkbox" id="chkParcelado" <?php echo $result->cond_parcelado > 0 ? 'checked' : '' ?> />
+                                                    </td>
+                                                    <td style="vertical-align:middle;">Condição Especial - Pagamento em
+                                                        <input type="number" id="condParcelas" min="1" max="24" value="<?php echo $result->cond_parcelas > 0 ? $result->cond_parcelas : 5 ?>" style="width:48px; display:inline-block;" />
+                                                        x Sem Juros
+                                                    </td>
+                                                    <td>
+                                                        <div class="cond-valor-wrap" id="wrapParcelado" style="<?php echo $result->cond_parcelado > 0 ? '' : 'display:none;' ?>">
+                                                            <div style="display:flex; align-items:center; gap:4px;">
+                                                                <span>R$</span>
+                                                                <input type="text" id="condParcelado" class="cond-valor" placeholder="0,00" value="<?php echo $result->cond_parcelado > 0 ? number_format($result->cond_parcelado,2,',','.') : '' ?>" style="width:100px;" />
+                                                                <small id="condParceladoLabel" style="color:#888;"></small>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <div style="text-align:right; margin-top:4px;">
+                                            <button class="button btn btn-success" id="btnSalvarCondicoes" type="button">
+                                                <span class="button__icon"><i class='bx bx-save'></i></span><span class="button__text2">Salvar Condições</span>
+                                            </button>
+                                            <span id="condMsg" style="margin-left:10px; color:green; display:none;">Salvo!</span>
+                                        </div>
+                                    </form>
+                                </div>
+
                             </div>
                         </div>
 
@@ -1104,6 +1183,55 @@ foreach ($produtos as $p) {
         $('.editor').trumbowyg({
             lang: 'pt_br',
             semantic: { 'strikethrough': 's', }
+        });
+    });
+
+    // Condições de Pagamento
+    function toggleCondWrap(chk, wrapId) {
+        if ($(chk).is(':checked')) {
+            $('#' + wrapId).show();
+        } else {
+            $('#' + wrapId).hide();
+        }
+    }
+    $('#chkAceite').on('change', function() { toggleCondWrap(this, 'wrapAceite'); });
+    $('#chkEntregaServ').on('change', function() { toggleCondWrap(this, 'wrapEntregaServ'); });
+    $('#chkPix').on('change', function() { toggleCondWrap(this, 'wrapPix'); });
+    $('#chkParcelado').on('change', function() { toggleCondWrap(this, 'wrapParcelado'); });
+
+    function atualizarParcelaLabel() {
+        var total = parseFloat($("#condParcelado").val().replace(',', '.')) || 0;
+        var parcelas = parseInt($("#condParcelas").val()) || 5;
+        if (total > 0 && parcelas > 0) {
+            $("#condParceladoLabel").text("= R$ " + (total / parcelas).toFixed(2).replace('.', ',') + "/x");
+        } else {
+            $("#condParceladoLabel").text("");
+        }
+    }
+    $('#condParcelado, #condParcelas').on('input change', atualizarParcelaLabel);
+
+    $('#btnSalvarCondicoes').on('click', function() {
+        var idVendas = $('#condVendasId').val();
+        var data = {
+            idVendas: idVendas,
+            cond_aceite:       $('#chkAceite').is(':checked') ? (parseFloat($('#condAceite').val().replace(',','.')) || 0) : 0,
+            cond_entrega_serv: $('#chkEntregaServ').is(':checked') ? (parseFloat($('#condEntregaServ').val().replace(',','.')) || 0) : 0,
+            cond_pix:          $('#chkPix').is(':checked') ? (parseFloat($('#condPix').val().replace(',','.')) || 0) : 0,
+            cond_parcelado:    $('#chkParcelado').is(':checked') ? (parseFloat($('#condParcelado').val().replace(',','.')) || 0) : 0,
+            cond_parcelas:     parseInt($('#condParcelas').val()) || 5
+        };
+        $.ajax({
+            url: "<?php echo base_url(); ?>index.php/vendas/salvarCondicoesPagamento",
+            type: 'POST',
+            data: data,
+            dataType: 'json',
+            success: function(resp) {
+                if (resp.result) {
+                    $('#condMsg').fadeIn().delay(2000).fadeOut();
+                } else {
+                    alert('Erro ao salvar: ' + (resp.messages || ''));
+                }
+            }
         });
     });
 </script>
