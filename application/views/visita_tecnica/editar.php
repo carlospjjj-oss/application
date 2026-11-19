@@ -45,7 +45,7 @@
                         <label class="control-label">Status<span class="required">*</span></label>
                         <div class="controls">
                             <select name="status" id="status" class="span4">
-                                <?php foreach (['Agendada','Realizada','Cancelada','Reagendada'] as $s): ?>
+                                <?php foreach (['Agendada','Aprovado','Realizada','Cancelada','Reagendada'] as $s): ?>
                                 <option value="<?php echo $s ?>" <?php echo $result->status == $s ? 'selected' : '' ?>><?php echo $s ?></option>
                                 <?php endforeach; ?>
                             </select>
