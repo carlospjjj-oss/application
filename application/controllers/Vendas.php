@@ -693,6 +693,38 @@ class Vendas extends MY_Controller
             ->set_output(json_encode(['result' => false, 'messages', 'Ocorreu um erro ao tentar adiciona desconto a OS.']));
     }
 
+    public function adicionarDescontoServico()
+    {
+        $idVendas = $this->input->post('idVendas');
+        $desconto = floatval(str_replace(',', '.', $this->input->post('desconto')));
+        $tipoDesconto = $this->input->post('tipoDesconto');
+        $valorDesconto = floatval($this->input->post('valor_desconto'));
+
+        if (!$idVendas || $desconto <= 0) {
+            echo json_encode(['result' => false, 'messages' => 'Dados inválidos']);
+            return;
+        }
+
+        $editavel = $this->vendas_model->isEditable($idVendas);
+        if (!$editavel) {
+            echo json_encode(['result' => false, 'messages' => 'Venda já faturada']);
+            return;
+        }
+
+        $data = [
+            'desconto_servico'       => $desconto,
+            'tipo_desconto_servico'  => $tipoDesconto,
+            'valor_desconto_servico' => $valorDesconto,
+        ];
+
+        if ($this->vendas_model->edit('vendas', $data, 'idVendas', $idVendas)) {
+            log_info('Adicionou desconto em serviços da Venda. ID: ' . $idVendas . ' | Desconto: ' . $desconto . ' | Tipo: ' . $tipoDesconto . ' | Total: ' . number_format($valorDesconto, 2, '.', ''));
+            echo json_encode(['result' => true]);
+        } else {
+            echo json_encode(['result' => false, 'messages' => 'Erro ao salvar desconto']);
+        }
+    }
+
     public function faturar()
     {
         if (!$this->permission->checkPermission($this->session->userdata('permissao'), 'eVenda')) {

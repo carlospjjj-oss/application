@@ -29,5 +29,16 @@ if ($r2->num_rows == 0) {
 $conn->query("UPDATE servicos_vendas SET subTotal = preco * quantidade WHERE subTotal = 0");
 echo "Updated existing rows subTotal\n";
 
+// Add desconto_servico columns to vendas table
+$r3 = $conn->query("SHOW COLUMNS FROM vendas LIKE 'desconto_servico'");
+if ($r3->num_rows == 0) {
+    $conn->query("ALTER TABLE vendas ADD COLUMN desconto_servico DECIMAL(10,2) NOT NULL DEFAULT 0");
+    $conn->query("ALTER TABLE vendas ADD COLUMN tipo_desconto_servico VARCHAR(10) NOT NULL DEFAULT 'real'");
+    $conn->query("ALTER TABLE vendas ADD COLUMN valor_desconto_servico DECIMAL(10,2) NOT NULL DEFAULT 0");
+    echo "Added desconto_servico columns to vendas\n";
+} else {
+    echo "desconto_servico columns already exist\n";
+}
+
 $conn->close();
 echo "Done.\n";

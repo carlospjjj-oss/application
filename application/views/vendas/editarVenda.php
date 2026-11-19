@@ -280,8 +280,8 @@ foreach ($produtos as $p) {
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <td colspan="5"><strong>Total Serviços</strong></td>
-                                            <td>
+                                            <td colspan="5" style="text-align:right"><strong>Total:</strong></td>
+                                            <td style="text-align:right; white-space:nowrap;">
                                                 <?php
                                                 $totalServicos = 0;
                                                 if (!empty($servicos)) {
@@ -292,11 +292,49 @@ foreach ($produtos as $p) {
                                                     }
                                                 }
                                                 ?>
-                                                <input type="text" id="total-servicos" value="<?php echo number_format($totalServicos,2,'.','')?>" readonly style="width:100%;font-weight:bold;background:transparent;border:none;" />
+                                                <strong>R$: <?php echo number_format($totalServicos, 2, '.', ''); ?></strong>
+                                                <input type="hidden" id="total-servicos" value="<?php echo number_format($totalServicos, 2, '.', ''); ?>">
                                             </td>
                                         </tr>
+                                        <?php if (!empty($result->desconto_servico) && $result->desconto_servico != 0): ?>
+                                        <tr>
+                                            <td colspan="5" style="text-align:right"><strong>Desconto:</strong></td>
+                                            <td style="text-align:right; white-space:nowrap;"><strong><?php echo $result->tipo_desconto_servico == "real" ? "R$ " : ""; ?><?php echo number_format($result->desconto_servico, 2, '.', ''); ?><?php echo $result->tipo_desconto_servico == "porcento" ? " %" : ""; ?></strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="5" style="text-align:right"><strong>Total Com Desconto:</strong></td>
+                                            <td style="text-align:right; white-space:nowrap;"><strong>R$: <?php echo number_format($result->valor_desconto_servico, 2, '.', ''); ?></strong></td>
+                                        </tr>
+                                        <?php endif; ?>
                                     </tfoot>
                                 </table>
+                            </div>
+                            <div class="span12" style="margin-left: 0; margin-top: 10px;">
+                                <form id="formDescontoServico" action="<?php echo base_url(); ?>index.php/vendas/adicionarDescontoServico" method="POST">
+                                    <input type="hidden" name="idVendasDesc" id="idVendasDescServico" value="<?php echo $result->idVendas; ?>" />
+                                    <div style="display:flex; align-items:flex-end; gap:10px; justify-content:flex-end;">
+                                        <div>
+                                            <label for="">Desconto</label>
+                                            <input style="width: 6em;" id="descontoServico" name="descontoServico" type="text" placeholder="0.00" maxlength="6" />
+                                        </div>
+                                        <div>
+                                            <label for="">Tipo</label>
+                                            <select style="width: 5em;" name="tipoDescontoServico" id="tipoDescontoServico">
+                                                <option value="real">R$</option>
+                                                <option value="porcento">%</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label for="">Total com Desconto</label>
+                                            <input id="resultadoServico" type="text" name="resultadoServico" value="" readonly style="width:9em;" />
+                                        </div>
+                                        <div>
+                                            <button class="button btn btn-success" id="btnAdicionarDescontoServico" type="button">
+                                                <span class="button__icon"><i class='bx bx-plus-circle'></i></span><span class="button__text2">Aplicar</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -455,6 +493,49 @@ foreach ($produtos as $p) {
             $('#resultado').val(calcDesconto(Number($("#total-venda").val()), Number($("#desconto").val().replace(',','.')), $("#tipoDesconto").val()));
             $('#resultado').val(validarDesconto(Number($('#resultado').val()), Number($("#total-venda").val())));
         }
+    });
+
+    // --- Desconto de Serviços ---
+    var valorBackupServico = $("#total-servicos").val();
+
+    $("#descontoServico").keyup(function() {
+        this.value = this.value.replace(/[^0-9.,]/g, '').replace(',', '.');
+        var total = parseFloat($("#total-servicos").val()) || 0;
+        var desc = parseFloat($(this).val()) || 0;
+        var tipo = $("#tipoDescontoServico").val();
+        var resultado = calcDesconto(total, desc, tipo);
+        $("#resultadoServico").val(resultado > 0 ? resultado.toFixed(2) : '');
+    });
+
+    $("#tipoDescontoServico").on("change", function() {
+        var total = parseFloat($("#total-servicos").val()) || 0;
+        var desc = parseFloat($("#descontoServico").val().replace(',', '.')) || 0;
+        var resultado = calcDesconto(total, desc, $(this).val());
+        $("#resultadoServico").val(resultado > 0 ? resultado.toFixed(2) : '');
+    });
+
+    $("#btnAdicionarDescontoServico").on("click", function(e) {
+        e.preventDefault();
+        var total = parseFloat($("#total-servicos").val()) || 0;
+        var desc = parseFloat($("#descontoServico").val().replace(',', '.')) || 0;
+        var tipo = $("#tipoDescontoServico").val();
+        var idVendas = $("#idVendasDescServico").val();
+        if (desc <= 0) { alert('Informe um valor de desconto.'); return; }
+        var resultado = calcDesconto(total, desc, tipo);
+        if (resultado < 0) { alert('Desconto não pode ser maior que o total.'); return; }
+        $.ajax({
+            url: "<?php echo base_url(); ?>index.php/vendas/adicionarDescontoServico",
+            type: 'POST',
+            data: { idVendas: idVendas, desconto: desc, tipoDesconto: tipo, valor_desconto: resultado },
+            dataType: 'json',
+            success: function(data) {
+                if (data.result) {
+                    window.location.reload(true);
+                } else {
+                    alert('Erro ao aplicar desconto: ' + (data.messages || ''));
+                }
+            }
+        });
     });
 
     $(document).ready(function() {
