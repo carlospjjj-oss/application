@@ -94,10 +94,6 @@
                                                 <span class="button__icon"><i class="bx bx-sync"></i></span>
                                                 <span class="button__text2">Atualizar</span>
                                             </button>
-                                            <a href="<?php echo base_url() ?>index.php/vendas/visualizar/<?php echo $result->idVendas; ?>" class="button btn btn-primary">
-                                                <span class="button__icon"><i class="bx bx-show"></i></span>
-                                                <span class="button__text2">Visualizar</span>
-                                            </a>
                                             <a href="<?php echo base_url() ?>index.php/vendas" class="button btn btn-warning">
                                                 <span class="button__icon"><i class="bx bx-undo"></i></span>
                                                 <span class="button__text2">Voltar</span>
@@ -499,10 +495,14 @@ foreach ($produtos as $p) {
                                             </div>
 
                                         </div>
-                                        <div style="text-align:right; margin-top:4px;">
+                                        <div style="text-align:right; margin-top:4px; display:flex; align-items:center; gap:8px; justify-content:flex-end;">
                                             <button class="button btn btn-success" id="btnSalvarCondicoes" type="button">
                                                 <span class="button__icon"><i class='bx bx-save'></i></span><span class="button__text2">Salvar Condições</span>
                                             </button>
+                                            <a href="<?php echo base_url() ?>index.php/vendas/visualizar/<?php echo $result->idVendas; ?>" class="button btn btn-primary">
+                                                <span class="button__icon"><i class="bx bx-show"></i></span>
+                                                <span class="button__text2">Visualizar</span>
+                                            </a>
                                             <span id="condMsg" style="margin-left:10px; color:green; display:none;">Salvo!</span>
                                         </div>
                                     </form>
