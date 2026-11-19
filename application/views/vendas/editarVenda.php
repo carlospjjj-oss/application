@@ -52,9 +52,6 @@
                                         <div class="span2">
                                             <label for="status">Status<span class="required">*</span></label>
                                             <select class="span12" name="status" id="status" value="">
-                                                <option <?= $result->status == 'Orçamento' ? 'selected' : '' ?> value="Orçamento">Orçamento</option>
-                                                <option <?= $result->status == 'Em Andamento' ? 'selected' : '' ?> value="Em Andamento">Em Andamento</option>
-                                                <option <?= $result->status == 'Aprovado' ? 'selected' : '' ?> value="Aprovado">Aprovado</option>
                                                 <option <?= $result->status == 'Finalizado' ? 'selected' : '' ?> value="Finalizado">Finalizado</option>
                                                 <option <?= $result->status == 'Cancelado' ? 'selected' : '' ?> value="Cancelado">Cancelado</option>
                                             </select>
@@ -1046,7 +1043,9 @@ foreach ($produtos as $p) {
             }
         });
         $('#btnContinuar').on('click', function() {
-            $("#formVendas").submit();
+            if ($("#formVendas").valid()) {
+                $("#formVendas")[0].submit();
+            }
         });
 
         $('#btnAdicionarProduto').on('click', function() {
