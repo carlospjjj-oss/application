@@ -794,62 +794,6 @@ foreach ($produtos as $p) {
             valor = valor.replace(',', '');
             $('#valor').val(valor);
         });
-        $('#formDesconto').submit(function(e) {
-            e.preventDefault();
-            var form = $(this);
-            $("#divProdutos").html("<div class='progress progress-info progress-striped active'><div class='bar' style='width: 100%'></div></div>");
-            $.ajax({
-                url: form.attr('action'),
-                type: form.attr('method'),
-                data: form.serialize(),
-                beforeSend: function() {
-                    Swal.fire({
-                        title: 'Processando',
-                        text: 'Registrando desconto...',
-                        icon: 'info',
-                        showCloseButton: false,
-                        showConfirmButton: false,
-                        allowOutsideClick: false,
-                        allowEscapeKey: false
-                    });
-                },
-                success: function(response) {
-                    if (response.result) {
-                        Swal.fire({
-                            type: "success",
-                            title: "Sucesso",
-                            text: response.messages
-                        });
-                        $("#divProdutos").load("<?php echo current_url(); ?> #divProdutos");
-                        $("#desconto").val("");
-                        $("#resultado").val("");
-                        /*setTimeout(function() {
-                            window.location.href = window.BaseUrl + 'index.php/vendas/editar/' + <?php echo $result->idVendas ?>;
-                        }, 2000);*/
-                    } else {
-                        Swal.fire({
-                            type: "error",
-                            title: "Atenção",
-                            text: response.messages
-                        });
-                        $("#divProdutos").load("<?php echo current_url(); ?> #divProdutos");
-                        $("#desconto").val("");
-                        $("#resultado").val("");
-                    }
-
-                },
-                error: function(response) {
-                    Swal.fire({
-                        type: "error",
-                        title: "Atenção",
-                        text: response.responseJSON.messages
-                    });
-                    $("#divProdutos").load("<?php echo current_url(); ?> #divProdutos");
-                    $("#desconto").val("");
-                    $("#resultado").val("");
-                }
-            });
-        });
         $("#formFaturar").validate({
             rules: {
                 descricao: {
