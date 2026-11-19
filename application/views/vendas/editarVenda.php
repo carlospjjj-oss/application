@@ -1177,6 +1177,12 @@ foreach ($produtos as $p) {
             lang: 'pt_br',
             semantic: { 'strikethrough': 's', }
         });
+
+        $('#formVendas').on('submit', function() {
+            $('.editor').each(function() {
+                $(this).trumbowyg('syncCode');
+            });
+        });
     });
 
     // Recarrega aba Total ao clicar nela (garante valores atualizados)
