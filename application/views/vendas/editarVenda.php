@@ -293,7 +293,7 @@ foreach ($produtos as $p) {
                                                     }
                                                 }
                                                 ?>
-                                                <strong>R$: <?php echo number_format($totalServicos, 2, '.', ''); ?></strong>
+                                                <strong id="total-servicos-label">R$: <?php echo number_format($totalServicos, 2, '.', ''); ?></strong>
                                                 <input type="hidden" id="total-servicos" value="<?php echo number_format($totalServicos, 2, '.', ''); ?>">
                                             </td>
                                         </tr>
@@ -919,6 +919,7 @@ foreach ($produtos as $p) {
                         novoTotal += val;
                     });
                     $("#total-servicos").val(novoTotal.toFixed(2));
+                    $("#total-servicos-label").text("R$: " + novoTotal.toFixed(2));
                 }
             }, 'json');
         });
