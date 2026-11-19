@@ -1235,20 +1235,20 @@ foreach ($produtos as $p) {
         $('#btnSalvarCondicoes').off('click.cond');
 
         $('#chkAceite').on('change.cond', function() {
-            if ($(this).is(':checked')) { $('#wrapAceite').show(); $('#condAceitePct').val(pctRestante('condAceitePct')); atualizarLabelAceite(); }
-            else { $('#wrapAceite').hide(); $('#condAceitePct').val(''); $('#condAceiteLabel').text(''); }
+            if ($(this).is(':checked')) { $('#wrapAceite').css('visibility','visible'); $('#condAceitePct').val(pctRestante('condAceitePct')); atualizarLabelAceite(); }
+            else { $('#wrapAceite').css('visibility','hidden'); $('#condAceitePct').val(''); $('#condAceiteLabel').text(''); }
         });
         $('#chkEntregaServ').on('change.cond', function() {
-            if ($(this).is(':checked')) { $('#wrapEntregaServ').show(); $('#condEntregaServPct').val(pctRestante('condEntregaServPct')); atualizarLabelEntrega(); }
-            else { $('#wrapEntregaServ').hide(); $('#condEntregaServPct').val(''); $('#condEntregaServLabel').text(''); }
+            if ($(this).is(':checked')) { $('#wrapEntregaServ').css('visibility','visible'); $('#condEntregaServPct').val(pctRestante('condEntregaServPct')); atualizarLabelEntrega(); }
+            else { $('#wrapEntregaServ').css('visibility','hidden'); $('#condEntregaServPct').val(''); $('#condEntregaServLabel').text(''); }
         });
         $('#chkPix').on('change.cond', function() {
-            if ($(this).is(':checked')) { $('#wrapPix').show(); $('#condPixPct').val(pctRestante('condPixPct')); atualizarLabelPix(); }
-            else { $('#wrapPix').hide(); $('#condPixPct').val(''); $('#condPixLabel').text(''); }
+            if ($(this).is(':checked')) { $('#wrapPix').css('visibility','visible'); $('#condPixPct').val(pctRestante('condPixPct')); atualizarLabelPix(); }
+            else { $('#wrapPix').css('visibility','hidden'); $('#condPixPct').val(''); $('#condPixLabel').text(''); }
         });
         $('#chkParcelado').on('change.cond', function() {
-            if ($(this).is(':checked')) { $('#wrapParcelado').show(); }
-            else { $('#wrapParcelado').hide(); $('#condParcelado').val(''); atualizarParcelaLabel(); }
+            if ($(this).is(':checked')) { $('#wrapParcelado').css('visibility','visible'); }
+            else { $('#wrapParcelado').css('visibility','hidden'); $('#condParcelado').val(''); atualizarParcelaLabel(); }
         });
 
         $('#condAceitePct').on('input.cond', atualizarLabelAceite);
