@@ -1049,6 +1049,10 @@ foreach ($produtos as $p) {
             $("#formVendas").submit();
         });
 
+        $('#btnAdicionarProduto').on('click', function() {
+            $("#formProdutos").submit();
+        });
+
         $("#formVendas").validate({
             rules: {
                 cliente: {
