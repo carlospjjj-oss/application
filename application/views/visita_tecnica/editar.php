@@ -94,7 +94,7 @@
                     </label>
                     <!-- BUG 3 CORRIGIDO: adicionado multiple para selecionar vários arquivos -->
                     <input type="file" id="inputMidia" accept=".jpg,.jpeg,.png,.mp4,.mov,.webm" style="display:none;" multiple>
-                    <input type="hidden" id="csrfMidiaToken" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
+                    <input type="hidden" id="csrfMidiaToken" value="<?= $this->security->get_csrf_hash(); ?>">
                     <span id="uploadStatus" style="margin-left:10px;"></span>
                 </div>
 
