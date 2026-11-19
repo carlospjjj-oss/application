@@ -688,77 +688,78 @@ foreach ($produtos as $p) {
         $("#resultadoServico").val(resultado > 0 ? resultado.toFixed(2) : '');
     });
 
-    $(document).ready(function() {
+    // Handlers com event delegation - funcionam mesmo quando injetado via AJAX
+    var csrfTokenName = $('meta[name="csrf-token-name"]').attr('content');
+    var csrfCookieName = $('meta[name="csrf-cookie-name"]').attr('content');
+    function getCsrfToken() {
+        var match = document.cookie.match(new RegExp('(^| )' + csrfCookieName + '=([^;]+)'));
+        return match ? match[2] : '';
+    }
 
-        var csrfTokenName = $('meta[name="csrf-token-name"]').attr('content');
-        var csrfCookieName = $('meta[name="csrf-cookie-name"]').attr('content');
-        function getCsrfToken() {
-            var match = document.cookie.match(new RegExp('(^| )' + csrfCookieName + '=([^;]+)'));
-            return match ? match[2] : '';
+    $(document).off('click', '#btnAdicionarDesconto').on('click', '#btnAdicionarDesconto', function(e) {
+        e.preventDefault();
+        var desconto = $("#desconto").val();
+        var resultado = $("#resultado").val();
+        var tipoDesconto = $("#tipoDesconto").val();
+        var idVendas = $("#idVendas").val();
+        if (!desconto || parseFloat(desconto) <= 0) {
+            alert('Informe um valor de desconto.');
+            return;
         }
-
-        $("#btnAdicionarDesconto").on("click", function(e) {
-            e.preventDefault();
-            var desconto = $("#desconto").val();
-            var resultado = $("#resultado").val();
-            var tipoDesconto = $("#tipoDesconto").val();
-            var idVendas = $("#idVendas").val();
-            if (!desconto || parseFloat(desconto) <= 0) {
-                alert('Informe um valor de desconto.');
-                return;
+        var postData = { idVendas: idVendas, desconto: desconto, tipoDesconto: tipoDesconto, resultado: resultado };
+        postData[csrfTokenName] = getCsrfToken();
+        Swal.fire({ title: 'Processando', text: 'Registrando desconto...', icon: 'info', showConfirmButton: false, allowOutsideClick: false });
+        $.ajax({
+            url: "<?php echo base_url(); ?>index.php/vendas/adicionarDesconto",
+            type: 'POST',
+            data: postData,
+            dataType: 'json',
+            success: function(response) {
+                if (response.result) {
+                    Swal.fire({ icon: 'success', title: 'Sucesso', text: response.messages });
+                    $("#divProdutos").load("<?php echo current_url(); ?> #divProdutos");
+                    $("#desconto").val('');
+                    $("#resultado").val('');
+                } else {
+                    Swal.fire({ icon: 'error', title: 'Atenção', text: response.messages });
+                }
+            },
+            error: function(xhr) {
+                Swal.fire({ icon: 'error', title: 'Erro', text: 'Servidor retornou: ' + xhr.status + ' - ' + xhr.responseText });
             }
-            var postData = { idVendas: idVendas, desconto: desconto, tipoDesconto: tipoDesconto, resultado: resultado };
-            postData[csrfTokenName] = getCsrfToken();
-            Swal.fire({ title: 'Processando', text: 'Registrando desconto...', icon: 'info', showConfirmButton: false, allowOutsideClick: false });
-            $.ajax({
-                url: "<?php echo base_url(); ?>index.php/vendas/adicionarDesconto",
-                type: 'POST',
-                data: postData,
-                dataType: 'json',
-                success: function(response) {
-                    if (response.result) {
-                        Swal.fire({ icon: 'success', title: 'Sucesso', text: response.messages });
-                        $("#divProdutos").load("<?php echo current_url(); ?> #divProdutos");
-                        $("#desconto").val('');
-                        $("#resultado").val('');
-                    } else {
-                        Swal.fire({ icon: 'error', title: 'Atenção', text: response.messages });
-                    }
-                },
-                error: function(xhr) {
-                    Swal.fire({ icon: 'error', title: 'Erro', text: 'Servidor retornou: ' + xhr.status + ' - ' + xhr.responseText });
-                }
-            });
         });
+    });
 
-        $("#btnAdicionarDescontoServico").on("click", function(e) {
-            e.preventDefault();
-            var total = parseFloat($("#total-servicos").val()) || 0;
-            var desc = parseFloat($("#descontoServico").val().replace(',', '.')) || 0;
-            var tipo = $("#tipoDescontoServico").val();
-            var idVendas = $("#idVendasDescServico").val();
-            if (desc <= 0) { alert('Informe um valor de desconto.'); return; }
-            var resultado = calcDesconto(total, desc, tipo);
-            if (resultado < 0) { alert('Desconto não pode ser maior que o total.'); return; }
-            var postData = { idVendas: idVendas, desconto: desc, tipoDesconto: tipo, valor_desconto: resultado };
-            postData[csrfTokenName] = getCsrfToken();
-            $.ajax({
-                url: "<?php echo base_url(); ?>index.php/vendas/adicionarDescontoServico",
-                type: 'POST',
-                data: postData,
-                dataType: 'json',
-                success: function(data) {
-                    if (data.result) {
-                        window.location.reload(true);
-                    } else {
-                        alert('Erro ao aplicar desconto: ' + (data.messages || ''));
-                    }
-                },
-                error: function(xhr) {
-                    alert('Erro: ' + xhr.status + ' - ' + xhr.responseText);
+    $(document).off('click', '#btnAdicionarDescontoServico').on('click', '#btnAdicionarDescontoServico', function(e) {
+        e.preventDefault();
+        var total = parseFloat($("#total-servicos").val()) || 0;
+        var desc = parseFloat($("#descontoServico").val().replace(',', '.')) || 0;
+        var tipo = $("#tipoDescontoServico").val();
+        var idVendas = $("#idVendasDescServico").val();
+        if (desc <= 0) { alert('Informe um valor de desconto.'); return; }
+        var resultado = calcDesconto(total, desc, tipo);
+        if (resultado < 0) { alert('Desconto não pode ser maior que o total.'); return; }
+        var postData = { idVendas: idVendas, desconto: desc, tipoDesconto: tipo, valor_desconto: resultado };
+        postData[csrfTokenName] = getCsrfToken();
+        $.ajax({
+            url: "<?php echo base_url(); ?>index.php/vendas/adicionarDescontoServico",
+            type: 'POST',
+            data: postData,
+            dataType: 'json',
+            success: function(data) {
+                if (data.result) {
+                    window.location.reload(true);
+                } else {
+                    alert('Erro ao aplicar desconto: ' + (data.messages || ''));
                 }
-            });
+            },
+            error: function(xhr) {
+                alert('Erro: ' + xhr.status + ' - ' + xhr.responseText);
+            }
         });
+    });
+
+    $(document).ready(function() {
 
 
         function toggleCamposVenda() {
