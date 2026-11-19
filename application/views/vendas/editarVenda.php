@@ -697,6 +697,15 @@ foreach ($produtos as $p) {
     }
 
     console.log('[DESCONTO] registrando handler delegation');
+
+    // DEBUG: captura qualquer submit de form na página
+    $(document).on('submit', 'form', function(e) {
+        console.log('[DEBUG SUBMIT] form id=' + $(this).attr('id') + ' action=' + $(this).attr('action'));
+    });
+    // DEBUG: captura qualquer clique em botão
+    $(document).on('click', 'button', function(e) {
+        console.log('[DEBUG CLICK] button id=' + $(this).attr('id') + ' type=' + $(this).attr('type'));
+    });
     $(document).off('click', '#btnAdicionarDesconto').on('click', '#btnAdicionarDesconto', function(e) {
         e.preventDefault();
         console.log('[DESCONTO] botao clicado');
