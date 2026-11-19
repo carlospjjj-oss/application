@@ -688,6 +688,11 @@ foreach ($produtos as $p) {
         $("#resultadoServico").val(resultado > 0 ? resultado.toFixed(2) : '');
     });
 
+    $("#btnAdicionarDesconto").on("click", function(e) {
+        e.preventDefault();
+        $('#formDesconto').trigger('submit');
+    });
+
     $("#btnAdicionarDescontoServico").on("click", function(e) {
         e.preventDefault();
         var total = parseFloat($("#total-servicos").val()) || 0;
@@ -708,6 +713,9 @@ foreach ($produtos as $p) {
                 } else {
                     alert('Erro ao aplicar desconto: ' + (data.messages || ''));
                 }
+            },
+            error: function() {
+                alert('Erro ao comunicar com o servidor.');
             }
         });
     });
