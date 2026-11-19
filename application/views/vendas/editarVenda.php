@@ -495,8 +495,8 @@ foreach ($produtos as $p) {
                                                             <div style="display:flex; align-items:center; gap:4px;">
                                                                 <span>R$</span>
                                                                 <input type="text" id="condParcelado" class="cond-valor" placeholder="0,00" value="<?php echo $result->cond_parcelado > 0 ? number_format($result->cond_parcelado,2,',','.') : '' ?>" style="width:100px;" />
-                                                                <small id="condParceladoLabel" style="color:#888;"></small>
                                                             </div>
+                                                            <small id="condParceladoLabel" style="color:#2f2b53; font-weight:bold; display:block; margin-top:3px;"></small>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -1187,28 +1187,60 @@ foreach ($produtos as $p) {
     });
 
     // Condições de Pagamento
-    function toggleCondWrap(chk, wrapId) {
-        if ($(chk).is(':checked')) {
-            $('#' + wrapId).show();
-        } else {
-            $('#' + wrapId).hide();
-        }
-    }
-    $('#chkAceite').on('change', function() { toggleCondWrap(this, 'wrapAceite'); });
-    $('#chkEntregaServ').on('change', function() { toggleCondWrap(this, 'wrapEntregaServ'); });
-    $('#chkPix').on('change', function() { toggleCondWrap(this, 'wrapPix'); });
-    $('#chkParcelado').on('change', function() { toggleCondWrap(this, 'wrapParcelado'); });
+    var condCampos = [
+        { chk: '#chkAceite',      wrap: '#wrapAceite',      input: '#condAceite' },
+        { chk: '#chkEntregaServ', wrap: '#wrapEntregaServ', input: '#condEntregaServ' },
+        { chk: '#chkPix',         wrap: '#wrapPix',          input: '#condPix' },
+        { chk: '#chkParcelado',   wrap: '#wrapParcelado',    input: '#condParcelado' }
+    ];
 
+    // Retorna total geral da venda (PHP gerou o valor)
+    var condTotalGeral = <?php echo number_format($totalFinal, 2, '.', ''); ?>;
+
+    // Calcula quanto já foi alocado nas outras condições (exceto a que está sendo editada)
+    function condSomaOutros(excluirInput) {
+        var soma = 0;
+        condCampos.forEach(function(c) {
+            if (c.input !== excluirInput && $(c.chk).is(':checked')) {
+                soma += parseFloat($(c.input).val().replace(',', '.')) || 0;
+            }
+        });
+        return soma;
+    }
+
+    // Ao marcar checkbox: mostra campo e auto-preenche com saldo restante
+    condCampos.forEach(function(c) {
+        $(c.chk).on('change', function() {
+            if ($(this).is(':checked')) {
+                $(c.wrap).show();
+                // Auto-preenche com saldo = total - soma das outras condições já preenchidas
+                var somaOutros = condSomaOutros(c.input);
+                var saldo = condTotalGeral - somaOutros;
+                if (saldo > 0) {
+                    $(c.input).val(saldo.toFixed(2).replace('.', ','));
+                }
+                atualizarParcelaLabel();
+            } else {
+                $(c.wrap).hide();
+                $(c.input).val('');
+                atualizarParcelaLabel();
+            }
+        });
+    });
+
+    // Ao digitar num campo: atualiza label de parcelas
     function atualizarParcelaLabel() {
         var total = parseFloat($("#condParcelado").val().replace(',', '.')) || 0;
         var parcelas = parseInt($("#condParcelas").val()) || 5;
         if (total > 0 && parcelas > 0) {
-            $("#condParceladoLabel").text("= R$ " + (total / parcelas).toFixed(2).replace('.', ',') + "/x");
+            var porParcela = (total / parcelas).toFixed(2).replace('.', ',');
+            $("#condParceladoLabel").text("→ " + parcelas + "x de R$ " + porParcela);
         } else {
             $("#condParceladoLabel").text("");
         }
     }
     $('#condParcelado, #condParcelas').on('input change', atualizarParcelaLabel);
+    atualizarParcelaLabel(); // roda no load se já tiver valor salvo
 
     $('#btnSalvarCondicoes').on('click', function() {
         var idVendas = $('#condVendasId').val();
