@@ -88,7 +88,7 @@
                                                     <span class="button__text2">Faturar</span>
                                                 </a>
                                             <?php } ?>
-                                            <button type="submit" class="button btn btn-primary" id="btnContinuar">
+                                            <button type="button" class="button btn btn-primary" id="btnContinuar">
                                                 <span class="button__icon"><i class="bx bx-sync"></i></span>
                                                 <span class="button__text2">Atualizar</span>
                                             </button>
@@ -1179,9 +1179,11 @@ foreach ($produtos as $p) {
             semantic: { 'strikethrough': 's', }
         });
 
-        $('#formVendas').on('submit', function() {
+        $('#btnContinuar').on('click', function(e) {
+            e.preventDefault();
             $('#observacoes').val($('#observacoes').trumbowyg('html'));
             $('#observacoes_cliente').val($('#observacoes_cliente').trumbowyg('html'));
+            $('#formVendas')[0].submit();
         });
     });
 
