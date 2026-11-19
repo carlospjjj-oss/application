@@ -734,11 +734,14 @@ class Vendas extends MY_Controller
         }
 
         $data = [
-            'cond_aceite'       => floatval(str_replace(',', '.', $this->input->post('cond_aceite'))),
-            'cond_entrega_serv' => floatval(str_replace(',', '.', $this->input->post('cond_entrega_serv'))),
-            'cond_pix'          => floatval(str_replace(',', '.', $this->input->post('cond_pix'))),
-            'cond_parcelado'    => floatval(str_replace(',', '.', $this->input->post('cond_parcelado'))),
-            'cond_parcelas'     => intval($this->input->post('cond_parcelas')) ?: 5,
+            'cond_aceite'           => floatval(str_replace(',', '.', $this->input->post('cond_aceite'))),
+            'cond_aceite_pct'       => floatval($this->input->post('cond_aceite_pct')),
+            'cond_entrega_serv'     => floatval(str_replace(',', '.', $this->input->post('cond_entrega_serv'))),
+            'cond_entrega_serv_pct' => floatval($this->input->post('cond_entrega_serv_pct')),
+            'cond_pix'              => floatval(str_replace(',', '.', $this->input->post('cond_pix'))),
+            'cond_pix_pct'          => floatval($this->input->post('cond_pix_pct')),
+            'cond_parcelado'        => floatval(str_replace(',', '.', $this->input->post('cond_parcelado'))),
+            'cond_parcelas'         => intval($this->input->post('cond_parcelas')),
         ];
 
         if ($this->vendas_model->edit('vendas', $data, 'idVendas', $idVendas)) {

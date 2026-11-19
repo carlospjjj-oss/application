@@ -4,11 +4,14 @@ $conn = new mysqli('127.0.0.1', 'maposuser', 'uuSS676ikajdu@sld123!', 'mapos', 3
 if ($conn->connect_error) die("Connection failed: " . $conn->connect_error . "\n");
 
 $cols = [
-    'cond_aceite'      => "DECIMAL(10,2) NOT NULL DEFAULT 0",
-    'cond_entrega_serv'=> "DECIMAL(10,2) NOT NULL DEFAULT 0",
-    'cond_pix'         => "DECIMAL(10,2) NOT NULL DEFAULT 0",
-    'cond_parcelado'   => "DECIMAL(10,2) NOT NULL DEFAULT 0",
-    'cond_parcelas'    => "INT NOT NULL DEFAULT 5",
+    'cond_aceite'           => "DECIMAL(10,2) NOT NULL DEFAULT 0",
+    'cond_aceite_pct'       => "DECIMAL(5,2) NOT NULL DEFAULT 0",
+    'cond_entrega_serv'     => "DECIMAL(10,2) NOT NULL DEFAULT 0",
+    'cond_entrega_serv_pct' => "DECIMAL(5,2) NOT NULL DEFAULT 0",
+    'cond_pix'              => "DECIMAL(10,2) NOT NULL DEFAULT 0",
+    'cond_pix_pct'          => "DECIMAL(5,2) NOT NULL DEFAULT 0",
+    'cond_parcelado'        => "DECIMAL(10,2) NOT NULL DEFAULT 0",
+    'cond_parcelas'         => "INT NOT NULL DEFAULT 0",
 ];
 
 foreach ($cols as $col => $def) {
