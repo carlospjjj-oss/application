@@ -438,6 +438,7 @@ foreach ($produtos as $p) {
                                     <h4 style="margin:0 0 14px 0; color:#2f2b53; font-size:1em; border-bottom:2px solid #2f2b53; padding-bottom:6px;">Condições de Pagamento</h4>
                                     <form id="formCondicoesPagamento" onsubmit="return false;">
                                         <input type="hidden" id="condVendasId" value="<?php echo $result->idVendas; ?>" />
+                                        <input type="hidden" id="condTotalGeralVal" value="<?php echo number_format($totalFinal, 2, '.', ''); ?>" />
                                         <?php
                                         // % salvas no banco para as 3 condições percentuais
                                         $pctAceite = isset($result->cond_aceite_pct) ? floatval($result->cond_aceite_pct) : 0;
@@ -1210,142 +1211,107 @@ foreach ($produtos as $p) {
 
     // Recarrega aba Total ao clicar nela (garante valores atualizados)
     $('#tabTotal a').on('click', function() {
-        $('#tab4').load('<?php echo current_url(); ?> #tab4 > *');
-    });
-
-    // Condições de Pagamento
-    var condTotalGeral = <?php echo number_format($totalFinal, 2, '.', ''); ?>;
-
-    // Calcula R$ a partir de % do total geral
-    function pctParaReais(pct) {
-        return condTotalGeral * pct / 100;
-    }
-
-    // Atualiza label R$ ao lado do campo %
-    function atualizarLabelPct(pctInputId, labelId) {
-        var pct = parseFloat($('#' + pctInputId).val()) || 0;
-        if (pct > 0) {
-            var valor = pctParaReais(pct);
-            $('#' + labelId).text('R$ ' + valor.toFixed(2).replace('.', ','));
-        } else {
-            $('#' + labelId).text('');
-        }
-    }
-
-    // Ao marcar checkbox % → mostra campo, auto-preenche % restante
-    function pctRestante(excluirPctId) {
-        var somaR = 0;
-        ['condAceitePct','condEntregaServPct','condPixPct'].forEach(function(id) {
-            if (id !== excluirPctId) {
-                var chk = id === 'condAceitePct' ? '#chkAceite' : (id === 'condEntregaServPct' ? '#chkEntregaServ' : '#chkPix');
-                if ($(chk).is(':checked')) somaR += parseFloat($('#' + id).val()) || 0;
-            }
+        $('#tab4').load('<?php echo current_url(); ?> #tab4 > *', function() {
+            initCondicoesPagamento();
         });
-        // parcelado também consome do total em R$
-        if ($('#chkParcelado').is(':checked')) {
-            somaR += (parseFloat($('#condParcelado').val().replace(',','.')) || 0) / condTotalGeral * 100;
+    });
+
+    // Condições de Pagamento — encapsulado para re-executar após reload da aba
+    function initCondicoesPagamento() {
+        var condTotalGeral = parseFloat($('#condTotalGeralVal').val()) || 0;
+
+        function pctParaReais(pct) { return condTotalGeral * pct / 100; }
+
+        function atualizarLabelAceite() {
+            var pct = parseFloat($('#condAceitePct').val()) || 0;
+            $('#condAceiteLabel').text(pct > 0 ? 'R$ ' + pctParaReais(pct).toFixed(2).replace('.',',') : '');
         }
-        var resto = 100 - somaR;
-        return resto > 0 ? parseFloat(resto.toFixed(2)) : 0;
-    }
-
-    $('#chkAceite').on('change', function() {
-        if ($(this).is(':checked')) {
-            $('#wrapAceite').show();
-            $('#condAceitePct').val(pctRestante('condAceitePct'));
-            atualizarLabelPct('condAceitePct', 'condAceiteLabel');
-        } else { $('#wrapAceite').hide(); $('#condAceitePct').val(''); $('#condAceiteLabel').text(''); }
-    });
-    $('#chkEntregaServ').on('change', function() {
-        if ($(this).is(':checked')) {
-            $('#wrapEntregaServ').show();
-            $('#condEntregaServPct').val(pctRestante('condEntregaServPct'));
-            atualizarLabelPct('condEntregaServPct', 'condEntregaServLabel');
-        } else { $('#wrapEntregaServ').hide(); $('#condEntregaServPct').val(''); $('#condEntregaServLabel').text(''); }
-    });
-    $('#chkPix').on('change', function() {
-        if ($(this).is(':checked')) {
-            $('#wrapPix').show();
-            // PIX: auto-preenche com % restante MAS label mostra valor COM desconto (usuário pode editar %)
-            $('#condPixPct').val(pctRestante('condPixPct'));
-            atualizarLabelPct('condPixPct', 'condPixLabel');
-        } else { $('#wrapPix').hide(); $('#condPixPct').val(''); $('#condPixLabel').text(''); }
-    });
-    $('#chkParcelado').on('change', function() {
-        if ($(this).is(':checked')) { $('#wrapParcelado').show(); }
-        else { $('#wrapParcelado').hide(); $('#condParcelado').val(''); atualizarParcelaLabel(); }
-    });
-
-    // Live update labels ao digitar %
-    $('#condAceitePct').on('input', function() { atualizarLabelPct('condAceitePct', 'condAceiteLabel'); });
-    $('#condEntregaServPct').on('input', function() { atualizarLabelPct('condEntregaServPct', 'condEntregaServLabel'); });
-    // PIX: label mostra valor COM desconto aplicado (total * (1 - pct/100))
-    $('#condPixPct').on('input', function() {
-        var pct = parseFloat($(this).val()) || 0;
-        if (pct > 0) {
-            var valorComDesconto = condTotalGeral * (1 - pct / 100);
-            $('#condPixLabel').text('R$ ' + valorComDesconto.toFixed(2).replace('.', ',') + ' (desc. ' + pct + '%)');
-        } else {
-            $('#condPixLabel').text('');
+        function atualizarLabelEntrega() {
+            var pct = parseFloat($('#condEntregaServPct').val()) || 0;
+            $('#condEntregaServLabel').text(pct > 0 ? 'R$ ' + pctParaReais(pct).toFixed(2).replace('.',',') : '');
         }
-    });
-
-    // Parcelas: sem valor padrão, usuário define
-    function atualizarParcelaLabel() {
-        var total = parseFloat($("#condParcelado").val().replace(',', '.')) || 0;
-        var parcelas = parseInt($("#condParcelas").val()) || 0;
-        if (total > 0 && parcelas > 0) {
-            var porParcela = (total / parcelas).toFixed(2).replace('.', ',');
-            $("#condParceladoLabel").text("→ " + parcelas + "x de R$ " + porParcela);
-        } else {
-            $("#condParceladoLabel").text("");
+        function atualizarLabelPix() {
+            var pct = parseFloat($('#condPixPct').val()) || 0;
+            if (pct > 0) {
+                var v = condTotalGeral * (1 - pct / 100);
+                $('#condPixLabel').text('R$ ' + v.toFixed(2).replace('.',',') + ' (desc. ' + pct + '%)');
+            } else { $('#condPixLabel').text(''); }
         }
-    }
-    $('#condParcelado, #condParcelas').on('input change', atualizarParcelaLabel);
-    atualizarParcelaLabel();
-
-    // Ao carregar página, atualiza labels se já tiver valores salvos
-    atualizarLabelPct('condAceitePct', 'condAceiteLabel');
-    atualizarLabelPct('condEntregaServPct', 'condEntregaServLabel');
-    // PIX label no load
-    (function() {
-        var pct = parseFloat($('#condPixPct').val()) || 0;
-        if (pct > 0) {
-            var v = condTotalGeral * (1 - pct / 100);
-            $('#condPixLabel').text('R$ ' + v.toFixed(2).replace('.', ',') + ' (desc. ' + pct + '%)');
+        function atualizarParcelaLabel() {
+            var total = parseFloat($('#condParcelado').val().replace(',','.')) || 0;
+            var parcelas = parseInt($('#condParcelas').val()) || 0;
+            $('#condParceladoLabel').text(total > 0 && parcelas > 0
+                ? '→ ' + parcelas + 'x de R$ ' + (total/parcelas).toFixed(2).replace('.',',') : '');
         }
-    })();
 
-    $('#btnSalvarCondicoes').on('click', function() {
-        var idVendas = $('#condVendasId').val();
-        // Calcula valores R$ a partir das %
-        var pctAceite     = $('#chkAceite').is(':checked') ? (parseFloat($('#condAceitePct').val()) || 0) : 0;
-        var pctEntrega    = $('#chkEntregaServ').is(':checked') ? (parseFloat($('#condEntregaServPct').val()) || 0) : 0;
-        var pctPix        = $('#chkPix').is(':checked') ? (parseFloat($('#condPixPct').val()) || 0) : 0;
-        var valParcelado  = $('#chkParcelado').is(':checked') ? (parseFloat($('#condParcelado').val().replace(',','.')) || 0) : 0;
-        var data = {
-            idVendas:            idVendas,
-            cond_aceite_pct:     pctAceite,
-            cond_aceite:         pctParaReais(pctAceite),
-            cond_entrega_serv_pct: pctEntrega,
-            cond_entrega_serv:   pctParaReais(pctEntrega),
-            cond_pix_pct:        pctPix,
-            cond_pix:            condTotalGeral * (1 - pctPix / 100) * (pctPix > 0 ? 1 : 0), // valor com desconto
-            cond_parcelado:      valParcelado,
-            cond_parcelas:       parseInt($('#condParcelas').val()) || 0
-        };
-        $.ajax({
-            url: "<?php echo base_url(); ?>index.php/vendas/salvarCondicoesPagamento",
-            type: 'POST',
-            data: data,
-            dataType: 'json',
-            success: function(resp) {
-                if (resp.result) {
-                    $('#condMsg').fadeIn().delay(2000).fadeOut();
-                } else {
-                    alert('Erro ao salvar: ' + (resp.messages || ''));
+        function pctRestante(excluirId) {
+            var soma = 0;
+            [['condAceitePct','#chkAceite'],['condEntregaServPct','#chkEntregaServ'],['condPixPct','#chkPix']].forEach(function(pair) {
+                if (pair[0] !== excluirId && $(pair[1]).is(':checked')) soma += parseFloat($('#'+pair[0]).val()) || 0;
+            });
+            if ($('#chkParcelado').is(':checked') && condTotalGeral > 0)
+                soma += (parseFloat($('#condParcelado').val().replace(',','.')) || 0) / condTotalGeral * 100;
+            var resto = 100 - soma;
+            return resto > 0 ? parseFloat(resto.toFixed(2)) : 0;
+        }
+
+        // Remove listeners antigos antes de re-registrar
+        $('#chkAceite,#chkEntregaServ,#chkPix,#chkParcelado').off('change.cond');
+        $('#condAceitePct,#condEntregaServPct,#condPixPct,#condParcelado,#condParcelas').off('input.cond change.cond');
+        $('#btnSalvarCondicoes').off('click.cond');
+
+        $('#chkAceite').on('change.cond', function() {
+            if ($(this).is(':checked')) { $('#wrapAceite').show(); $('#condAceitePct').val(pctRestante('condAceitePct')); atualizarLabelAceite(); }
+            else { $('#wrapAceite').hide(); $('#condAceitePct').val(''); $('#condAceiteLabel').text(''); }
+        });
+        $('#chkEntregaServ').on('change.cond', function() {
+            if ($(this).is(':checked')) { $('#wrapEntregaServ').show(); $('#condEntregaServPct').val(pctRestante('condEntregaServPct')); atualizarLabelEntrega(); }
+            else { $('#wrapEntregaServ').hide(); $('#condEntregaServPct').val(''); $('#condEntregaServLabel').text(''); }
+        });
+        $('#chkPix').on('change.cond', function() {
+            if ($(this).is(':checked')) { $('#wrapPix').show(); $('#condPixPct').val(pctRestante('condPixPct')); atualizarLabelPix(); }
+            else { $('#wrapPix').hide(); $('#condPixPct').val(''); $('#condPixLabel').text(''); }
+        });
+        $('#chkParcelado').on('change.cond', function() {
+            if ($(this).is(':checked')) { $('#wrapParcelado').show(); }
+            else { $('#wrapParcelado').hide(); $('#condParcelado').val(''); atualizarParcelaLabel(); }
+        });
+
+        $('#condAceitePct').on('input.cond', atualizarLabelAceite);
+        $('#condEntregaServPct').on('input.cond', atualizarLabelEntrega);
+        $('#condPixPct').on('input.cond', atualizarLabelPix);
+        $('#condParcelado,#condParcelas').on('input.cond change.cond', atualizarParcelaLabel);
+
+        // Inicializa labels para valores já salvos
+        atualizarLabelAceite();
+        atualizarLabelEntrega();
+        atualizarLabelPix();
+        atualizarParcelaLabel();
+
+        $('#btnSalvarCondicoes').on('click.cond', function() {
+            var idVendas = $('#condVendasId').val();
+            var pctAceite    = $('#chkAceite').is(':checked') ? (parseFloat($('#condAceitePct').val()) || 0) : 0;
+            var pctEntrega   = $('#chkEntregaServ').is(':checked') ? (parseFloat($('#condEntregaServPct').val()) || 0) : 0;
+            var pctPix       = $('#chkPix').is(':checked') ? (parseFloat($('#condPixPct').val()) || 0) : 0;
+            var valParcelado = $('#chkParcelado').is(':checked') ? (parseFloat($('#condParcelado').val().replace(',','.')) || 0) : 0;
+            $.ajax({
+                url: '<?php echo base_url(); ?>index.php/vendas/salvarCondicoesPagamento',
+                type: 'POST',
+                data: {
+                    idVendas: idVendas,
+                    cond_aceite_pct: pctAceite,         cond_aceite: pctParaReais(pctAceite),
+                    cond_entrega_serv_pct: pctEntrega,  cond_entrega_serv: pctParaReais(pctEntrega),
+                    cond_pix_pct: pctPix,               cond_pix: condTotalGeral * (1 - pctPix/100) * (pctPix > 0 ? 1 : 0),
+                    cond_parcelado: valParcelado,
+                    cond_parcelas: parseInt($('#condParcelas').val()) || 0
+                },
+                dataType: 'json',
+                success: function(resp) {
+                    if (resp.result) { $('#condMsg').fadeIn().delay(2000).fadeOut(); }
+                    else { alert('Erro ao salvar: ' + (resp.messages || '')); }
                 }
-            }
+            });
         });
-    });
+    }
+    initCondicoesPagamento();
 </script>
