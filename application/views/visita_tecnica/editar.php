@@ -117,7 +117,7 @@
                     <div class="span12">
                         <div class="span6 offset3" style="display:flex;justify-content:center">
                             <form action="<?php echo base_url(); ?>index.php/visita_tecnica/editar/<?php echo $result->id; ?>" method="post" style="display:inline;">
-                                <?php echo $this->security->get_csrf_field(); ?>
+                                <input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
                                 <button type="submit" class="button btn btn-primary">
                                     <span class="button__icon"><i class="bx bx-sync"></i></span>
                                     <span class="button__text2">Atualizar</span>
