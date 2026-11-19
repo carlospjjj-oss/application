@@ -217,51 +217,6 @@
 foreach ($produtos as $p) {
     $total = $total + $p->subTotal;
 }?>
-                        <?php $totals = 0;
-foreach ($servicos as $s) {
-    $preco = $s->preco ?: $s->precoVenda;
-    $subtotals = $preco * ($s->quantidade ?: 1);
-    $totals = $totals + $subtotals;
-}?>
-                        <div class="tab-pane" id="tab2">
-                            <div class="span12 well" style="padding: 1%; margin-left: 0">
-                                <form id="formDesconto" action="<?php echo base_url(); ?>index.php/os/adicionarDesconto" method="POST">
-                                    <div id="divValorTotal">
-                                        <div class="span2">
-                                            <label for="">Valor Total Da OS:</label>
-                                            <input class="span12 money" id="valorTotal" name="valorTotal" type="text" data-affixes-stay="true" data-thousands="" data-decimal="." name="valor" value="<?php echo number_format($totals + $total, 2, '.', ''); ?>" readonly />
-                                        </div>
-                                    </div>
-                                    <div class="span1">
-                                        <label for="">Tipo Desc.</label>
-                                        <select style="width: 4em;" name="tipoDesconto" id="tipoDesconto">
-                                            <option value="real">R$</option>
-                                            <option value="porcento" <?= $result->tipo_desconto == "porcento" ? "selected" : "" ?>>%</option>
-                                        </select>
-                                        <strong><span style="color: red" id="errorAlert"></span></strong>
-                                    </div>
-                                    <div class="span3">
-                                        <input type="hidden" name="idOs" id="idOs"
-                                            value="<?php echo $result->idOs; ?>" />
-                                        <label for="">Desconto</label>
-                                        <input style="width: 4em;" id="desconto" name="desconto" type="text"
-                                            placeholder="" maxlength="6" size="2" value="<?= $result->desconto ?>" />
-                                        <strong><span style="color: red" id="errorAlert"></span></strong>
-                                    </div>
-                                    <div class="span2">
-                                        <label for="">Total com Desconto</label>
-                                        <input class="span12 money" id="resultado" type="text" data-affixes-stay="true" data-thousands="" data-decimal="." name="resultado" value="<?php echo $result->valor_desconto ?>" readonly />
-                                    </div>
-                                    <div class="span2">
-                                        <label for="">&nbsp;</label>
-                                        <button class="button btn btn-success" id="btnAdicionarDesconto">
-                                            <span class="button__icon"><i class='bx bx-plus-circle'></i></span> <span class="button__text2">Aplicar</span>
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-
                         <!--Produtos-->
                         <div class="tab-pane" id="tab3">
                             <div class="span12 well" style="padding: 1%; margin-left: 0">
@@ -793,52 +748,6 @@ if (!$anotacoes) {
                 }
             }
         });
-        $('#formDesconto').submit(function (e) {
-            e.preventDefault();
-            var form = $(this);
-            $.ajax({
-                url: form.attr('action'),
-                type: form.attr('method'),
-                data: form.serialize(),
-                beforeSend: function () {
-                    Swal.fire({
-                        title: 'Processando',
-                        text: 'Registrando desconto...',
-                        icon: 'info',
-                        showCloseButton: false,
-                        showConfirmButton: false,
-                        allowOutsideClick: false,
-                        allowEscapeKey: false
-                    });
-                },
-                success: function (response) {
-                    if (response.result) {
-                        Swal.fire({
-                            type: "success",
-                            title: "Sucesso",
-                            text: response.messages
-                        });
-                        setTimeout(function () {
-                            window.location.href = window.BaseUrl + 'index.php/os/editar/' + <?php echo $result->idOs ?>;
-                        }, 2000);
-                    } else {
-                        Swal.fire({
-                            type: "error",
-                            title: "Atenção",
-                            text: response.messages
-                        });
-                    }
-
-                },
-                error: function (response) {
-                    Swal.fire({
-                        type: "error",
-                        title: "Atenção",
-                        text: response.responseJSON.messages
-                    });
-                }
-            });
-        });
 
         $("#formwhatsapp").validate({
             rules: {
@@ -1091,9 +1000,6 @@ if (!$anotacoes) {
                             $("#divServicos").load("<?php echo current_url(); ?> #divServicos");
                             $("#quantidade_servico").val('');
                             $("#preco_servico").val('');
-                            $("#resultado").val('');
-                            $("#desconto").val('');
-                            $("#divValorTotal").load("<?php echo current_url(); ?> #divValorTotal");
                             $("#servico").val('').focus();
                         } else {
                             Swal.fire({
