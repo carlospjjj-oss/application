@@ -9,7 +9,7 @@ $totalProdutos = 0;
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="<?= base_url() ?>assets/css/bootstrap5.3.2.min.css" />
     <link rel="stylesheet" href="<?= base_url() ?>assets/font-awesome/css/font-awesome.css" />
-    <link rel="stylesheet" href="<?= base_url() ?>assets/css/imprimir.css">
+    <link rel="stylesheet" href="<?= base_url() ?>assets/css/imprimir-orcamento.css">
 </head>
 <body>
     <div class="main-page">
@@ -20,8 +20,8 @@ $totalProdutos = 0;
                         Você precisa configurar os dados do emitente. >>> <a href="<?=base_url()?>index.php/mapos/emitente">Configurar</a>
                     </div>
                 <?php else : ?>
-                    <div class="imgLogo" class="align-middle">
-                        <img src="<?= $emitente->url_logo ?>" class="img-fluid" style="width:140px;">
+                    <div class="imgLogo" style="display:flex;align-items:center;">
+                        <img src="<?= base_url() ?>assets/img/logo-proton.png" class="img-fluid" style="width:90px;height:90px;object-fit:contain;">
                     </div>
                     <div class="emitente">
                         <span style="font-size: 16px;"><b><?= $emitente->nome ?></b></span><br>
