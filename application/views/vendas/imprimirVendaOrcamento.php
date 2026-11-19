@@ -188,6 +188,53 @@ $totalProdutos = 0;
                 <?php endif; ?>
 
 
+                <?php
+                // Calcula total final (com desconto se houver)
+                $totalFinalOrc = $totalProdutos;
+                if ($result->valor_desconto != 0) $totalFinalOrc = $result->valor_desconto;
+
+                // Monta lista de condições marcadas
+                $condicoes = [];
+                if ($result->cond_aceite > 0)
+                    $condicoes[] = ['nome' => 'Condição Especial - Pagamento no Aceite',              'valor' => $result->cond_aceite];
+                if ($result->cond_entrega_serv > 0)
+                    $condicoes[] = ['nome' => 'Condição Especial - Pagamento na Entrega dos Serviços','valor' => $result->cond_entrega_serv];
+                if ($result->cond_pix > 0)
+                    $condicoes[] = ['nome' => 'Condição Especial - Pagamento PIX',                    'valor' => $result->cond_pix];
+                if ($result->cond_parcelado > 0 && $result->cond_parcelas > 0)
+                    $condicoes[] = ['nome' => 'Condição Especial - Pagamento em ' . $result->cond_parcelas . 'x Sem Juros',
+                                    'valor' => $result->cond_parcelado,
+                                    'parcelas' => $result->cond_parcelas];
+                ?>
+                <?php if (!empty($condicoes)) : ?>
+                    <div class="subtitle">CONDIÇÕES DE PAGAMENTO</div>
+                    <div class="tabela">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr class="table-secondary">
+                                    <th>CONDIÇÃO</th>
+                                    <th class="text-end" width="20%">VALOR</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($condicoes as $c) : ?>
+                                <tr>
+                                    <td><?= $c['nome'] ?></td>
+                                    <td class="text-end">
+                                        <?php if (isset($c['parcelas'])) : ?>
+                                            <b><?= $c['parcelas'] ?>x de R$ <?= number_format($c['valor'] / $c['parcelas'], 2, ',', '.') ?></b>
+                                            <small style="display:block; color:#666;">Total: R$ <?= number_format($c['valor'], 2, ',', '.') ?></small>
+                                        <?php else : ?>
+                                            <b>R$ <?= number_format($c['valor'], 2, ',', '.') ?></b>
+                                        <?php endif; ?>
+                                    </td>
+                                </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                <?php endif; ?>
+
             </section>
             <footer>
                 <div class="detalhes">
