@@ -696,6 +696,7 @@ foreach ($produtos as $p) {
         return match ? match[2] : '';
     }
 
+    console.log('[DESCONTO] registrando handler delegation');
     $(document).off('click', '#btnAdicionarDesconto').on('click', '#btnAdicionarDesconto', function(e) {
         e.preventDefault();
         console.log('[DESCONTO] botao clicado');
