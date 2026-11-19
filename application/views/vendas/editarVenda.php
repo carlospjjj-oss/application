@@ -225,32 +225,34 @@ foreach ($produtos as $p) {
                             <div class="span12 well" style="padding: 1%; margin-left: 0">
                                 <div class="span11">
                                     <form id="formServicos" action="<?php echo base_url(); ?>index.php/vendas/adicionarServico" method="post">
-                                        <div class="span5">
+                                        <div style="display:flex; gap:6px; align-items:flex-end; flex-wrap:nowrap;">
                                             <input type="hidden" name="idServico" id="idServico" />
                                             <input type="hidden" name="idVendasServico" id="idVendasServico" value="<?php echo $result->idVendas ?>" />
-                                            <label for="">Serviço</label>
-                                            <input type="text" class="span12" name="servico" id="servico" placeholder="Digite o nome do serviço" />
-                                        </div>
-                                        <div class="span2">
-                                            <label for="">Preço</label>
-                                            <input type="text" placeholder="Preço" id="precoServico" name="precoServico" class="span12 money" />
-                                        </div>
-                                        <div class="span2">
-                                            <label for="">Quantidade</label>
-                                            <input type="text" placeholder="Quantidade" id="quantidadeServico" name="quantidadeServico" class="span12" value="1" />
-                                        </div>
-                                        <div class="span1">
-                                            <label for="">% Margem</label>
-                                            <input type="text" placeholder="0" id="margemServico" name="margemServico" class="span12" value="0" />
-                                        </div>
-                                        <div class="span2">
-                                            <label for="">Total</label>
-                                            <input type="text" id="totalMargemServico" class="span12" readonly />
-                                        </div>
-                                        <div class="span1">
-                                            <label for="">&nbsp</label>
-                                            <button class="button btn btn-success" id="btnAdicionarServico" type="button">
-                                                <span class="button__icon"><i class='bx bx-plus-circle'></i></span><span class="button__text2">Adicionar</span></button>
+                                            <div style="flex:3; min-width:0;">
+                                                <label for="">Serviço</label>
+                                                <input type="text" style="width:100%" name="servico" id="servico" placeholder="Digite o nome do serviço" />
+                                            </div>
+                                            <div style="flex:1; min-width:0;">
+                                                <label for="">Preço</label>
+                                                <input type="text" placeholder="Preço" id="precoServico" name="precoServico" style="width:100%" class="money" />
+                                            </div>
+                                            <div style="flex:1; min-width:0;">
+                                                <label for="">Qtd</label>
+                                                <input type="text" placeholder="1" id="quantidadeServico" name="quantidadeServico" style="width:100%" value="1" />
+                                            </div>
+                                            <div style="flex:1; min-width:0;">
+                                                <label for="">% Margem</label>
+                                                <input type="text" placeholder="0" id="margemServico" name="margemServico" style="width:100%" value="0" />
+                                            </div>
+                                            <div style="flex:1; min-width:0;">
+                                                <label for="">Total</label>
+                                                <input type="text" id="totalMargemServico" style="width:100%" readonly />
+                                            </div>
+                                            <div style="flex:0 0 auto;">
+                                                <label for="">&nbsp;</label>
+                                                <button class="button btn btn-success" id="btnAdicionarServico" type="button">
+                                                    <span class="button__icon"><i class='bx bx-plus-circle'></i></span><span class="button__text2">Adicionar</span></button>
+                                            </div>
                                         </div>
                                     </form>
                                 </div>
