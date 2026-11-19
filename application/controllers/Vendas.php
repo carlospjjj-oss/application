@@ -568,8 +568,9 @@ class Vendas extends MY_Controller
         }
 
         $idServico = $this->input->post('idServico');
-        $preco = $this->input->post('precoServico');
-        $quantidade = $this->input->post('quantidadeServico');
+        $preco = floatval(str_replace(',', '.', $this->input->post('precoServico')));
+        $quantidade = floatval($this->input->post('quantidadeServico'));
+        $margem = floatval(str_replace(',', '.', $this->input->post('margemServico') ?? '0'));
         $idVendas = $this->input->post('idVendasServico');
 
         if (!$idServico || !$preco || !$quantidade || !$idVendas) {
@@ -585,22 +586,45 @@ class Vendas extends MY_Controller
                 ->set_output(json_encode(['result' => false, 'messages' => '<br /><br /> <strong>Motivo:</strong> Venda já faturada']));
         }
 
-        $subTotal = $preco * $quantidade;
+        $subTotal = $preco * $quantidade * (1 + $margem / 100);
 
         $data = [
             'servicos_id' => $idServico,
             'vendas_id'   => $idVendas,
             'preco'       => $preco,
             'quantidade'  => $quantidade,
+            'margem'      => $margem,
             'subTotal'    => $subTotal,
         ];
 
         if ($this->vendas_model->add('servicos_vendas', $data)) {
-            log_info('Adicionou serviço à venda com ID: ' . $idVendas);
+            log_info('Adicionou serviço à venda com ID: ' . $idVendas . ' | Preço: ' . $preco . ' | Qtd: ' . $quantidade . ' | Margem: ' . $margem . '% | SubTotal: ' . number_format($subTotal, 2, '.', ''));
             echo json_encode(['result' => true]);
         } else {
             echo json_encode(['result' => false, 'messages' => 'Erro ao adicionar serviço']);
         }
+    }
+
+    public function atualizarMargemServico()
+    {
+        $idItem = (int)$this->input->post('idItem');
+        $margem = (float)$this->input->post('margem');
+        $subTotal = (float)$this->input->post('subTotal');
+
+        if (!$idItem) {
+            echo json_encode(['result' => false]);
+            return;
+        }
+
+        $data = [
+            'margem'   => $margem,
+            'subTotal' => $subTotal,
+        ];
+
+        $this->vendas_model->edit('servicos_vendas', $data, 'idServicos_venda', $idItem);
+        log_info('Atualizou margem serviço inline | Item: ' . $idItem . ' | Margem: ' . $margem . '% | SubTotal: ' . number_format($subTotal, 2, '.', ''));
+
+        echo json_encode(['result' => true]);
     }
 
     public function excluirServico()

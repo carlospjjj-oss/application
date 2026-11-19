@@ -224,7 +224,7 @@ foreach ($produtos as $p) {
                             <div class="span12 well" style="padding: 1%; margin-left: 0">
                                 <div class="span11">
                                     <form id="formServicos" action="<?php echo base_url(); ?>index.php/vendas/adicionarServico" method="post">
-                                        <div class="span6">
+                                        <div class="span5">
                                             <input type="hidden" name="idServico" id="idServico" />
                                             <input type="hidden" name="idVendasServico" id="idVendasServico" value="<?php echo $result->idVendas ?>" />
                                             <label for="">Serviço</label>
@@ -237,6 +237,10 @@ foreach ($produtos as $p) {
                                         <div class="span2">
                                             <label for="">Quantidade</label>
                                             <input type="text" placeholder="Quantidade" id="quantidadeServico" name="quantidadeServico" class="span12" value="1" />
+                                        </div>
+                                        <div class="span1">
+                                            <label for="">% Margem</label>
+                                            <input type="text" placeholder="0" id="margemServico" name="margemServico" class="span12" value="0" />
                                         </div>
                                         <div class="span2">
                                             <label for="">&nbsp</label>
@@ -253,6 +257,7 @@ foreach ($produtos as $p) {
                                             <th>Serviço</th>
                                             <th width="8%">Quantidade</th>
                                             <th width="10%">Preço</th>
+                                            <th width="8%">% Margem</th>
                                             <th width="6%">Ações</th>
                                             <th width="10%">Sub-total</th>
                                         </tr>
@@ -260,17 +265,37 @@ foreach ($produtos as $p) {
                                     <tbody>
                                         <?php if (!empty($servicos)): foreach ($servicos as $s):
                                             $precoS = $s->preco ?? 0;
-                                            $subS = $precoS * $s->quantidade;
+                                            $margemS = isset($s->margem) ? floatval($s->margem) : 0;
+                                            $subS = isset($s->subTotal) && $s->subTotal > 0 ? $s->subTotal : ($precoS * $s->quantidade * (1 + $margemS / 100));
                                         ?>
                                         <tr>
                                             <td><?php echo $s->nome ?></td>
                                             <td><div align="center"><?php echo $s->quantidade ?></div></td>
                                             <td><div align="center">R$: <?php echo number_format($precoS,2,'.','')?></div></td>
+                                            <td><div align="center"><input type="text" class="margem-servico-inline" id="margem-servico-inline-<?php echo $s->idServicos_venda ?>" data-iditem="<?php echo $s->idServicos_venda ?>" data-preco="<?php echo $precoS ?>" data-qtd="<?php echo $s->quantidade ?>" value="<?php echo number_format($margemS,2,',','') ?>" style="width:65px;text-align:center;" /></div></td>
                                             <td><div align="center"><a href="#" idAcao="<?php echo $s->idServicos_venda ?>" title="Excluir Serviço" class="btn-excluir-servico"><i class="bx bx-trash-alt"></i></a></div></td>
-                                            <td><div align="center">R$: <?php echo number_format($subS,2,'.','')?></div></td>
+                                            <td><div align="center" id="subtotal-servico-<?php echo $s->idServicos_venda ?>">R$: <?php echo number_format($subS,2,'.','')?></div></td>
                                         </tr>
                                         <?php endforeach; endif; ?>
                                     </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="5"><strong>Total Serviços</strong></td>
+                                            <td>
+                                                <?php
+                                                $totalServicos = 0;
+                                                if (!empty($servicos)) {
+                                                    foreach ($servicos as $s) {
+                                                        $precoS = $s->preco ?? 0;
+                                                        $margemS = isset($s->margem) ? floatval($s->margem) : 0;
+                                                        $totalServicos += isset($s->subTotal) && $s->subTotal > 0 ? $s->subTotal : ($precoS * $s->quantidade * (1 + $margemS / 100));
+                                                    }
+                                                }
+                                                ?>
+                                                <input type="text" id="total-servicos" value="<?php echo number_format($totalServicos,2,'.','')?>" readonly style="width:100%;font-weight:bold;background:transparent;border:none;" />
+                                            </td>
+                                        </tr>
+                                    </tfoot>
                                 </table>
                             </div>
                         </div>
@@ -668,6 +693,7 @@ foreach ($produtos as $p) {
             var idServico = $("#idServico").val();
             var preco = $("#precoServico").val();
             var quantidade = $("#quantidadeServico").val();
+            var margem = $("#margemServico").val().replace(',', '.');
             var idVendas = $("#idVendasServico").val();
             if (!idServico || !preco || !quantidade) {
                 alert('Preencha o serviço, preço e quantidade.');
@@ -676,7 +702,7 @@ foreach ($produtos as $p) {
             $.ajax({
                 url: "<?php echo base_url(); ?>index.php/vendas/adicionarServico",
                 type: 'POST',
-                data: { idServico: idServico, precoServico: preco, quantidadeServico: quantidade, idVendasServico: idVendas },
+                data: { idServico: idServico, precoServico: preco, quantidadeServico: quantidade, margemServico: margem, idVendasServico: idVendas },
                 dataType: 'json',
                 success: function(data) {
                     if (data.result) {
@@ -685,12 +711,41 @@ foreach ($produtos as $p) {
                             $("#idServico").val('');
                             $("#precoServico").val('');
                             $("#quantidadeServico").val('1');
+                            $("#margemServico").val('0');
                         });
                     } else {
                         alert('Erro ao adicionar serviço: ' + data.messages);
                     }
                 }
             });
+        });
+
+        // Editar margem inline na tabela de serviços
+        $(document).on("keydown", ".margem-servico-inline", function(e) {
+            if (e.key === "Enter" || e.keyCode === 9) { $(this).trigger("blur"); }
+        });
+        $(document).on("change blur", ".margem-servico-inline", function() {
+            var $input = $(this);
+            var idItem = $input.data("iditem");
+            var preco = parseFloat($input.data("preco")) || 0;
+            var qtd = parseFloat($input.data("qtd")) || 1;
+            var novaMargem = parseFloat($input.val().replace(',', '.')) || 0;
+            var novoSubtotal = preco * qtd * (1 + novaMargem / 100);
+            $.post("<?php echo base_url(); ?>index.php/vendas/atualizarMargemServico", {
+                idItem: idItem,
+                margem: novaMargem,
+                subTotal: novoSubtotal
+            }, function(data) {
+                if (data.result) {
+                    $("#subtotal-servico-" + idItem).text("R$: " + novoSubtotal.toFixed(2));
+                    var novoTotal = 0;
+                    $("[id^='subtotal-servico-']").each(function() {
+                        var val = parseFloat($(this).text().replace("R$: ", "").replace(",", ".")) || 0;
+                        novoTotal += val;
+                    });
+                    $("#total-servicos").val(novoTotal.toFixed(2));
+                }
+            }, 'json');
         });
         $(document).on("click", ".btn-excluir-servico", function(e) {
             e.preventDefault();
