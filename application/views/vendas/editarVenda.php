@@ -87,7 +87,7 @@
                                                     <span class="button__text2">Faturar</span>
                                                 </a>
                                             <?php } ?>
-                                            <button type="button" class="button btn btn-primary" id="btnContinuar">
+                                            <button type="submit" class="button btn btn-primary" id="btnContinuar">
                                                 <span class="button__icon"><i class="bx bx-sync"></i></span>
                                                 <span class="button__text2">Atualizar</span>
                                             </button>
@@ -1042,12 +1042,6 @@ foreach ($produtos as $p) {
                 }
             }
         });
-        $('#btnContinuar').on('click', function() {
-            if ($("#formVendas").valid()) {
-                $("#formVendas")[0].submit();
-            }
-        });
-
         $('#btnAdicionarProduto').on('click', function() {
             $("#formProdutos").submit();
         });
