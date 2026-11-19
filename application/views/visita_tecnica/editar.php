@@ -9,7 +9,7 @@
             </div>
             <div class="widget-content nopadding tab-content">
                 <?php echo $custom_error; ?>
-                <form action="<?php echo base_url(); ?>index.php/visita_tecnica/editar/<?php echo $result->id; ?>" method="post" id="formVisita" class="form-horizontal">
+                <form action="<?php echo current_url(); ?>" method="post" id="formVisita" class="form-horizontal">
                     <div class="control-group">
                         <label class="control-label">Cliente<span class="required">*</span></label>
                         <div class="controls">
