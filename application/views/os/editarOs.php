@@ -92,21 +92,9 @@
                                                 <option <?php if ($result->status == 'Aberto') {
                                                     echo 'selected';
                                                 } ?> value="Aberto">Aberto</option>
-                                                <option <?php if ($result->status == 'Orçamento') {
-                                                    echo 'selected';
-                                                } ?> value="Orçamento">Orçamento</option>
-                                                <option <?php if ($result->status == 'Negociação') {
-                                                    echo 'selected';
-                                                } ?> value="Negociação">Negociação</option>
-                                                <option <?php if ($result->status == 'Aprovado') {
-                                                    echo 'selected';
-                                                } ?> value="Aprovado">Aprovado</option>
                                                 <option <?php if ($result->status == 'Aguardando Peças') {
                                                     echo 'selected';
                                                 } ?> value="Aguardando Peças">Aguardando Peças</option>
-                                                <option <?php if ($result->status == 'Em Andamento') {
-                                                    echo 'selected';
-                                                } ?> value="Em Andamento">Em Andamento</option>
                                                 <option <?php if ($result->status == 'Finalizado') {
                                                     echo 'selected';
                                                 } ?> value="Finalizado">Finalizado</option>
