@@ -90,7 +90,7 @@
                                                     <span class="button__text2">Faturar</span>
                                                 </a>
                                             <?php } ?>
-                                            <button class="button btn btn-primary" id="btnContinuar">
+                                            <button type="button" class="button btn btn-primary" id="btnContinuar">
                                                 <span class="button__icon"><i class="bx bx-sync"></i></span>
                                                 <span class="button__text2">Atualizar</span>
                                             </button>
@@ -132,7 +132,7 @@
                                         </div>
                                         <div class="span1">
                                             <label for="">&nbsp</label>
-                                            <button class="button btn btn-success" id="btnAdicionarProduto">
+                                            <button type="button" class="button btn btn-success" id="btnAdicionarProduto">
                                                 <span class="button__icon"><i class='bx bx-plus-circle'></i></span><span class="button__text2">Adicionar</span></button>
                                         </div>
                                     </form>
