@@ -244,6 +244,10 @@ foreach ($produtos as $p) {
                                             <input type="text" placeholder="0" id="margemServico" name="margemServico" class="span12" value="0" />
                                         </div>
                                         <div class="span2">
+                                            <label for="">Total</label>
+                                            <input type="text" id="totalMargemServico" class="span12" readonly />
+                                        </div>
+                                        <div class="span1">
                                             <label for="">&nbsp</label>
                                             <button class="button btn btn-success" id="btnAdicionarServico" type="button">
                                                 <span class="button__icon"><i class='bx bx-plus-circle'></i></span><span class="button__text2">Adicionar</span></button>
@@ -810,6 +814,16 @@ foreach ($produtos as $p) {
             $("#totalMargem").val("R$: " + total.toFixed(2));
         }
         $("#preco, #quantidade, #margem, #desconto, #tipoDesconto").on("input change", calcTotalMargem);
+
+        // Preview total no formulário de serviços
+        function calcTotalMargemServico() {
+            var preco = parseFloat($("#precoServico").val()) || 0;
+            var qtd = parseFloat($("#quantidadeServico").val()) || 0;
+            var margem = parseFloat($("#margemServico").val().replace(',', '.')) || 0;
+            var total = preco * qtd * (1 + margem / 100);
+            $("#totalMargemServico").val(total > 0 ? "R$: " + total.toFixed(2) : "");
+        }
+        $("#precoServico, #quantidadeServico, #margemServico").on("input change", calcTotalMargemServico);
 
         // Editar margem inline na tabela de produtos
         $(document).on("keydown", ".margem-inline", function(e) {
