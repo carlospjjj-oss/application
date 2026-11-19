@@ -189,7 +189,7 @@ foreach ($produtos as $p) {
                                 </table>
                             </div>
                             <div class="span12" style="margin-left: 0; margin-top: 10px;">
-                                <form id="formDesconto" action="<?php echo base_url(); ?>index.php/vendas/adicionarDesconto" method="POST">
+                                <form id="formDesconto" action="<?php echo base_url(); ?>index.php/vendas/adicionarDesconto" method="POST" onsubmit="return false;">
                                     <input type="hidden" name="idVendas" id="idVendas" value="<?php echo $result->idVendas; ?>" />
                                     <div style="display:flex; align-items:flex-end; gap:10px; justify-content:flex-end;">
                                         <div>
@@ -209,7 +209,7 @@ foreach ($produtos as $p) {
                                             <input class="money" id="resultado" type="text" data-affixes-stay="true" data-thousands="" data-decimal="." name="resultado" value="" readonly style="width:9em;" />
                                         </div>
                                         <div>
-                                            <button class="button btn btn-success" id="btnAdicionarDesconto">
+                                            <button type="button" class="button btn btn-success" id="btnAdicionarDesconto">
                                                 <span class="button__icon"><i class='bx bx-plus-circle'></i></span><span class="button__text2">Aplicar</span>
                                             </button>
                                         </div>
