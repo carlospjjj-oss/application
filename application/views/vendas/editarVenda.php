@@ -1180,9 +1180,8 @@ foreach ($produtos as $p) {
         });
 
         $('#formVendas').on('submit', function() {
-            $('.editor').each(function() {
-                $(this).trumbowyg('syncCode');
-            });
+            $('#observacoes').val($('#observacoes').trumbowyg('html'));
+            $('#observacoes_cliente').val($('#observacoes_cliente').trumbowyg('html'));
         });
     });
 
