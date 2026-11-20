@@ -101,9 +101,6 @@
                                                 <option <?php if ($result->status == 'Finalizado') {
                                                     echo 'selected';
                                                 } ?> value="Finalizado">Finalizado</option>
-                                                <option <?php if ($result->status == 'Faturado') {
-                                                    echo 'selected';
-                                                } ?> value="Faturado">Faturado</option>
                                                 <option <?php if ($result->status == 'Cancelado') {
                                                     echo 'selected';
                                                 } ?> value="Cancelado">Cancelado</option>
@@ -130,14 +127,12 @@
                                     <input type="hidden" name="laudoTecnico" value="<?php echo htmlspecialchars($result->laudoTecnico) ?>">
 
                                     <!-- Tipo de Instalação -->
-                                    <div class="span12" style="padding: 10px 10px 0 10px; margin-top:10px;">
+                                    <div class="span12" style="padding: 1%; margin-left: 0; margin-top:10px;">
                                         <h4 style="border-bottom:1px solid #ddd; padding-bottom:8px; margin-bottom:12px;">
                                             <i class="fas fa-tools" style="color:#337ab7"></i> Tipo de Instalação
                                         </h4>
-                                    </div>
-                                    <div class="span12" style="padding: 1%; margin-left: 0">
-                                        <div class="span12" style="margin-left:0;">
-                                            <label for="tipo_instalacao">Tipo de Instalação</label>
+                                        <label for="tipo_instalacao">Tipo de Instalação</label>
+                                        <div style="margin-left:0;">
                                             <select class="span12" name="tipo_instalacao" id="tipo_instalacao">
                                                 <option value="">Selecione...</option>
                                                 <?php
@@ -156,15 +151,15 @@
                                                 <?php endforeach; ?>
                                             </select>
                                         </div>
-                                    </div>
-                                    <div class="span12" style="padding: 1%; margin-left: 0">
-                                        <div class="span3">
-                                            <label for="data_inicio_instalacao">Data Início da Instalação</label>
-                                            <input id="data_inicio_instalacao" autocomplete="off" class="span12 datepicker" type="text" name="data_inicio_instalacao" value="<?php echo (!empty($result->data_inicio_instalacao) && $result->data_inicio_instalacao != '0000-00-00') ? date('d/m/Y', strtotime($result->data_inicio_instalacao)) : '' ?>" />
-                                        </div>
-                                        <div class="span3">
-                                            <label for="data_fim_instalacao">Data Fim da Instalação</label>
-                                            <input id="data_fim_instalacao" autocomplete="off" class="span12 datepicker" type="text" name="data_fim_instalacao" value="<?php echo (!empty($result->data_fim_instalacao) && $result->data_fim_instalacao != '0000-00-00') ? date('d/m/Y', strtotime($result->data_fim_instalacao)) : '' ?>" />
+                                        <div style="display:flex; gap:12px; margin-top:10px;">
+                                            <div class="span3" style="margin-left:0;">
+                                                <label for="data_inicio_instalacao">Data Início da Instalação</label>
+                                                <input id="data_inicio_instalacao" autocomplete="off" class="span12 datepicker" type="text" name="data_inicio_instalacao" value="<?php echo (!empty($result->data_inicio_instalacao) && $result->data_inicio_instalacao != '0000-00-00') ? date('d/m/Y', strtotime($result->data_inicio_instalacao)) : '' ?>" />
+                                            </div>
+                                            <div class="span3">
+                                                <label for="data_fim_instalacao">Data Fim da Instalação</label>
+                                                <input id="data_fim_instalacao" autocomplete="off" class="span12 datepicker" type="text" name="data_fim_instalacao" value="<?php echo (!empty($result->data_fim_instalacao) && $result->data_fim_instalacao != '0000-00-00') ? date('d/m/Y', strtotime($result->data_fim_instalacao)) : '' ?>" />
+                                            </div>
                                         </div>
                                     </div>
 
