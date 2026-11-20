@@ -571,8 +571,10 @@ foreach ($produtos as $p) {
             if (!empty($condicoesFat)): ?>
             <div class="span12" style="margin-left: 0; margin-top: 6px;">
                 <label>Condições de Pagamento</label>
-                <div style="background:#f5f5f5; border:1px solid #ddd; border-radius:4px; padding:8px 10px; font-size:13px;">
-                    <?php echo implode(' &nbsp;|&nbsp; ', $condicoesFat); ?>
+                <div style="background:#f5f5f5; border:1px solid #ddd; border-radius:4px; padding:8px 10px; font-size:13px; display:flex; flex-direction:column; gap:4px;">
+                    <?php foreach ($condicoesFat as $c): ?>
+                        <div><?php echo $c; ?></div>
+                    <?php endforeach; ?>
                 </div>
             </div>
             <?php endif; ?>
@@ -598,30 +600,6 @@ foreach ($produtos as $p) {
                 </div>
             </div>
 
-            <div class="span12" style="margin-left: 0">
-                <div class="span4" style="margin-left: 0">
-                    <label for="recebido">Recebido?</label>
-                    &nbsp &nbsp &nbsp &nbsp<input id="recebido" type="checkbox" name="recebido" value="1" />
-                </div>
-                <div id="divRecebimento" class="span8" style=" display: none">
-                    <div class="span6">
-                        <label for="recebimento">Data Recebimento</label>
-                        <input class="span12 datepicker" autocomplete="off" id="recebimento" type="text" name="recebimento" />
-                    </div>
-                    <div class="span6">
-                        <label for="formaPgto">Forma Pgto</label>
-                        <select name="formaPgto" id="formaPgto" class="span12">
-                            <option value="Dinheiro">Dinheiro</option>
-                            <option value="Cartão de Crédito">Cartão de Crédito</option>
-                            <option value="Débito">Débito</option>
-                            <option value="Boleto">Boleto</option>
-                            <option value="Depósito">Depósito</option>
-                            <option value="Pix">Pix</option>
-                            <option value="Cheque">Cheque</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
         </div>
         <div class="modal-footer" style="display:flex">
             <button class="button btn btn-warning" data-dismiss="modal" aria-hidden="true" id="btn-cancelar-faturar">
