@@ -149,7 +149,7 @@ foreach ($results as $r) {
     echo '<td>' . $vencimento . '</td>';
     echo '<td>' . $status . '</td>';
     echo '<td>' . $r->observacoes . '</td>';
-    echo '<td>' . $r->forma_pgto . '</td>';
+    echo '<td style="white-space:nowrap;">' . $r->forma_pgto . '</td>';
     echo '<td> R$ ' . number_format($r->valor, 2, ',', '.') . '</td>'; //valor total sem o desconto
     echo  $r->tipo_desconto == "real" ? '<td>' . "R$ ".$r->desconto . '</td>' : ($r->tipo_desconto == "porcento" ? '<td>' . $r->desconto." %" . '</td>' : '<td>' . "0" . '</td>'); // valor do desconto
     echo $r->valor_desconto != 0 ? '<td> R$ ' . number_format($r->valor_desconto, 2, ',', '.') . '</td>' : '<td> R$ ' . number_format($r->valor, 2, ',', '.') . '</td>'; // valor total  com o desconto
@@ -371,15 +371,15 @@ echo number_format($soma_descontos_pagos, 2, ',', '.')?></strong></td>
         </div>
         <div class="modal-footer" style="display:flex;justify-content: right; align-items:center; gap:8px;">
             <div style="margin-right:auto;">
-                <label for="userfile" class="button btn btn-info" style="min-width: 110px; cursor:pointer; margin-bottom:0; display:inline-flex; align-items:center; justify-content:center; gap:4px;">
-                    <i class="bx bx-upload"></i><span id="labelNotaFiscal">Anexar NF</span>
+                <label for="userfile" class="button btn btn-info" style="min-width: 110px; cursor:pointer; margin-bottom:0;">
+                    <span class="button__icon"><i class="bx bx-upload"></i></span><span class="button__text2" id="labelNotaFiscal">Anexar NF</span>
                 </label>
                 <input type="file" id="userfile" name="userfile" accept=".pdf,.jpg,.jpeg,.png,.xml" style="display:none;">
             </div>
-            <button class="button btn btn-warning" id="cancelar_nova_receita" data-dismiss="modal" aria-hidden="true" style="min-width: 110px; display:inline-flex; align-items:center; justify-content:center; gap:4px;">
-                <i class="bx bx-x"></i><span>Cancelar</span></button>
-            <button class="button btn btn-primary" style="min-width: 110px; display:inline-flex; align-items:center; justify-content:center; gap:4px;">
-                <i class='bx bx-save'></i><span>Adicionar Registro</span></button>
+            <button class="button btn btn-warning" id="cancelar_nova_receita" data-dismiss="modal" aria-hidden="true" style="min-width: 110px;">
+                <span class="button__icon"><i class="bx bx-x"></i></span><span class="button__text2">Cancelar</span></button>
+            <button class="button btn btn-primary" style="min-width: 110px;">
+                <span class="button__icon"><i class='bx bx-save'></i></span><span class="button__text2">Adicionar Registro</span></button>
         </div>
     </form>
 </div>
@@ -496,8 +496,8 @@ echo number_format($soma_descontos_pagos, 2, ',', '.')?></strong></td>
 	    </div>
         </div>
         <div class="modal-footer" style="display:flex;justify-content: center">
-            <button class="button btn btn-warning" data-dismiss="modal" aria-hidden="true" style="display:inline-flex; align-items:center; justify-content:center; gap:4px;"><i class="bx bx-x"></i><span>Cancelar</span></button>
-            <button class="button btn btn-success" id="submitReceita" style="display:inline-flex; align-items:center; justify-content:center; gap:4px;"><i class='bx bx-plus-circle'></i><span>Adicionar Registro</span></button>
+            <button class="button btn btn-warning" data-dismiss="modal" aria-hidden="true"><span class="button__icon"><i class="bx bx-x"></i></span><span class="button__text2">Cancelar</span></button>
+            <button class="button btn btn-success" id="submitReceita"><span class="button__icon"><i class='bx bx-plus-circle'></i></span><span class="button__text2">Adicionar Registro</span></button>
         </div>
     </form>
 </div>
@@ -572,10 +572,10 @@ echo number_format($soma_descontos_pagos, 2, ',', '.')?></strong></td>
 
         </div>
         <div class="modal-footer" style="display:flex;justify-content: center">
-            <button class="button btn btn-warning" data-dismiss="modal" aria-hidden="true" style="display:inline-flex; align-items:center; justify-content:center; gap:4px;">
-                <i class="bx bx-x"></i><span>Cancelar</span></button>
-            <button class="button btn btn-danger" id="submitDespesa" style="display:inline-flex; align-items:center; justify-content:center; gap:4px;">
-                <i class='bx bx-plus-circle'></i><span>Adicionar Despesa</span></button>
+            <button class="button btn btn-warning" data-dismiss="modal" aria-hidden="true">
+                <span class="button__icon"><i class="bx bx-x"></i></span><span class="button__text2">Cancelar</span></button>
+            <button class="button btn btn-danger" id="submitDespesa">
+                <span class="button__icon"><i class='bx bx-plus-circle'></i></span><span class="button__text2">Adicionar Despesa</span></button>
         </div>
     </form>
 </div>
@@ -675,8 +675,8 @@ echo number_format($soma_descontos_pagos, 2, ',', '.')?></strong></td>
         </div>
         <div class="modal-footer" style="display:flex;justify-content: center; align-items:center; gap:8px; padding-left:16px; padding-right:16px;">
             <div style="margin-right:auto; display:flex; align-items:center;">
-                <label for="userfileEditar" class="button btn btn-info" style="min-width: 110px; cursor:pointer; margin-bottom:0; display:inline-flex; align-items:center; justify-content:center; gap:4px;">
-                    <i class="bx bx-upload"></i><span id="labelNotaFiscalEditar">Anexar NF</span>
+                <label for="userfileEditar" class="button btn btn-info" style="min-width: 110px; cursor:pointer; margin-bottom:0;">
+                    <span class="button__icon"><i class="bx bx-upload"></i></span><span class="button__text2" id="labelNotaFiscalEditar">Anexar NF</span>
                 </label>
                 <input type="file" id="userfileEditar" name="userfile" accept=".pdf,.jpg,.jpeg,.png,.xml" style="display:none;">
                 <span id="linkNotaFiscalAtual" style="margin-left:8px;"></span>
@@ -685,10 +685,10 @@ echo number_format($soma_descontos_pagos, 2, ',', '.')?></strong></td>
             <div class="controls span4" style="display:none;">
                 <input disabled id="usuarioEditar" value="" style="background-color: #f5f5f5; border-color: transparent; height: 10px">
             </div>
-            <button class="button btn btn-warning" data-dismiss="modal" aria-hidden="true" id="btnCancelarEditar" style="min-width: 110px; display:inline-flex; align-items:center; justify-content:center; gap:4px;">
-                <i class="bx bx-x"></i><span>Cancelar</span></button>
-            <button class="button btn btn-primary" style="min-width: 110px; display:inline-flex; align-items:center; justify-content:center; gap:4px;">
-                <i class='bx bx-save'></i><span>Salvar</span></button>
+            <button class="button btn btn-warning" data-dismiss="modal" aria-hidden="true" id="btnCancelarEditar" style="min-width: 110px;">
+                <span class="button__icon"><i class="bx bx-x"></i></span><span class="button__text2">Cancelar</span></button>
+            <button class="button btn btn-primary" style="min-width: 110px;">
+                <span class="button__icon"><i class='bx bx-save'></i></span><span class="button__text2">Salvar</span></button>
         </div>
     </form>
 </div>
@@ -704,8 +704,8 @@ echo number_format($soma_descontos_pagos, 2, ',', '.')?></strong></td>
         <input name="id" id="idExcluir" type="hidden" value="" />
     </div>
     <div class="modal-footer" style="display:flex;justify-content:center;">
-        <button class="button btn btn-warning" data-dismiss="modal" aria-hidden="true" id="btnCancelExcluir" style="display:inline-flex; align-items:center; justify-content:center; gap:4px;"><i class="bx bx-x"></i><span>Cancelar</span></button>
-        <button class="button btn btn-danger" id="btnExcluir" style="display:inline-flex; align-items:center; justify-content:center; gap:4px;"><i class='bx bx-trash'></i><span>Excluir</span></button>
+        <button class="button btn btn-warning" data-dismiss="modal" aria-hidden="true" id="btnCancelExcluir"><span class="button__icon"><i class="bx bx-x"></i></span><span class="button__text2">Cancelar</span></button>
+        <button class="button btn btn-danger" id="btnExcluir"><span class="button__icon"><i class='bx bx-trash'></i></span><span class="button__text2">Excluir</span></button>
     </div>
 </div>
 
@@ -937,7 +937,11 @@ echo number_format($soma_descontos_pagos, 2, ',', '.')?></strong></td>
             $("#valorEditar").val($(this).attr('valor'));
             $("#vencimentoEditar").val($(this).attr('vencimento'));
             $("#pagamentoEditar").val($(this).attr('pagamento'));
-            $("#formaPgtoEditar").val($(this).attr('formaPgto'));
+            var formaPgtoVal = $(this).attr('formaPgto');
+            if (formaPgtoVal && $("#formaPgtoEditar option[value='" + formaPgtoVal + "']").length === 0) {
+                $("#formaPgtoEditar").append('<option value="' + formaPgtoVal + '">' + formaPgtoVal + '</option>');
+            }
+            $("#formaPgtoEditar").val(formaPgtoVal);
             $("#tipoEditar").val($(this).attr('tipo'));
             $("#descontos_editar").val($(this).attr('descontos_editar'));
             $("#descontoEditar").val($(this).attr('valor_desconto_editar'));
