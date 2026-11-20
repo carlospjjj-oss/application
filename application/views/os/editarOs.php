@@ -107,7 +107,7 @@
                                         </div>
                                         <div class="span2">
                                             <label for="garantia">Garantia (dias)</label>
-                                            <input id="garantia" type="number" placeholder="0" min="0" max="9999" class="span12" name="garantia" value="<?php echo $result->garantia ?>" />
+                                            <input id="garantia" type="number" placeholder="365" min="0" max="9999" class="span12" name="garantia" value="<?php echo $result->garantia ?: 365 ?>" />
                                             <?php echo form_error('garantia'); ?>
                                         </div>
                                         <div class="span3">
