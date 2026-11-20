@@ -225,13 +225,13 @@ $(document).ready(function() {
                                 );
                             } else {
                                 erros++;
-                                console.error('Erro ao enviar ' + file.name + ': ' + resp.message);
+                                $('#uploadStatus').text('Erro: ' + resp.message);
                             }
                             enviarProximo();
                         },
-                        error: function() {
+                        error: function(xhr) {
                             erros++;
-                            console.error('Erro de conexão ao enviar ' + file.name);
+                            $('#uploadStatus').text('Erro HTTP ' + xhr.status + ': ' + xhr.responseText.substring(0, 200));
                             enviarProximo();
                         }
                     });
