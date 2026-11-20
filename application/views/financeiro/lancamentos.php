@@ -35,7 +35,7 @@ $periodo = $this->input->get('periodo');
     <?php if ($this->permission->checkPermission($this->session->userdata('permissao'), 'aLancamento')) { ?>
         <div class="" style="display:flex">
             <a href="#modalReceita" data-toggle="modal" role="button" class="button btn btn-mini btn-success" style="width: 230px">
-                <span class="button__icon"><i class='bx bx-plus-circle'></i></span><span class="button__text2" title="Cadastrar nova receita ou despesa"> Receita/Despesa</span></a>
+                <i class='bx bx-plus-circle'></i><span title="Cadastrar nova receita ou despesa"> Receita/Despesa</span></a>
         </div>
     <?php } ?>
 
@@ -91,7 +91,7 @@ $periodo = $this->input->get('periodo');
 
             <div class="span2 pull-right">
                 <button type="submit" class="button btn btn-primary btn-sm" style="min-width: 120px">
-                    <span class="button__icon"><i class='bx bx-filter-alt'></i></span><span class="button__text2">Filtrar</span></a></button>
+                    <i class='bx bx-filter-alt'></i><span>Filtrar</span></a></button>
             </div>
         </form>
     </div>
@@ -371,15 +371,15 @@ echo number_format($soma_descontos_pagos, 2, ',', '.')?></strong></td>
         </div>
         <div class="modal-footer" style="display:flex;justify-content: right; align-items:center; gap:8px;">
             <div style="margin-right:auto;">
-                <label for="userfile" class="button btn btn-info" style="min-width: 110px; cursor:pointer; margin-bottom:0; display:inline-flex; align-items:center; justify-content:center;">
-                    <span class="button__icon"><i class="bx bx-upload"></i></span><span class="button__text2" id="labelNotaFiscal">Anexar NF</span>
+                <label for="userfile" class="button btn btn-info" style="min-width: 110px; cursor:pointer; margin-bottom:0; display:inline-flex; align-items:center; justify-content:center; gap:4px;">
+                    <i class="bx bx-upload"></i><span id="labelNotaFiscal">Anexar NF</span>
                 </label>
                 <input type="file" id="userfile" name="userfile" accept=".pdf,.jpg,.jpeg,.png,.xml" style="display:none;">
             </div>
-            <button class="button btn btn-warning" id="cancelar_nova_receita" data-dismiss="modal" aria-hidden="true" style="min-width: 110px">
-            <span class="button__icon"><i class="bx bx-x"></i></span><span class="button__text2">Cancelar</span></button>
-            <button class="button btn btn-primary" style="min-width: 110px">
-            <span class="button__icon"><i class='bx bx-save'></i></span><span class="button__text2">Adicionar Registro</span></button>
+            <button class="button btn btn-warning" id="cancelar_nova_receita" data-dismiss="modal" aria-hidden="true" style="min-width: 110px; display:inline-flex; align-items:center; justify-content:center; gap:4px;">
+                <i class="bx bx-x"></i><span>Cancelar</span></button>
+            <button class="button btn btn-primary" style="min-width: 110px; display:inline-flex; align-items:center; justify-content:center; gap:4px;">
+                <i class='bx bx-save'></i><span>Adicionar Registro</span></button>
         </div>
     </form>
 </div>
@@ -496,8 +496,8 @@ echo number_format($soma_descontos_pagos, 2, ',', '.')?></strong></td>
 	    </div>
         </div>
         <div class="modal-footer" style="display:flex;justify-content: center">
-            <button class="button btn btn-warning" data-dismiss="modal" aria-hidden="true"><span class="button__icon"><i class="bx bx-x"></i></span><span class="button__text2">Cancelar</span></button>
-            <button class="button btn btn-success" id="submitReceita"><span class="button__icon"><i class='bx bx-plus-circle'></i></span><span class="button__text2">Adicionar Registro</span></button>
+            <button class="button btn btn-warning" data-dismiss="modal" aria-hidden="true" style="display:inline-flex; align-items:center; justify-content:center; gap:4px;"><i class="bx bx-x"></i><span>Cancelar</span></button>
+            <button class="button btn btn-success" id="submitReceita" style="display:inline-flex; align-items:center; justify-content:center; gap:4px;"><i class='bx bx-plus-circle'></i><span>Adicionar Registro</span></button>
         </div>
     </form>
 </div>
@@ -572,10 +572,10 @@ echo number_format($soma_descontos_pagos, 2, ',', '.')?></strong></td>
 
         </div>
         <div class="modal-footer" style="display:flex;justify-content: center">
-            <button class="button btn btn-warning" data-dismiss="modal" aria-hidden="true">
-                <span class="button__icon"><i class="bx bx-x"></i></span><span class="button__text2">Cancelar</span></button>
-            <button class="button btn btn-danger" id="submitDespesa">
-                <span class="button__icon"><i class='bx bx-plus-circle'></i></span><span class="button__text2">Adicionar Despesa</span></button>
+            <button class="button btn btn-warning" data-dismiss="modal" aria-hidden="true" style="display:inline-flex; align-items:center; justify-content:center; gap:4px;">
+                <i class="bx bx-x"></i><span>Cancelar</span></button>
+            <button class="button btn btn-danger" id="submitDespesa" style="display:inline-flex; align-items:center; justify-content:center; gap:4px;">
+                <i class='bx bx-plus-circle'></i><span>Adicionar Despesa</span></button>
         </div>
     </form>
 </div>
@@ -704,8 +704,8 @@ echo number_format($soma_descontos_pagos, 2, ',', '.')?></strong></td>
         <input name="id" id="idExcluir" type="hidden" value="" />
     </div>
     <div class="modal-footer" style="display:flex;justify-content:center;">
-        <button class="button btn btn-warning" data-dismiss="modal" aria-hidden="true" id="btnCancelExcluir"><span class="button__icon"><i class="bx bx-x"></i></span><span class="button__text2">Cancelar</span></button>
-        <button class="button btn btn-danger" id="btnExcluir"><span class="button__icon"><i class='bx bx-trash'></i></span> <span class="button__text2">Excluir</span></button>
+        <button class="button btn btn-warning" data-dismiss="modal" aria-hidden="true" id="btnCancelExcluir" style="display:inline-flex; align-items:center; justify-content:center; gap:4px;"><i class="bx bx-x"></i><span>Cancelar</span></button>
+        <button class="button btn btn-danger" id="btnExcluir" style="display:inline-flex; align-items:center; justify-content:center; gap:4px;"><i class='bx bx-trash'></i><span>Excluir</span></button>
     </div>
 </div>
 

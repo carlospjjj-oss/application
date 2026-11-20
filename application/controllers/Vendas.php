@@ -786,7 +786,7 @@ class Vendas extends MY_Controller
             // Derivar forma de pagamento automaticamente pelas condições da venda
             $formaPgto = '';
             if (!empty($vendas->cond_parcelas) && $vendas->cond_parcelas > 1) {
-                $formaPgto = 'Cartão de Crédito';
+                $formaPgto = 'Cartão de Crédito ' . intval($vendas->cond_parcelas) . 'x';
             } elseif (!empty($vendas->cond_pix) && $vendas->cond_pix > 0) {
                 $formaPgto = 'Pix';
             } elseif (!empty($vendas->cond_aceite) && $vendas->cond_aceite > 0) {
