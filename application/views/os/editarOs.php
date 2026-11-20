@@ -80,9 +80,12 @@
                                             <input id="valor" type="hidden" name="valor" value="" />
                                         </div>
                                         <div class="span6">
-                                            <label for="tecnico">Técnico / Responsável<span class="required">*</span></label>
+                                            <label for="tecnico">Técnico Responsável<span class="required">*</span></label>
                                             <input id="tecnico" class="span12" type="text" name="tecnico" value="<?php echo $result->nome ?>" />
                                             <input id="usuarios_id" class="span12" type="hidden" name="usuarios_id" value="<?php echo $result->usuarios_id ?>" />
+                                            <label for="engenheiro" style="margin-top:8px;">Engenheiro Responsável</label>
+                                            <input id="engenheiro" class="span12" type="text" name="engenheiro" value="<?php echo isset($result->engenheiro) ? $result->engenheiro : '' ?>" />
+                                            <input id="engenheiro_id" class="span12" type="hidden" name="engenheiro_id" value="<?php echo isset($result->engenheiro_id) ? $result->engenheiro_id : '' ?>" />
                                         </div>
                                     </div>
                                     <div class="span12" style="padding: 1%; margin-left: 0">
@@ -103,8 +106,13 @@
                                                 } ?> value="Faturado">Faturado</option>
                                                 <option <?php if ($result->status == 'Cancelado') {
                                                     echo 'selected';
-                                                } ?> value="Cancelado">Cancelado</option>                                                          
+                                                } ?> value="Cancelado">Cancelado</option>
                                             </select>
+                                        </div>
+                                        <div class="span2">
+                                            <label for="garantia">Garantia (dias)</label>
+                                            <input id="garantia" type="number" placeholder="0" min="0" max="9999" class="span12" name="garantia" value="<?php echo $result->garantia ?>" />
+                                            <?php echo form_error('garantia'); ?>
                                         </div>
                                         <div class="span3">
                                             <label for="dataInicial">Data Inicial<span class="required">*</span></label>
@@ -114,24 +122,50 @@
                                             <label for="dataFinal">Data Final<span class="required">*</span></label>
                                             <input id="dataFinal" autocomplete="off" class="span12 datepicker" type="text" name="dataFinal" value="<?php echo date('d/m/Y', strtotime($result->dataFinal)); ?>" />
                                         </div>
-                                        <div class="span3">
-                                            <label for="garantia">Garantia (dias)</label>
-                                            <input id="garantia" type="number" placeholder="Status s/g inserir nº/0" min="0" max="9999" class="span12" name="garantia" value="<?php echo $result->garantia ?>" />
-                                            <?php echo form_error('garantia'); ?>
-                                            <label for="termoGarantia">Termo Garantia</label>
-                                            <input id="termoGarantia" class="span12" type="text" name="termoGarantia" value="<?php echo $result->refGarantia ?>" />
-                                            <input id="garantias_id" class="span12" type="hidden" name="garantias_id" value="<?php echo $result->garantias_id ?>" />
-                                        </div>
+                                        <input type="hidden" name="garantias_id" value="<?php echo $result->garantias_id ?>" />
                                     </div>
                                     <input type="hidden" name="descricaoProduto" value="<?php echo htmlspecialchars($result->descricaoProduto) ?>">
                                     <input type="hidden" name="defeito" value="<?php echo htmlspecialchars($result->defeito) ?>">
-                                    <div class="span6" style="padding: 1%; margin-left: 0">
-                                        <label for="observacoes"><h4>Observações</h4></label>
-                                        <textarea class="span12 editor" name="observacoes" id="observacoes" cols="30" rows="5"><?php echo $result->observacoes ?></textarea>
+                                    <input type="hidden" name="observacoes" value="<?php echo htmlspecialchars($result->observacoes) ?>">
+                                    <input type="hidden" name="laudoTecnico" value="<?php echo htmlspecialchars($result->laudoTecnico) ?>">
+
+                                    <!-- Tipo de Instalação -->
+                                    <div class="span12" style="padding: 10px 10px 0 10px; margin-top:10px;">
+                                        <h4 style="border-bottom:1px solid #ddd; padding-bottom:8px; margin-bottom:12px;">
+                                            <i class="fas fa-tools" style="color:#337ab7"></i> Tipo de Instalação
+                                        </h4>
                                     </div>
-                                    <div class="span6" style="padding: 1%; margin-left: 0">
-                                        <label for="laudoTecnico"><h4>Laudo Técnico</h4></label>
-                                        <textarea class="span12 editor" name="laudoTecnico" id="laudoTecnico" cols="30" rows="5"><?php echo $result->laudoTecnico ?></textarea>
+                                    <div class="span12" style="padding: 1%; margin-left: 0">
+                                        <div class="span12" style="margin-left:0;">
+                                            <label for="tipo_instalacao">Tipo de Instalação</label>
+                                            <select class="span12" name="tipo_instalacao" id="tipo_instalacao">
+                                                <option value="">Selecione...</option>
+                                                <?php
+                                                $tiposInstalacao = [
+                                                    'INSTALAÇÃO DO CARREGADOR.',
+                                                    'INSTALAÇÃO DO CARREGADOR+ BOTOEIRA+PLACAS IT-41.',
+                                                    'INSTALAÇÃO DO CARREDOR + QUADRO VE+BOTOEIRA+PLACAS IT-41.',
+                                                    'INSTALAÇÃO DO CARREDOR + QUADRO VE+INFRAESTRUTURA+BOTOEIRA+PLACAS IT-41',
+                                                    'INSTALAÇÃO DO CARREDOR + QUADRO VE +INFRAESTRUTURA+ALIMENTADOR+BOTOEIRA+PLACAS IT-41',
+                                                    'INSTALAÇÃO DO CARREDOR + QUADRO VE +ALIMENTADOR+BOTOEIRA+PLACAS IT-41.',
+                                                    'INSTALAÇÃO DE INFRAESTRUTURA + QUADRO VE GERAL+BOTOEIRA+PLACAS IT-41',
+                                                    'INSTALAÇÃO DOS ALIMENTADORES',
+                                                ];
+                                                foreach ($tiposInstalacao as $t): ?>
+                                                <option value="<?php echo $t ?>" <?php echo (isset($result->tipo_instalacao) && $result->tipo_instalacao == $t) ? 'selected' : '' ?>><?php echo $t ?></option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="span12" style="padding: 1%; margin-left: 0">
+                                        <div class="span3">
+                                            <label for="data_inicio_instalacao">Data Início da Instalação</label>
+                                            <input id="data_inicio_instalacao" autocomplete="off" class="span12 datepicker" type="text" name="data_inicio_instalacao" value="<?php echo (!empty($result->data_inicio_instalacao) && $result->data_inicio_instalacao != '0000-00-00') ? date('d/m/Y', strtotime($result->data_inicio_instalacao)) : '' ?>" />
+                                        </div>
+                                        <div class="span3">
+                                            <label for="data_fim_instalacao">Data Fim da Instalação</label>
+                                            <input id="data_fim_instalacao" autocomplete="off" class="span12 datepicker" type="text" name="data_fim_instalacao" value="<?php echo (!empty($result->data_fim_instalacao) && $result->data_fim_instalacao != '0000-00-00') ? date('d/m/Y', strtotime($result->data_fim_instalacao)) : '' ?>" />
+                                        </div>
                                     </div>
 
                                     <!-- ===== SEÇÃO: DADOS DA INSTALAÇÃO EV ===== -->
@@ -833,24 +867,11 @@ if (!$anotacoes) {
             }
         });
 
-        $("#termoGarantia").autocomplete({
-            source: "<?php echo base_url(); ?>index.php/os/autoCompleteTermoGarantia",
-            minLength: 1,
+        $("#engenheiro").autocomplete({
+            source: "<?php echo base_url(); ?>index.php/os/autoCompleteUsuario",
+            minLength: 2,
             select: function (event, ui) {
-                if (ui.item.id) {
-                    $("#garantias_id").val(ui.item.id);
-                }
-            }
-        });
-
-        $('#termoGarantia').on('change', function () {
-            if (!$(this).val() && $("#garantias_id").val()) {
-                $("#garantias_id").val('');
-                Swal.fire({
-                    type: "success",
-                    title: "Sucesso",
-                    text: "Termo de garantia removido"
-                });
+                $("#engenheiro_id").val(ui.item.id);
             }
         });
 
@@ -1206,9 +1227,6 @@ if (!$anotacoes) {
             dateFormat: 'dd/mm/yy'
         });
 
-        $('.editor').trumbowyg({
-            lang: 'pt_br',
-            semantic: { 'strikethrough': 's', }
-        });
+        // editor removido (observacoes/laudoTecnico ocultos)
     });
 </script>

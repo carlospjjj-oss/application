@@ -247,6 +247,10 @@ class Os extends MY_Controller
                 'check_orientacao' => $this->input->post('check_orientacao') ? 1 : 0,
                 'usuarios_id' => $this->input->post('usuarios_id'),
                 'clientes_id' => $this->input->post('clientes_id'),
+                'engenheiro_id' => $this->input->post('engenheiro_id') ?: null,
+                'tipo_instalacao' => $this->input->post('tipo_instalacao') ?: null,
+                'data_inicio_instalacao' => $this->_parseDate($this->input->post('data_inicio_instalacao')),
+                'data_fim_instalacao'    => $this->_parseDate($this->input->post('data_fim_instalacao')),
             ];
             $os = $this->os_model->getById($this->input->post('idOs'));
 
@@ -1203,5 +1207,15 @@ class Os extends MY_Controller
         } else {
             echo json_encode(['result' => false]);
         }
+    }
+
+    private function _parseDate($val)
+    {
+        if (empty($val)) return null;
+        $parts = explode('/', $val);
+        if (count($parts) === 3) {
+            return $parts[2] . '-' . $parts[1] . '-' . $parts[0];
+        }
+        return null;
     }
 }
