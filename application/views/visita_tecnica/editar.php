@@ -194,19 +194,20 @@ $(document).ready(function() {
             function enviarUpload() {
                 $('#uploadStatus').text('Enviando ' + (enviados + erros + 1) + '/' + total + '...');
 
-                var formData = new FormData();
-                formData.append('midia', file);
-                formData.append('visita_tecnica_id', visitaId);
-                formData.append('<?php echo $this->security->get_csrf_token_name(); ?>', $('#csrfMidiaToken').val());
+                $.get("<?php echo base_url(); ?>index.php/visita_tecnica/getCsrfToken", function(tokenResp) {
+                    var formData = new FormData();
+                    formData.append('midia', file);
+                    formData.append('visita_tecnica_id', visitaId);
+                    formData.append('<?php echo $this->security->get_csrf_token_name(); ?>', tokenResp.csrf_hash);
 
-                $.ajax({
-                    url: "<?php echo base_url(); ?>index.php/visita_tecnica/uploadMidia",
-                    type: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    dataType: 'json',
-                    success: function(resp) {
+                    $.ajax({
+                        url: "<?php echo base_url(); ?>index.php/visita_tecnica/uploadMidia",
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        dataType: 'json',
+                        success: function(resp) {
                             if (resp.csrf_hash) {
                                 $('#csrfMidiaToken').val(resp.csrf_hash);
                             }
@@ -230,12 +231,12 @@ $(document).ready(function() {
                         },
                         error: function(xhr) {
                             erros++;
-                            var msg = 'HTTP ' + xhr.status + ' | status: ' + xhr.statusText + ' | resp: ' + xhr.responseText.substring(0, 500);
-                            alert(msg);
+                            var msg = 'HTTP ' + xhr.status + ': ' + xhr.responseText.substring(0, 300);
                             $('#uploadStatus').text('Erro: ' + msg);
                             enviarProximo();
                         }
-                });
+                    });
+                }, 'json');
             }
 
             if (isVideo) {
@@ -264,15 +265,17 @@ $(document).ready(function() {
         if (!confirm('Deseja realmente excluir este arquivo?')) return;
         var $item = $(this).closest('.midia-item');
         var id = $item.data('id');
-        var csrfName = "<?php echo $this->security->get_csrf_token_name(); ?>";
-        var postData = { id: id };
-        postData[csrfName] = $('#csrfMidiaToken').val();
-        $.post("<?php echo base_url(); ?>index.php/visita_tecnica/excluirMidia", postData, function(resp) {
-            if (resp.success) {
-                $item.remove();
-            } else {
-                alert('Erro ao excluir arquivo.');
-            }
+        $.get("<?php echo base_url(); ?>index.php/visita_tecnica/getCsrfToken", function(tokenResp) {
+            var csrfName = "<?php echo $this->security->get_csrf_token_name(); ?>";
+            var postData = { id: id };
+            postData[csrfName] = tokenResp.csrf_hash;
+            $.post("<?php echo base_url(); ?>index.php/visita_tecnica/excluirMidia", postData, function(resp) {
+                if (resp.success) {
+                    $item.remove();
+                } else {
+                    alert('Erro ao excluir arquivo.');
+                }
+            }, 'json');
         }, 'json');
     });
 });
