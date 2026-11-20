@@ -1185,5 +1185,12 @@ echo number_format($soma_descontos_pagos, 2, ',', '.')?></strong></td>
 		$('#add_receita').mouseover(function(event){
 			valorParcelas();
 		});
+
+        // Impedir que ESC redirecione para o dashboard ao fechar modais
+        $(document).on('hidden', '.modal', function() {
+            if (window.location.hash) {
+                history.replaceState(null, null, window.location.pathname + window.location.search);
+            }
+        });
     });
 </script>
