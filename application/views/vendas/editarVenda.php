@@ -810,10 +810,26 @@ foreach ($produtos as $p) {
             }
         });
         $('#chkNfMo').click(function() {
-            $(this).is(':checked') ? $('#divNfMo').show() : $('#divNfMo').hide();
+            if ($(this).is(':checked')) {
+                $('#divNfMo').show();
+                // Preenche com total de serviços
+                var totalServicos = $('#total-servicos').val() || '0.00';
+                $('#nf_mo_valor').val(parseFloat(totalServicos).toFixed(2));
+            } else {
+                $('#divNfMo').hide();
+                $('#nf_mo_valor').val('');
+            }
         });
         $('#chkNfMt').click(function() {
-            $(this).is(':checked') ? $('#divNfMt').show() : $('#divNfMt').hide();
+            if ($(this).is(':checked')) {
+                $('#divNfMt').show();
+                // Preenche com total de produtos
+                var totalProdutos = $('#total-venda').val() || '0.00';
+                $('#nf_mt_valor').val(parseFloat(totalProdutos).toFixed(2));
+            } else {
+                $('#divNfMt').hide();
+                $('#nf_mt_valor').val('');
+            }
         });
         $(document).on('click', '#btn-faturar', function(event) {
             event.preventDefault();
