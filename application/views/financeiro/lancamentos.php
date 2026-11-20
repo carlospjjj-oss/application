@@ -24,7 +24,28 @@ $periodo = $this->input->get('periodo');
         resize: vertical;
     }
 
-    /* Botões dos modais: tudo controlado por inline style nos elementos */
+    /* Força botões .button.btn a usarem inline-flex (Bootstrap sobrescreve display:flex com inline-block) */
+    .button.btn, label.button.btn {
+        display: inline-flex !important;
+        align-items: stretch !important;
+        padding: 0 !important;
+        height: 30px !important;
+        vertical-align: middle;
+    }
+    .button.btn .button__icon {
+        display: inline-flex !important;
+        align-items: center !important;
+        padding: 0 8px !important;
+        font-size: 1.5em;
+        background: rgba(0,0,0,0.08);
+        height: 100%;
+    }
+    .button.btn .button__text2 {
+        display: inline-flex !important;
+        align-items: center !important;
+        padding: 0 7px !important;
+        height: 100%;
+    }
 </style>
 
 <div class="new122">
@@ -37,7 +58,7 @@ $periodo = $this->input->get('periodo');
     <?php if ($this->permission->checkPermission($this->session->userdata('permissao'), 'aLancamento')) { ?>
         <div class="" style="display:flex">
             <a href="#modalReceita" data-toggle="modal" role="button" class="button btn btn-mini btn-success" style="width: 230px">
-                <i class='bx bx-plus-circle'></i><span title="Cadastrar nova receita ou despesa"> Receita/Despesa</span></a>
+                <span class="button__icon"><i class='bx bx-plus-circle'></i></span><span class="button__text2" title="Cadastrar nova receita ou despesa">Receita/Despesa</span></a>
         </div>
     <?php } ?>
 
@@ -571,7 +592,7 @@ echo number_format($soma_descontos_pagos, 2, ',', '.')?></strong></td>
             </div>
 
         </div>
-        <div class="modal-footer" style="display:flex;justify-content: center">
+        <div class="modal-footer" style="text-align:center">
             <button class="button btn btn-warning" data-dismiss="modal" aria-hidden="true">
                 <span class="button__icon"><i class="bx bx-x"></i></span><span class="button__text2">Cancelar</span></button>
             <button class="button btn btn-danger" id="submitDespesa">
