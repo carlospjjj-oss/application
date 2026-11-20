@@ -391,18 +391,51 @@ foreach ($servicos as $s) {
                                 <div class="span12 pull-left" id="divAnexos" style="margin-left: 0">
                                     <?php
                                     foreach ($anexos as $a) {
-                                        if ($a->thumb == null) {
-                                            $thumb = base_url() . 'assets/img/icon-file.png';
-                                            $link = base_url() . 'assets/img/icon-file.png';
+                                        $link     = $a->url . '/' . $a->anexo;
+                                        $filename = $a->anexo;
+                                        $ext      = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+                                        $isImage  = in_array($ext, ['jpg','jpeg','png','gif','bmp','webp','svg']);
+                                        $isPdf    = ($ext === 'pdf');
+
+                                        if ($isImage) {
+                                            // Imagem: mostra a própria imagem como preview
+                                            $preview = '<img src="' . $link . '" alt="' . htmlspecialchars($filename) . '" style="width:100%;height:130px;object-fit:cover;border-radius:4px 4px 0 0;">';
+                                        } elseif ($isPdf) {
+                                            // PDF: ícone vermelho
+                                            $preview = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:130px;background:#fff5f5;border-radius:4px 4px 0 0;">
+                                                            <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                <rect x="6" y="2" width="28" height="36" rx="3" fill="#e53935"/>
+                                                                <rect x="6" y="2" width="28" height="36" rx="3" fill="#ff5252" fill-opacity=".3"/>
+                                                                <path d="M28 2v10h10" fill="none" stroke="#fff" stroke-width="1.5"/>
+                                                                <path d="M28 2l10 10H28V2z" fill="#fff" fill-opacity=".5"/>
+                                                                <text x="24" y="30" text-anchor="middle" fill="white" font-size="8" font-weight="bold" font-family="Arial">PDF</text>
+                                                            </svg>
+                                                            <span style="font-size:10px;color:#e53935;margin-top:4px;font-weight:600;">PDF</span>
+                                                        </div>';
                                         } else {
-                                            $thumb = $a->url . '/thumbs/' . $a->thumb;
-                                            $link = $a->url . '/' . $a->anexo;
+                                            // Outros: ícone genérico por extensão com cor
+                                            $iconColors = ['doc'=>'#1565c0','docx'=>'#1565c0','xls'=>'#2e7d32','xlsx'=>'#2e7d32','ppt'=>'#e65100','pptx'=>'#e65100','txt'=>'#546e7a','csv'=>'#2e7d32'];
+                                            $color = isset($iconColors[$ext]) ? $iconColors[$ext] : '#546e7a';
+                                            $extUp = strtoupper($ext ?: 'FILE');
+                                            $preview = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:130px;background:#f5f5f5;border-radius:4px 4px 0 0;">
+                                                            <svg width="48" height="56" viewBox="0 0 48 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                <rect x="4" y="2" width="30" height="40" rx="3" fill="' . $color . '"/>
+                                                                <path d="M28 2v10h10" fill="none" stroke="#fff" stroke-width="1.5"/>
+                                                                <path d="M28 2l10 10H28V2z" fill="#fff" fill-opacity=".4"/>
+                                                                <text x="19" y="31" text-anchor="middle" fill="white" font-size="7" font-weight="bold" font-family="Arial">' . $extUp . '</text>
+                                                            </svg>
+                                                            <span style="font-size:10px;color:' . $color . ';margin-top:2px;font-weight:600;">' . $extUp . '</span>
+                                                        </div>';
                                         }
-                                        echo '<div class="span3" style="min-height: 150px; margin-left: 0">
-                                                    <a style="min-height: 150px;" href="#modal-anexo" imagem="' . $a->idAnexos . '" link="' . $link . '" role="button" class="btn anexo span12" data-toggle="modal">
-                                                        <img src="' . $thumb . '" alt="">
-                                                    </a>
-                                                </div>';
+
+                                        echo '<div class="span3" style="margin-left:0; margin-bottom:14px;">
+                                                <a href="' . $link . '" target="_blank" title="' . htmlspecialchars($filename) . '" style="display:block;border:1px solid #ddd;border-radius:6px;overflow:hidden;text-decoration:none;color:#333;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.08);">
+                                                    ' . $preview . '
+                                                    <div style="padding:6px 8px;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-top:1px solid #eee;" title="' . htmlspecialchars($filename) . '">
+                                                        ' . htmlspecialchars($filename) . '
+                                                    </div>
+                                                </a>
+                                            </div>';
                                     }
 ?>
                                 </div>
