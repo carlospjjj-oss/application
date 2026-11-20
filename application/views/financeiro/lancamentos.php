@@ -30,7 +30,9 @@ $periodo = $this->input->get('periodo');
         align-items: stretch !important;
         padding: 0 !important;
         height: 30px !important;
-        vertical-align: middle;
+        vertical-align: bottom;
+        line-height: 1 !important;
+        margin-bottom: 0 !important;
     }
     .button.btn .button__icon {
         display: inline-flex !important;
