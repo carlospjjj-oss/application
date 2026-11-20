@@ -487,9 +487,8 @@ foreach ($produtos as $p) {
                                                     <input type="number" id="condParcelas" min="1" max="24" value="<?php echo $result->cond_parcelas > 0 ? $result->cond_parcelas : '' ?>" placeholder="Nº" style="width:44px; display:inline-block; text-align:center;" />
                                                     x Sem Juros
                                                 </span>
-                                                <div id="wrapParcelado" style="display:flex; align-items:center; gap:4px; <?php echo $result->cond_parcelado > 0 ? '' : 'visibility:hidden;' ?>">
-                                                    <span style="color:#666;">R$</span>
-                                                    <input type="text" id="condParcelado" placeholder="0,00" value="<?php echo $result->cond_parcelado > 0 ? number_format($result->cond_parcelado,2,',','.') : '' ?>" style="width:100px; text-align:right;" />
+                                                <div id="wrapParcelado" style="display:none;">
+                                                    <input type="hidden" id="condParcelado" value="<?php echo $result->cond_parcelado > 0 ? number_format($result->cond_parcelado,2,',','.') : '' ?>" />
                                                 </div>
                                                 <strong id="condParceladoLabel" style="color:#2f2b53; min-width:110px; text-align:right;"></strong>
                                             </div>
@@ -1254,8 +1253,7 @@ foreach ($produtos as $p) {
             else { $('#wrapPix').css('visibility','hidden'); $('#condPixPct').val(''); $('#condPixLabel').text(''); }
         });
         $('#chkParcelado').on('change.cond', function() {
-            if ($(this).is(':checked')) { $('#wrapParcelado').css('visibility','visible'); }
-            else { $('#wrapParcelado').css('visibility','hidden'); $('#condParcelado').val(''); atualizarParcelaLabel(); }
+            if (!$(this).is(':checked')) { $('#condParcelado').val(''); atualizarParcelaLabel(); }
         });
 
         $('#condAceitePct').on('input.cond', atualizarLabelAceite);
