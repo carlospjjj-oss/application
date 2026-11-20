@@ -127,9 +127,9 @@
 
                                     <!-- Checklist: Documentação e entrega -->
                                     <div class="span12" style="margin-left:0; margin-top:14px; padding:0;">
-                                        <div style="background:#eef1ff; border:1px solid #c8d0f0; border-radius:8px; padding:16px 18px;">
-                                            <div style="font-size:11px; font-weight:700; color:#2c4bff; letter-spacing:.05em; text-transform:uppercase; margin-bottom:12px;">
-                                                &#10003; Documentação e entrega ao cliente, síndico ou responsável
+                                        <div style="background:transparent; border:1px solid #ddd; border-radius:8px; padding:16px 18px;">
+                                            <div style="font-size:13px; font-weight:700; color:#333; margin-bottom:12px;">
+                                                Documentação e entrega ao cliente, síndico ou responsável
                                             </div>
                                             <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:7px 14px;">
                                                 <?php
