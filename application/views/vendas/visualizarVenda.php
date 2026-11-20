@@ -178,13 +178,41 @@ if (!empty($result->cidade) || !empty($result->estado) || !empty($result->cep)) 
                                 </table>
                                 <hr>
                                 <div style="text-align: right;">
+                                <?php
+                                    $totalFinal = ($result->valor_desconto != 0 && $result->desconto != 0) ? $result->valor_desconto : $totalProdutos;
+                                ?>
                                 <?php if ($result->valor_desconto != 0 && $result->desconto != 0): ?>
                                     <h4>SUBTOTAL: R$ <?php echo number_format($totalProdutos, 2, ',', '.'); ?></h4>
                                     <h4>DESCONTO: R$ <?php echo number_format($result->valor_desconto - $totalProdutos, 2, ',', '.'); ?></h4>
                                     <h4>TOTAL: R$ <?php echo number_format($result->valor_desconto, 2, ',', '.'); ?></h4>
-
                                 <?php else: ?>
                                     <h4 style="text-align: right">TOTAL: R$ <?php echo number_format($totalProdutos, 2, ',', '.'); ?></h4>
+                                <?php endif; ?>
+
+                                <?php
+                                $condicoes = [];
+                                if (!empty($result->cond_aceite) && $result->cond_aceite > 0)
+                                    $condicoes[] = ['nome' => 'Pagamento no Aceite', 'valor' => $result->cond_aceite];
+                                if (!empty($result->cond_entrega_serv) && $result->cond_entrega_serv > 0)
+                                    $condicoes[] = ['nome' => 'Pagamento na Entrega dos Serviços', 'valor' => $result->cond_entrega_serv];
+                                if (!empty($result->cond_pix) && $result->cond_pix > 0)
+                                    $condicoes[] = ['nome' => 'Pagamento PIX (' . intval($result->cond_pix_pct) . '% desc.)', 'valor' => $result->cond_pix];
+                                if (!empty($result->cond_parcelas) && $result->cond_parcelas > 0) {
+                                    $valParc = !empty($result->cond_parcelado) && $result->cond_parcelado > 0 ? $result->cond_parcelado : $totalFinal;
+                                    $condicoes[] = ['nome' => 'Parcelado em ' . $result->cond_parcelas . 'x Sem Juros', 'valor' => $valParc, 'parcelas' => $result->cond_parcelas];
+                                }
+                                if (!empty($condicoes)): ?>
+                                <hr style="margin:8px 0;">
+                                <div style="text-align:right;">
+                                    <strong>Condições de Pagamento:</strong><br>
+                                    <?php foreach ($condicoes as $c): ?>
+                                        <?php echo $c['nome']; ?>:
+                                        <strong>R$ <?php echo number_format($c['valor'], 2, ',', '.'); ?></strong>
+                                        <?php if (isset($c['parcelas'])): ?>
+                                            &nbsp;(<?php echo $c['parcelas']; ?>x de R$ <?php echo number_format($c['valor'] / $c['parcelas'], 2, ',', '.'); ?>)
+                                        <?php endif; ?><br>
+                                    <?php endforeach; ?>
+                                </div>
                                 <?php endif; ?>
                                 </div>
                             <?php endif; ?>
