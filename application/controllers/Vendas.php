@@ -783,6 +783,18 @@ class Vendas extends MY_Controller
 
             $vendas = $this->vendas_model->getById($venda_id);
 
+            // Derivar forma de pagamento automaticamente pelas condições da venda
+            $formaPgto = '';
+            if (!empty($vendas->cond_parcelas) && $vendas->cond_parcelas > 1) {
+                $formaPgto = 'Cartão de Crédito';
+            } elseif (!empty($vendas->cond_pix) && $vendas->cond_pix > 0) {
+                $formaPgto = 'Pix';
+            } elseif (!empty($vendas->cond_aceite) && $vendas->cond_aceite > 0) {
+                $formaPgto = 'Dinheiro';
+            } elseif (!empty($vendas->cond_entrega_serv) && $vendas->cond_entrega_serv > 0) {
+                $formaPgto = 'Dinheiro';
+            }
+
             $valorTotal = getAmount($this->input->post('valor'));
             $tipoDesconto = $vendas->tipo_desconto;
             $valorDesconto = $vendas->desconto;
@@ -810,7 +822,7 @@ class Vendas extends MY_Controller
                 'data_pagamento' => $recebimento,
                 'baixado' => $this->input->post('recebido') == 1 ? true : false,
                 'cliente_fornecedor' => set_value('cliente'),
-                'forma_pgto' => $this->input->post('formaPgto'),
+                'forma_pgto' => $formaPgto,
                 'tipo' => 'receita',
                 'usuarios_id' => $this->session->userdata('id_admin'),
             ];

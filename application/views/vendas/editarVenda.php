@@ -555,23 +555,6 @@ foreach ($produtos as $p) {
                     <label for="vencimento">Data Entrada*</label>
                     <input class="span12 datepicker" autocomplete="off" id="vencimento" type="text" name="vencimento" />
                 </div>
-                <div class="span7" style="margin-left: 4px;">
-                    <label for="formaPgto">Forma de Pagamento</label>
-                    <select name="formaPgto" id="formaPgtoFaturar" class="span12">
-                        <option value="">-- Selecione --</option>
-                        <option value="Dinheiro">Dinheiro</option>
-                        <option value="Pix">Pix</option>
-                        <option value="Boleto">Boleto</option>
-                        <option value="Cartão de Crédito">Cartão de Crédito</option>
-                        <option value="Cartão de Débito">Cartão de Débito</option>
-                        <option value="Cheque">Cheque</option>
-                        <option value="Pagamento via DDA">Pagamento via DDA</option>
-                        <option value="Depósito">Depósito</option>
-                        <option value="Transferência DOC">Transferência DOC</option>
-                        <option value="Transferência TED">Transferência TED</option>
-                        <option value="Promissória">Promissória</option>
-                    </select>
-                </div>
             </div>
             <?php
             $condicoesFat = [];
