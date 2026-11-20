@@ -86,7 +86,7 @@
 
                 <hr>
                 <h4>Fotos e Vídeos (GED)</h4>
-                <p class="text-muted">Máximo 6 fotos e 3 vídeos (até 40 segundos cada) por visita.</p>
+                <p class="text-muted">Máximo 6 fotos e 3 vídeos (até 1:30 cada) por visita.</p>
 
                 <div class="span12" style="margin-left:0;">
                     <label for="inputMidia" class="btn btn-success">
@@ -243,8 +243,8 @@ $(document).ready(function() {
                 videoEl.preload = 'metadata';
                 videoEl.onloadedmetadata = function() {
                     window.URL.revokeObjectURL(videoEl.src);
-                    if (videoEl.duration > 40) {
-                        alert('O vídeo "' + file.name + '" deve ter no máximo 40 segundos. Duração: ' + Math.round(videoEl.duration) + 's');
+                    if (videoEl.duration > 90) {
+                        alert('O vídeo "' + file.name + '" deve ter no máximo 1:30. Duração: ' + Math.round(videoEl.duration) + 's');
                         erros++;
                         enviarProximo();
                     } else {
