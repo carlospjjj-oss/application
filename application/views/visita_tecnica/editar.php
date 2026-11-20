@@ -231,7 +231,16 @@ $(document).ready(function() {
                         },
                         error: function(xhr) {
                             erros++;
-                            $('#uploadStatus').text('Erro HTTP ' + xhr.status + ': ' + xhr.responseText.substring(0, 200));
+                            var msg = 'Erro HTTP ' + xhr.status;
+                            if (xhr.responseText) {
+                                try {
+                                    var r = JSON.parse(xhr.responseText);
+                                    if (r.message) msg += ': ' + r.message;
+                                } catch(e) {
+                                    msg += ' - ' + xhr.responseText.substring(0, 300);
+                                }
+                            }
+                            $('#uploadStatus').text(msg);
                             enviarProximo();
                         }
                     });
