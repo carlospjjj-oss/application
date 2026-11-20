@@ -151,7 +151,7 @@
                                                 <?php endforeach; ?>
                                             </select>
                                         </div>
-                                        <div style="display:flex; gap:12px; margin-top:10px;">
+                                        <div class="row-fluid" style="margin-top:10px;">
                                             <div class="span3" style="margin-left:0;">
                                                 <label for="data_inicio_instalacao">Data Início da Instalação</label>
                                                 <input id="data_inicio_instalacao" autocomplete="off" class="span12 datepicker" type="text" name="data_inicio_instalacao" value="<?php echo (!empty($result->data_inicio_instalacao) && $result->data_inicio_instalacao != '0000-00-00') ? date('d/m/Y', strtotime($result->data_inicio_instalacao)) : '' ?>" />
