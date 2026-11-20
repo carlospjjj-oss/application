@@ -128,7 +128,18 @@ class VisitaTecnica extends MY_Controller
 
         $file = $_FILES['midia'] ?? null;
         if (!$file || $file['error'] !== UPLOAD_ERR_OK) {
-            echo json_encode(['success' => false, 'message' => 'Nenhum arquivo recebido ou erro no upload.']);
+            $erros = [
+                UPLOAD_ERR_INI_SIZE   => 'Arquivo excede upload_max_filesize do PHP (' . ini_get('upload_max_filesize') . ').',
+                UPLOAD_ERR_FORM_SIZE  => 'Arquivo excede MAX_FILE_SIZE do formulário.',
+                UPLOAD_ERR_PARTIAL    => 'Upload incompleto.',
+                UPLOAD_ERR_NO_FILE    => 'Nenhum arquivo enviado.',
+                UPLOAD_ERR_NO_TMP_DIR => 'Pasta temporária não encontrada.',
+                UPLOAD_ERR_CANT_WRITE => 'Falha ao gravar no disco.',
+                UPLOAD_ERR_EXTENSION  => 'Upload bloqueado por extensão PHP.',
+            ];
+            $code = $file['error'] ?? -1;
+            $msg  = isset($erros[$code]) ? $erros[$code] : 'Erro desconhecido (código ' . $code . '). post_max_size=' . ini_get('post_max_size');
+            echo json_encode(['success' => false, 'message' => $msg]);
             return;
         }
 
