@@ -1218,7 +1218,8 @@ foreach ($produtos as $p) {
             } else { $('#condPixLabel').text(''); }
         }
         function atualizarParcelaLabel() {
-            var total = parseFloat($('#condParcelado').val().replace(',','.')) || 0;
+            var valManual = parseFloat($('#condParcelado').val().replace(',','.')) || 0;
+            var total = valManual > 0 ? valManual : condTotalGeral;
             var parcelas = parseInt($('#condParcelas').val()) || 0;
             $('#condParceladoLabel').text(total > 0 && parcelas > 0
                 ? '→ ' + parcelas + 'x de R$ ' + (total/parcelas).toFixed(2).replace('.',',') : '');
