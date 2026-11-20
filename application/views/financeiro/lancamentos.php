@@ -371,13 +371,11 @@ echo number_format($soma_descontos_pagos, 2, ',', '.')?></strong></td>
             </div>
 
         </div>
-        <div class="modal-footer" style="display:flex;justify-content:flex-end;align-items:center;gap:8px;padding:8px 16px;">
-            <div style="margin-right:auto;">
-                <label for="userfile" class="button btn btn-info" style="min-width:110px;cursor:pointer;margin-bottom:0;">
-                    <span class="button__icon"><i class="bx bx-upload"></i></span><span class="button__text2" id="labelNotaFiscal">Anexar NF</span>
-                </label>
-                <input type="file" id="userfile" name="userfile" accept=".pdf,.jpg,.jpeg,.png,.xml" style="display:none;">
-            </div>
+        <div class="modal-footer">
+            <label for="userfile" class="button btn btn-info pull-left" style="cursor:pointer;margin-bottom:0;">
+                <span class="button__icon"><i class="bx bx-upload"></i></span><span class="button__text2" id="labelNotaFiscal">Anexar NF</span>
+            </label>
+            <input type="file" id="userfile" name="userfile" accept=".pdf,.jpg,.jpeg,.png,.xml" style="display:none;">
             <button class="button btn btn-warning" id="cancelar_nova_receita" data-dismiss="modal" aria-hidden="true">
                 <span class="button__icon"><i class="bx bx-x"></i></span><span class="button__text2">Cancelar</span></button>
             <button class="button btn btn-primary">
@@ -497,7 +495,7 @@ echo number_format($soma_descontos_pagos, 2, ',', '.')?></strong></td>
             
 	    </div>
         </div>
-        <div class="modal-footer" style="display:flex;justify-content:center;align-items:center;gap:8px;padding:8px 16px;">
+        <div class="modal-footer" style="text-align:center;">
             <button class="button btn btn-warning" data-dismiss="modal" aria-hidden="true"><span class="button__icon"><i class="bx bx-x"></i></span><span class="button__text2">Cancelar</span></button>
             <button class="button btn btn-success" id="submitReceita" style="display:inline-flex!important;align-items:stretch!important;padding:0!important;min-height:30px!important;"><span class="button__icon" style="display:inline-flex;align-items:center;justify-content:center;align-self:stretch;padding:0 8px;font-size:1.5em;background:rgba(0,0,0,0.08);"><i class='bx bx-plus-circle'></i></span><span class="button__text2" style="display:inline-flex;align-items:center;padding:0 7px;">Adicionar Registro</span></button>
         </div>
@@ -675,14 +673,12 @@ echo number_format($soma_descontos_pagos, 2, ',', '.')?></strong></td>
             </div>
 
         </div>
-        <div class="modal-footer" style="display:flex;justify-content:center;align-items:center;gap:8px;padding:8px 16px;">
-            <div style="margin-right:auto;display:flex;align-items:center;">
-                <label for="userfileEditar" class="button btn btn-info" style="min-width:110px;cursor:pointer;margin-bottom:0;">
-                    <span class="button__icon"><i class="bx bx-upload"></i></span><span class="button__text2" id="labelNotaFiscalEditar">Anexar NF</span>
-                </label>
-                <input type="file" id="userfileEditar" name="userfile" accept=".pdf,.jpg,.jpeg,.png,.xml" style="display:none;">
-                <span id="linkNotaFiscalAtual" style="margin-left:8px;"></span>
-            </div>
+        <div class="modal-footer">
+            <label for="userfileEditar" class="button btn btn-info pull-left" style="cursor:pointer;margin-bottom:0;">
+                <span class="button__icon"><i class="bx bx-upload"></i></span><span class="button__text2" id="labelNotaFiscalEditar">Anexar NF</span>
+            </label>
+            <input type="file" id="userfileEditar" name="userfile" accept=".pdf,.jpg,.jpeg,.png,.xml" style="display:none;">
+            <span id="linkNotaFiscalAtual" style="float:left;margin-left:8px;line-height:30px;"></span>
             <label for="documento" class="control-label" style="display:none;">Modificado por: </label>
             <div class="controls span4" style="display:none;">
                 <input disabled id="usuarioEditar" value="" style="background-color: #f5f5f5; border-color: transparent; height: 10px">
@@ -705,7 +701,7 @@ echo number_format($soma_descontos_pagos, 2, ',', '.')?></strong></td>
         <h5 style="text-align: center">Deseja realmente excluir esse lançamento?</h5>
         <input name="id" id="idExcluir" type="hidden" value="" />
     </div>
-    <div class="modal-footer" style="display:flex;justify-content:center;align-items:center;gap:8px;padding:8px 16px;">
+    <div class="modal-footer" style="text-align:center;">
         <button class="button btn btn-warning" data-dismiss="modal" aria-hidden="true" id="btnCancelExcluir"><span class="button__icon"><i class="bx bx-x"></i></span><span class="button__text2">Cancelar</span></button>
         <button class="button btn btn-danger" id="btnExcluir"><span class="button__icon"><i class='bx bx-trash'></i></span><span class="button__text2">Excluir</span></button>
     </div>
