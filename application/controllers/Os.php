@@ -251,6 +251,20 @@ class Os extends MY_Controller
                 'tipo_instalacao' => $this->input->post('tipo_instalacao') ?: null,
                 'data_inicio_instalacao' => $this->_parseDate($this->input->post('data_inicio_instalacao')),
                 'data_fim_instalacao'    => $this->_parseDate($this->input->post('data_fim_instalacao')),
+                // Checklist documentação
+                'doc_projeto_eletrico'           => $this->input->post('doc_projeto_eletrico')           ? 1 : 0,
+                'doc_as_built'                   => $this->input->post('doc_as_built')                   ? 1 : 0,
+                'doc_croqui'                     => $this->input->post('doc_croqui')                     ? 1 : 0,
+                'doc_diagrama_unifilar'          => $this->input->post('doc_diagrama_unifilar')          ? 1 : 0,
+                'doc_memorial_descritivo'        => $this->input->post('doc_memorial_descritivo')        ? 1 : 0,
+                'doc_memorial_calculo'           => $this->input->post('doc_memorial_calculo')           ? 1 : 0,
+                'doc_laudo_tecnico'              => $this->input->post('doc_laudo_tecnico')              ? 1 : 0,
+                'doc_art_projeto'                => $this->input->post('doc_art_projeto')                ? 1 : 0,
+                'doc_art_execucao'               => $this->input->post('doc_art_execucao')               ? 1 : 0,
+                'doc_relatorio_fotografico'      => $this->input->post('doc_relatorio_fotografico')      ? 1 : 0,
+                'doc_relatorio_comissionamento'  => $this->input->post('doc_relatorio_comissionamento')  ? 1 : 0,
+                'doc_orientacao_operacao'        => $this->input->post('doc_orientacao_operacao')        ? 1 : 0,
+                'doc_orientacao_emergencia'      => $this->input->post('doc_orientacao_emergencia')      ? 1 : 0,
             ];
             $os = $this->os_model->getById($this->input->post('idOs'));
 

@@ -125,6 +125,42 @@
                                     <input type="hidden" name="observacoes" value="<?php echo htmlspecialchars($result->observacoes) ?>">
                                     <input type="hidden" name="laudoTecnico" value="<?php echo htmlspecialchars($result->laudoTecnico) ?>">
 
+                                    <!-- Checklist: Documentação e entrega -->
+                                    <div class="span12" style="margin-left:0; margin-top:14px; padding:0;">
+                                        <div style="background:#eef1ff; border:1px solid #c8d0f0; border-radius:8px; padding:16px 18px;">
+                                            <div style="font-size:11px; font-weight:700; color:#2c4bff; letter-spacing:.05em; text-transform:uppercase; margin-bottom:12px;">
+                                                &#10003; Documentação e entrega ao cliente, síndico ou responsável
+                                            </div>
+                                            <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:7px 14px;">
+                                                <?php
+                                                $checklistDocs = [
+                                                    'doc_projeto_eletrico'        => 'Projeto elétrico',
+                                                    'doc_as_built'                => 'Projeto As-Built',
+                                                    'doc_croqui'                  => 'Croqui',
+                                                    'doc_diagrama_unifilar'       => 'Diagrama unifilar',
+                                                    'doc_memorial_descritivo'     => 'Memorial descritivo',
+                                                    'doc_memorial_calculo'        => 'Memorial de cálculo',
+                                                    'doc_laudo_tecnico'           => 'Laudo técnico',
+                                                    'doc_art_projeto'             => 'ART de projeto',
+                                                    'doc_art_execucao'            => 'ART de execução',
+                                                    'doc_relatorio_fotografico'   => 'Relatório fotográfico',
+                                                    'doc_relatorio_comissionamento' => 'Relatório de comissionamento',
+                                                    'doc_orientacao_operacao'     => 'Orientação de operação ao cliente',
+                                                    'doc_orientacao_emergencia'   => 'Orientação sobre desligamento de emergência',
+                                                ];
+                                                foreach ($checklistDocs as $field => $label):
+                                                    $checked = !empty($result->$field) ? 'checked' : '';
+                                                    $bg      = $checked ? 'background:#e8f8f0; border-color:#1a9e5c;' : 'background:#fff;';
+                                                ?>
+                                                <label style="display:flex; align-items:center; gap:8px; padding:7px 10px; border:1px solid #d0d8ee; border-radius:5px; cursor:pointer; font-weight:normal; <?php echo $bg ?>">
+                                                    <input type="checkbox" name="<?php echo $field ?>" value="1" <?php echo $checked ?> style="width:15px;height:15px;cursor:pointer;accent-color:#1a9e5c;">
+                                                    <span style="font-size:12px;"><?php echo $label ?></span>
+                                                </label>
+                                                <?php endforeach; ?>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <!-- Tipo de Instalação -->
                                     <div class="span12" style="padding: 1%; margin-left: 0; margin-top:10px;">
                                         <h4 style="border-bottom:1px solid #ddd; padding-bottom:8px; margin-bottom:12px;">
