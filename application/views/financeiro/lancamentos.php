@@ -24,21 +24,34 @@ $periodo = $this->input->get('periodo');
         resize: vertical;
     }
 
-    /* Corrigir alinhamento dos botões nos modais */
-    .modal-footer .button,
-    .modal-footer label.button {
+    /* Corrigir alinhamento dos botões nos modais - sobrescrever Bootstrap 2 .btn */
+    .modal .modal-footer button.btn.button,
+    .modal .modal-footer a.btn.button,
+    .modal .modal-footer label.btn.button {
         display: inline-flex !important;
         align-items: center !important;
         height: 30px !important;
         padding: 0 !important;
         line-height: 1 !important;
         vertical-align: middle !important;
+        box-sizing: border-box !important;
     }
-
-    /* Valor alinhado à direita na tabela */
-    table td:last-child {
-        text-align: right;
-        white-space: nowrap;
+    .modal .modal-footer button.btn.button .button__icon,
+    .modal .modal-footer label.btn.button .button__icon {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        height: 100% !important;
+        padding: 0 8px !important;
+        font-size: 1.5em !important;
+        background: rgba(0,0,0,0.08) !important;
+    }
+    .modal .modal-footer button.btn.button .button__text2,
+    .modal .modal-footer label.btn.button .button__text2 {
+        display: inline-flex !important;
+        align-items: center !important;
+        height: 100% !important;
+        padding: 0 7px !important;
     }
 </style>
 
@@ -1208,21 +1221,12 @@ echo number_format($soma_descontos_pagos, 2, ',', '.')?></strong></td>
 		});
 
         // Impedir que ESC redirecione para o dashboard ao fechar modais
-        $(document).on('hidden', '.modal', function() {
-            if (window.location.hash) {
-                history.replaceState(null, null, window.location.pathname + window.location.search);
-            }
+        // Bootstrap 2: ao fechar modal via ESC, o hash fica na URL e causa redirect
+        $(document).on('hide', '.modal', function() {
+            history.replaceState(null, null, window.location.pathname + window.location.search);
         });
-
-        // Interceptar tecla ESC antes do Bootstrap processar o hash
-        $(document).on('keydown', function(e) {
-            if (e.keyCode === 27) {
-                setTimeout(function() {
-                    if (window.location.hash) {
-                        history.replaceState(null, null, window.location.pathname + window.location.search);
-                    }
-                }, 50);
-            }
+        $(document).on('hidden', '.modal', function() {
+            history.replaceState(null, null, window.location.pathname + window.location.search);
         });
     });
 </script>
