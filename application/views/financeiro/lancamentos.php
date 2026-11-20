@@ -56,12 +56,12 @@ $periodo = $this->input->get('periodo');
 
             <div class="span2">
                 <label>Vencimento (de)</label>
-                <input id="vencimento_de" type="text" class="span12 datepicker" name="vencimento_de" value="<?= $this->input->get('vencimento_de') ? $this->input->get('vencimento_de') : date('d/m/Y') ?>">
+                <input id="vencimento_de" type="text" class="span12 datepicker" name="vencimento_de" value="<?= $this->input->get('vencimento_de') ?: '' ?>">
             </div>
 
             <div class="span2">
                 <label>Vencimento (até)</label>
-                <input id="vencimento_ate" type="text" class="span12 datepicker" name="vencimento_ate" value="<?= $this->input->get('vencimento_ate') ? $this->input->get('vencimento_ate') : date('d/m/Y') ?>">
+                <input id="vencimento_ate" type="text" class="span12 datepicker" name="vencimento_ate" value="<?= $this->input->get('vencimento_ate') ?: '' ?>">
             </div>
 
             <div class="span2">
