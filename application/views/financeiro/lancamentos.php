@@ -640,31 +640,33 @@ echo number_format($soma_descontos_pagos, 2, ',', '.')?></strong></td>
 
             </div>
             <div class="span12" style="margin-left: 0">
+                <div class="span12" style="margin-left: 0">
+                    <label for="formaPgto">Forma de Pagamento</label>
+                    <select name="formaPgto" id="formaPgtoEditar" class="span12">
+                        <option value="">-- Selecione --</option>
+                        <option value="Dinheiro">Dinheiro</option>
+                        <option value="Pix">Pix</option>
+                        <option value="Boleto">Boleto</option>
+                        <option value="Cartão de Crédito">Cartão de Crédito</option>
+                        <option value="Cartão de Débito">Cartão de Débito</option>
+                        <option value="Cheque">Cheque</option>
+                        <option value="Pagamento via DDA">Pagamento via DDA</option>
+                        <option value="Depósito">Depósito</option>
+                        <option value="Transferência DOC">Transferência DOC</option>
+                        <option value="Transferência TED">Transferência TED</option>
+                        <option value="Promissória">Promissória</option>
+                    </select>
+                </div>
+            </div>
+            <div class="span12" style="margin-left: 0">
                 <div class="span4" style="margin-left: 0">
                     <label for="pago">Foi Pago?</label>
                     &nbsp &nbsp &nbsp &nbsp<input id="pagoEditar" type="checkbox" name="pago" value="1" />
                 </div>
                 <div id="divPagamentoEditar" class="span8" style=" display: none">
-                    <div class="span6">
+                    <div class="span12">
                         <label for="pagamento">Data Pagamento</label>
                         <input class="span12 datepicker2" id="pagamentoEditar" type="text" name="pagamento" autocomplete="off"  />
-                    </div>
-
-                    <div class="span6">
-                        <label for="formaPgto">Forma Pgto</label>
-                        <select name="formaPgto" id="formaPgtoEditar" class="span12">
-                            <option value="Dinheiro">Dinheiro</option>
-                            <option value="Pix">Pix</option>
-                            <option value="Boleto">Boleto</option>
-                            <option value="Cartão de Crédito">Cartão de Crédito</option>
-                            <option value="Cartão de Débito">Cartão de Débito</option>
-                            <option value="Cheque">Cheque</option> 
-                            <option value="Pagamento via DDA">Pagamento via DDA</option> 
-                            <option value="Depósito">Depósito</option>
-                            <option value="Transferência DOC">Transferência DOC</option>
-                            <option value="Transferência TED">Transferência TED</option>
-                            <option value="Promissória">Promissória</option>
-                        </select>
                     </div>
                 </div>
 
@@ -673,8 +675,8 @@ echo number_format($soma_descontos_pagos, 2, ',', '.')?></strong></td>
         </div>
         <div class="modal-footer" style="display:flex;justify-content: center; align-items:center; gap:8px; padding-left:16px; padding-right:16px;">
             <div style="margin-right:auto; display:flex; align-items:center;">
-                <label for="userfileEditar" class="button btn btn-info" style="min-width: 110px; cursor:pointer; margin-bottom:0; display:inline-flex; align-items:center; justify-content:center;">
-                    <span class="button__icon"><i class="bx bx-upload"></i></span><span class="button__text2" id="labelNotaFiscalEditar">Anexar NF</span>
+                <label for="userfileEditar" class="button btn btn-info" style="min-width: 110px; cursor:pointer; margin-bottom:0; display:inline-flex; align-items:center; justify-content:center; gap:4px;">
+                    <i class="bx bx-upload"></i><span id="labelNotaFiscalEditar">Anexar NF</span>
                 </label>
                 <input type="file" id="userfileEditar" name="userfile" accept=".pdf,.jpg,.jpeg,.png,.xml" style="display:none;">
                 <span id="linkNotaFiscalAtual" style="margin-left:8px;"></span>
@@ -683,10 +685,10 @@ echo number_format($soma_descontos_pagos, 2, ',', '.')?></strong></td>
             <div class="controls span4" style="display:none;">
                 <input disabled id="usuarioEditar" value="" style="background-color: #f5f5f5; border-color: transparent; height: 10px">
             </div>
-            <button class="button btn btn-warning" data-dismiss="modal" aria-hidden="true" id="btnCancelarEditar" style="min-width: 110px">
-                <span class="button__icon"><i class="bx bx-x"></i></span><span class="button__text2">Cancelar</span></button>
-            <button class="button btn btn-primary" style="min-width: 110px">
-                <span class="button__icon"><i class='bx bx-save'></i></span><span class="button__text2">Salvar</span></button>
+            <button class="button btn btn-warning" data-dismiss="modal" aria-hidden="true" id="btnCancelarEditar" style="min-width: 110px; display:inline-flex; align-items:center; justify-content:center; gap:4px;">
+                <i class="bx bx-x"></i><span>Cancelar</span></button>
+            <button class="button btn btn-primary" style="min-width: 110px; display:inline-flex; align-items:center; justify-content:center; gap:4px;">
+                <i class='bx bx-save'></i><span>Salvar</span></button>
         </div>
     </form>
 </div>
