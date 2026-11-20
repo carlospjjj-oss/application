@@ -5,19 +5,17 @@ class CsrfUploadBypass
 {
     public function bypass()
     {
-        $uri = ltrim($_SERVER['REQUEST_URI'] ?? '', '/');
-        // Remove query string
-        $uri = strtok($uri, '?');
-        // Normaliza removendo index.php
-        $uri = preg_replace('#^index\.php/#', '', $uri);
-
+        $uri = $_SERVER['REQUEST_URI'] ?? '';
         if (strpos($uri, 'visita_tecnica/uploadMidia') !== false) {
-            $CI =& get_instance();
-            // Injeta o token válido no POST para passar na verificação do CI2
-            $tokenName = $CI->config->item('csrf_token_name');
-            $hash      = $CI->security->get_csrf_hash();
+            // Pega o nome do token e cookie do config diretamente
+            $config = require(APPPATH . 'config/config.php');
+            $tokenName  = $config['csrf_token_name']  ?? 'MAPOS_TOKEN';
+            $cookieName = $config['csrf_cookie_name'] ?? 'MAPOS_COOKIE';
+            // Pega o hash do cookie atual ou gera um
+            $hash = $_COOKIE[$cookieName] ?? sha1(uniqid(mt_rand(), true));
+            // Injeta no POST e no cookie para passar na verificação
             $_POST[$tokenName]    = $hash;
-            $_COOKIE[$CI->config->item('csrf_cookie_name')] = $hash;
+            $_COOKIE[$cookieName] = $hash;
         }
     }
 }
