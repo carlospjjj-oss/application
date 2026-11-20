@@ -23,6 +23,23 @@ $periodo = $this->input->get('periodo');
     textarea {
         resize: vertical;
     }
+
+    /* Corrigir alinhamento dos botões nos modais */
+    .modal-footer .button,
+    .modal-footer label.button {
+        display: inline-flex !important;
+        align-items: center !important;
+        height: 30px !important;
+        padding: 0 !important;
+        line-height: 1 !important;
+        vertical-align: middle !important;
+    }
+
+    /* Valor alinhado à direita na tabela */
+    table td:last-child {
+        text-align: right;
+        white-space: nowrap;
+    }
 </style>
 
 <div class="new122">
@@ -150,9 +167,9 @@ foreach ($results as $r) {
     echo '<td>' . $status . '</td>';
     echo '<td>' . $r->observacoes . '</td>';
     echo '<td style="white-space:nowrap;">' . $r->forma_pgto . '</td>';
-    echo '<td> R$ ' . number_format($r->valor, 2, ',', '.') . '</td>'; //valor total sem o desconto
-    echo  $r->tipo_desconto == "real" ? '<td>' . "R$ ".$r->desconto . '</td>' : ($r->tipo_desconto == "porcento" ? '<td>' . $r->desconto." %" . '</td>' : '<td>' . "0" . '</td>'); // valor do desconto
-    echo $r->valor_desconto != 0 ? '<td> R$ ' . number_format($r->valor_desconto, 2, ',', '.') . '</td>' : '<td> R$ ' . number_format($r->valor, 2, ',', '.') . '</td>'; // valor total  com o desconto
+    echo '<td style="white-space:nowrap;"> R$ ' . number_format($r->valor, 2, ',', '.') . '</td>'; //valor total sem o desconto
+    echo  $r->tipo_desconto == "real" ? '<td style="white-space:nowrap;">' . "R$ ".$r->desconto . '</td>' : ($r->tipo_desconto == "porcento" ? '<td style="white-space:nowrap;">' . $r->desconto." %" . '</td>' : '<td>' . "0" . '</td>'); // valor do desconto
+    echo $r->valor_desconto != 0 ? '<td style="white-space:nowrap;"> R$ ' . number_format($r->valor_desconto, 2, ',', '.') . '</td>' : '<td style="white-space:nowrap;"> R$ ' . number_format($r->valor, 2, ',', '.') . '</td>'; // valor total  com o desconto
                            
     echo '<td style="text-align:center;">';
     if (!empty($r->anexo)) {
@@ -1194,6 +1211,17 @@ echo number_format($soma_descontos_pagos, 2, ',', '.')?></strong></td>
         $(document).on('hidden', '.modal', function() {
             if (window.location.hash) {
                 history.replaceState(null, null, window.location.pathname + window.location.search);
+            }
+        });
+
+        // Interceptar tecla ESC antes do Bootstrap processar o hash
+        $(document).on('keydown', function(e) {
+            if (e.keyCode === 27) {
+                setTimeout(function() {
+                    if (window.location.hash) {
+                        history.replaceState(null, null, window.location.pathname + window.location.search);
+                    }
+                }, 50);
             }
         });
     });
