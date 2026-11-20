@@ -24,30 +24,7 @@ $periodo = $this->input->get('periodo');
         resize: vertical;
     }
 
-    /* Corrigir alinhamento dos botões nos modais - sobrescrever Bootstrap 2 .btn */
-    .modal .modal-footer button.btn.button,
-    .modal .modal-footer a.btn.button,
-    .modal .modal-footer label.btn.button {
-        display: inline-flex !important;
-        align-items: stretch !important;
-        padding: 0 !important;
-        line-height: normal !important;
-    }
-    .modal .modal-footer button.btn.button .button__icon,
-    .modal .modal-footer label.btn.button .button__icon {
-        display: inline-flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        padding: 4px 8px !important;
-        font-size: 1.5em !important;
-        background: rgba(0,0,0,0.08) !important;
-    }
-    .modal .modal-footer button.btn.button .button__text2,
-    .modal .modal-footer label.btn.button .button__text2 {
-        display: inline-flex !important;
-        align-items: center !important;
-        padding: 4px 7px !important;
-    }
+    /* Botões dos modais: tudo controlado por inline style nos elementos */
 </style>
 
 <div class="new122">
