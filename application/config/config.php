@@ -442,12 +442,19 @@ $config['cookie_httponly'] = isset($_ENV['APP_COOKIE_HTTPONLY']) ? filter_var($_
 | 'csrf_regenerate' = Regenerate token on every submission
 | 'csrf_exclude_uris' = Array of URIs which ignore CSRF checks
 */
-$config['csrf_protection'] = isset($_ENV['APP_CSRF_PROTECTION']) ? filter_var($_ENV['APP_CSRF_PROTECTION'], FILTER_VALIDATE_BOOLEAN) : true;
+// Desabilita CSRF automaticamente para uploads multipart grandes (vídeos/fotos visita técnica)
+// ou quando APP_CSRF_PROTECTION=false no .env
+$_isMultipartUpload = (
+    isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST' &&
+    isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'multipart/form-data') !== false &&
+    isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], 'visita_tecnica/uploadMidia') !== false
+);
+$config['csrf_protection'] = $_isMultipartUpload ? false : (isset($_ENV['APP_CSRF_PROTECTION']) ? filter_var($_ENV['APP_CSRF_PROTECTION'], FILTER_VALIDATE_BOOLEAN) : true);
 $config['csrf_token_name'] = $_ENV['APP_CSRF_TOKEN_NAME'] ?? 'MAPOS_TOKEN';
 $config['csrf_cookie_name'] = $_ENV['APP_CSRF_COOKIE_NAME'] ?? 'MAPOS_COOKIE';
 $config['csrf_expire'] = $_ENV['APP_CSRF_EXPIRE'] ?? 7200;
 $config['csrf_regenerate'] = isset($_ENV['APP_CSRF_REGENERATE']) ? filter_var($_ENV['APP_CSRF_REGENERATE'], FILTER_VALIDATE_BOOLEAN) : false;
-$config['csrf_exclude_uris'] = ['api.*+', '^visita_tecnica/uploadMidia$', '^index\.php/visita_tecnica/uploadMidia$'];
+$config['csrf_exclude_uris'] = ['api.*+'];
 
 /*
 |--------------------------------------------------------------------------
