@@ -191,14 +191,21 @@ $(document).ready(function() {
             var ext = file.name.split('.').pop().toLowerCase();
             var isVideo = ['mp4', 'mov', 'webm'].indexOf(ext) !== -1;
 
+            function getCookieVal(name) {
+                var match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+                return match ? decodeURIComponent(match[1]) : null;
+            }
+
             function enviarUpload() {
                 $('#uploadStatus').text('Enviando ' + (enviados + erros + 1) + '/' + total + '...');
 
-                $.get("<?php echo base_url(); ?>index.php/visita_tecnica/getCsrfToken", function(tokenResp) {
+                // Lê o token CSRF diretamente do cookie — sem requisição GET extra
+                var csrfHash = getCookieVal('<?php echo $this->config->item("csrf_cookie_name"); ?>');
+                (function doUpload(token) {
                     var formData = new FormData();
                     formData.append('midia', file);
                     formData.append('visita_tecnica_id', visitaId);
-                    formData.append('<?php echo $this->security->get_csrf_token_name(); ?>', tokenResp.csrf_hash);
+                    formData.append('<?php echo $this->security->get_csrf_token_name(); ?>', token);
 
                     $.ajax({
                         url: "<?php echo base_url(); ?>index.php/visita_tecnica/uploadMidia",
@@ -236,7 +243,7 @@ $(document).ready(function() {
                             enviarProximo();
                         }
                     });
-                }, 'json');
+                })(csrfHash);
             }
 
             if (isVideo) {
