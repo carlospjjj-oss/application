@@ -167,7 +167,7 @@ class Visita_tecnica extends MY_Controller
 
         $config['upload_path']   = FCPATH . 'assets/visita_midia/';
         $config['allowed_types'] = 'jpg|jpeg|png|mp4|mov|webm';
-        $config['max_size']      = 51200; // 50MB
+        $config['max_size']      = 204800; // 200MB
         $config['encrypt_name']  = TRUE;
 
         $this->load->library('upload', $config);
