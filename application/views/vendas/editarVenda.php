@@ -556,6 +556,48 @@ foreach ($produtos as $p) {
                     <input class="span12 datepicker" autocomplete="off" id="vencimento" type="text" name="vencimento" />
                 </div>
             </div>
+            <?php
+            $condicoesFat = [];
+            if (!empty($result->cond_aceite) && $result->cond_aceite > 0)
+                $condicoesFat[] = 'Aceite: R$ ' . number_format($result->cond_aceite, 2, ',', '.');
+            if (!empty($result->cond_entrega_serv) && $result->cond_entrega_serv > 0)
+                $condicoesFat[] = 'Entrega: R$ ' . number_format($result->cond_entrega_serv, 2, ',', '.');
+            if (!empty($result->cond_pix) && $result->cond_pix > 0)
+                $condicoesFat[] = 'PIX (' . intval($result->cond_pix_pct) . '% desc.): R$ ' . number_format($result->cond_pix, 2, ',', '.');
+            if (!empty($result->cond_parcelas) && $result->cond_parcelas > 0) {
+                $totalFatParc = (!empty($result->cond_parcelado) && $result->cond_parcelado > 0) ? $result->cond_parcelado : ($result->valor_desconto > 0 ? $result->valor_desconto : $total);
+                $condicoesFat[] = $result->cond_parcelas . 'x Sem Juros: R$ ' . number_format($totalFatParc / $result->cond_parcelas, 2, ',', '.') . '/parcela';
+            }
+            if (!empty($condicoesFat)): ?>
+            <div class="span12" style="margin-left: 0; margin-top: 6px;">
+                <label>Condições de Pagamento</label>
+                <div style="background:#f5f5f5; border:1px solid #ddd; border-radius:4px; padding:8px 10px; font-size:13px;">
+                    <?php echo implode(' &nbsp;|&nbsp; ', $condicoesFat); ?>
+                </div>
+            </div>
+            <?php endif; ?>
+
+            <div class="span12" style="margin-left: 0; margin-top: 8px;">
+                <div class="span4" style="margin-left: 0">
+                    <label>NF MO (Mão de Obra)?</label>
+                    &nbsp;&nbsp;<input id="chkNfMo" type="checkbox" name="chk_nf_mo" value="1" />
+                </div>
+                <div id="divNfMo" class="span7" style="display:none; margin-left:4px;">
+                    <label for="nf_mo_valor">Valor NF MO</label>
+                    <input class="span12 money" id="nf_mo_valor" type="text" name="nf_mo_valor" placeholder="0,00" />
+                </div>
+            </div>
+            <div class="span12" style="margin-left: 0; margin-top: 4px;">
+                <div class="span4" style="margin-left: 0">
+                    <label>NF MT (Material)?</label>
+                    &nbsp;&nbsp;<input id="chkNfMt" type="checkbox" name="chk_nf_mt" value="1" />
+                </div>
+                <div id="divNfMt" class="span7" style="display:none; margin-left:4px;">
+                    <label for="nf_mt_valor">Valor NF MT</label>
+                    <input class="span12 money" id="nf_mt_valor" type="text" name="nf_mt_valor" value="<?php echo number_format($total, 2, '.', ''); ?>" />
+                </div>
+            </div>
+
             <div class="span12" style="margin-left: 0">
                 <div class="span4" style="margin-left: 0">
                     <label for="recebido">Recebido?</label>
@@ -788,6 +830,12 @@ foreach ($produtos as $p) {
             } else {
                 $('#divRecebimento').hide();
             }
+        });
+        $('#chkNfMo').click(function() {
+            $(this).is(':checked') ? $('#divNfMo').show() : $('#divNfMo').hide();
+        });
+        $('#chkNfMt').click(function() {
+            $(this).is(':checked') ? $('#divNfMt').show() : $('#divNfMt').hide();
         });
         $(document).on('click', '#btn-faturar', function(event) {
             event.preventDefault();
