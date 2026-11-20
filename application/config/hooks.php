@@ -30,8 +30,8 @@ $hook['pre_system'][] = [
     'params' => [],
 ];
 
-// Desabilita CSRF para rota de upload de mídia
-$hook['pre_controller'][] = [
+// Desabilita CSRF para rota de upload de mídia (pre_system = antes de tudo)
+$hook['pre_system'][] = [
     'class'    => 'CsrfUploadBypass',
     'function' => 'bypass',
     'filename' => 'csrf_upload_bypass.php',
