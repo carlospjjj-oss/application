@@ -86,7 +86,7 @@
 
                 <hr>
                 <h4>Fotos e Vídeos (GED)</h4>
-                <p class="text-muted">Máximo 6 fotos e 3 vídeos (até 1:30 cada) por visita.</p>
+                <p class="text-muted">Máximo 6 fotos e 1 vídeo (até 1:30 cada) por visita.</p>
 
                 <div class="span12" style="margin-left:0;">
                     <label for="inputMidia" class="btn btn-success">

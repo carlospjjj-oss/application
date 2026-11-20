@@ -157,7 +157,7 @@ class Visita_tecnica extends MY_Controller
         $tipo = $isFoto ? 'foto' : 'video';
 
         $atual = $this->visita_tecnica_model->countMidiasPorTipo($visita_tecnica_id, $tipo);
-        $limite = $isFoto ? 6 : 3;
+        $limite = $isFoto ? 6 : 1;
 
         if ($atual >= $limite) {
             $label = $isFoto ? 'fotos' : 'vídeos';
