@@ -15,42 +15,59 @@
             <h5>Ordens de Serviço</h5>
         </div>
     <div class="span12" style="margin-left: 0">
+        <?php if ($this->permission->checkPermission($this->session->userdata('permissao'), 'aOs')) { ?>
+            <a href="<?php echo base_url(); ?>index.php/os/adicionar" class="button btn btn-mini btn-success" style="max-width: 160px;margin-bottom:10px">
+                <span class="button__icon"><i class='bx bx-plus-circle'></i></span>
+                <span class="button__text2">Ordem de Serviço</span>
+            </a>
+        <?php } ?>
         <form method="get" action="<?php echo base_url(); ?>index.php/os/gerenciar">
-            <?php if ($this->permission->checkPermission($this->session->userdata('permissao'), 'aOs')) { ?>
-                <div class="span3">
-                    <a href="<?php echo base_url(); ?>index.php/os/adicionar" class="button btn btn-mini btn-success" style="max-width: 160px">
-                        <span class="button__icon"><i class='bx bx-plus-circle'></i></span><span class="button__text2">Ordem de Serviço</span></a>
-                </div>
-            <?php
-            } ?>
+        <?php
+        $labelStyle  = 'display:block;margin-bottom:4px;font-size:12px;color:#555;font-weight:600;white-space:nowrap';
+        $inputStyle  = 'width:100%;box-sizing:border-box;height:30px;padding:4px 6px;border:1px solid #ccc;border-radius:4px;font-size:13px';
+        $selectStyle = 'width:100%;box-sizing:border-box;height:30px;border:1px solid #ccc;border-radius:4px;font-size:13px';
+        ?>
+        <div style="display:flex;gap:10px;flex-wrap:nowrap;align-items:flex-start;background:#f8f9fa;padding:12px 14px;border-radius:6px;border:1px solid #ddd;margin-bottom:12px;">
 
-            <div class="span3">
-                <input type="text" name="pesquisa" id="pesquisa" placeholder="Nome do cliente a pesquisar" class="span12" value="<?=set_value('pesquisa')?>">
+            <div style="flex:0 0 200px">
+                <label style="<?= $labelStyle ?>">Cliente</label>
+                <input type="text" name="pesquisa" id="pesquisa" placeholder="Nome do cliente..." style="<?= $inputStyle ?>" value="<?= $this->input->get('pesquisa') ?>">
             </div>
-            <div class="span2">
-                <select name="status" id="" class="span12">
-                    <option value="">Selecione status</option>
-                    <option value="Aberto" <?=$this->input->get('status') == 'Aberto' ? 'selected' : ''?>>Aberto</option>
-                    <option value="Faturado" <?=$this->input->get('status') == 'Faturado' ? 'selected' : ''?>>Faturado</option>
-                    <option value="Negociação" <?=$this->input->get('status') == 'Negociação' ? 'selected' : ''?>>Negociação</option>
-                    <option value="Em Andamento" <?=$this->input->get('status') == 'Em Andamento' ? 'selected' : ''?>>Em Andamento</option>
-                    <option value="Orçamento" <?=$this->input->get('status') == 'Orçamento' ? 'selected' : ''?>>Orçamento</option>
-                    <option value="Finalizado" <?=$this->input->get('status') == 'Finalizado' ? 'selected' : ''?>>Finalizado</option>
-                    <option value="Cancelado" <?=$this->input->get('status') == 'Cancelado' ? 'selected' : ''?>>Cancelado</option>
-                    <option value="Aguardando Peças" <?=$this->input->get('status') == 'Aguardando Peças' ? 'selected' : ''?>>Aguardando Peças</option>
-                    <option value="Aprovado" <?=$this->input->get('status') == 'Aprovado' ? 'selected' : ''?>>Aprovado</option>
+
+            <div style="flex:0 0 155px">
+                <label style="<?= $labelStyle ?>">Status</label>
+                <select name="status" style="<?= $selectStyle ?>">
+                    <option value="">Todos</option>
+                    <option value="Aberto"           <?= $this->input->get('status') === 'Aberto'           ? 'selected' : '' ?>>Aberto</option>
+                    <option value="Faturado"         <?= $this->input->get('status') === 'Faturado'         ? 'selected' : '' ?>>Faturado</option>
+                    <option value="Negociação"       <?= $this->input->get('status') === 'Negociação'       ? 'selected' : '' ?>>Negociação</option>
+                    <option value="Em Andamento"     <?= $this->input->get('status') === 'Em Andamento'     ? 'selected' : '' ?>>Em Andamento</option>
+                    <option value="Orçamento"        <?= $this->input->get('status') === 'Orçamento'        ? 'selected' : '' ?>>Orçamento</option>
+                    <option value="Finalizado"       <?= $this->input->get('status') === 'Finalizado'       ? 'selected' : '' ?>>Finalizado</option>
+                    <option value="Cancelado"        <?= $this->input->get('status') === 'Cancelado'        ? 'selected' : '' ?>>Cancelado</option>
+                    <option value="Aguardando Peças" <?= $this->input->get('status') === 'Aguardando Peças' ? 'selected' : '' ?>>Aguard. Peças</option>
+                    <option value="Aprovado"         <?= $this->input->get('status') === 'Aprovado'         ? 'selected' : '' ?>>Aprovado</option>
                 </select>
-
             </div>
 
-            <div class="span3">
-                <input type="text" name="data" autocomplete="off" id="data" placeholder="Data Inicial" class="span6 datepicker" value="<?=$this->input->get('data')?>">
-                <input type="text" name="data2" autocomplete="off" id="data2" placeholder="Data Final" class="span6 datepicker" value="<?=$this->input->get('data2')?>">
+            <div style="flex:0 0 115px">
+                <label style="<?= $labelStyle ?>">Data (de)</label>
+                <input type="text" name="data" autocomplete="off" id="data" class="datepicker" style="<?= $inputStyle ?>" value="<?= $this->input->get('data') ?>">
             </div>
-            <div class="span1">
-                <button class="button btn btn-mini btn-warning" style="min-width: 30px">
-                    <span class="button__icon"><i class='bx bx-search-alt'></i></span></button>
+
+            <div style="flex:0 0 115px">
+                <label style="<?= $labelStyle ?>">Data (até)</label>
+                <input type="text" name="data2" autocomplete="off" id="data2" class="datepicker" style="<?= $inputStyle ?>" value="<?= $this->input->get('data2') ?>">
             </div>
+
+            <div style="flex-shrink:0">
+                <label style="display:block;margin-bottom:4px;font-size:12px;visibility:hidden">x</label>
+                <button type="submit" style="height:30px;padding:0 14px;white-space:nowrap;display:inline-flex;align-items:center;gap:5px;background:#f0810f;border:none;border-radius:4px;color:#fff;font-size:13px;font-weight:600;cursor:pointer">
+                    <i class='bx bx-search-alt' style="font-size:15px"></i> Filtrar
+                </button>
+            </div>
+
+        </div>
         </form>
     </div>
 
