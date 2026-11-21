@@ -5,7 +5,7 @@
             <img src="<?php echo base_url() ?>assets/img/logo-proton-mobilidade.png" style="max-width:150px;">
         </div>
     </div>
-    <a href="#" class="visible-phone">
+    <a href="#">
         <div class="mode">
             <div class="moon-menu">
                 <i class='bx bx-chevron-right iconX open-2'></i>

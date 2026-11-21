@@ -8,19 +8,6 @@
 <script src="<?= base_url() ?>assets/js/matrix.js"></script>
 <script type="text/javascript">
     $(document).ready(function() {
-        // Toggle do menu lateral (seta > / <)
-        var $sidebar = $('#sidebar');
-        var STORAGE_KEY = 'sidebar_open';
-        if (localStorage.getItem(STORAGE_KEY) === '1') {
-            $sidebar.addClass('open');
-        }
-        $sidebar.find('.mode').on('click', function(e) {
-            e.preventDefault();
-            $sidebar.toggleClass('open');
-            localStorage.setItem(STORAGE_KEY, $sidebar.hasClass('open') ? '1' : '0');
-        });
-
-        // DataTable
         var dataTableEnabled = '<?= $configuration['control_datatable'] ?>';
         if(dataTableEnabled == '1') {
             $('#tabela').dataTable( {
