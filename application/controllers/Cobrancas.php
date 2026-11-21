@@ -57,11 +57,19 @@ class Cobrancas extends MY_Controller
             $registro = $this->Os_model->getOs($id);
             $clienteId = $registro ? $registro->clientes_id : null;
             $valorTotalData = $this->os_model->valorTotalOS($id);
-            $total = ($valorTotalData['totalServico'] + $valorTotalData['totalProdutos']) - $valorTotalData['valor_desconto'];
+            $total = (($valorTotalData['totalServico'] + $valorTotalData['totalProdutos']) - $valorTotalData['valor_desconto']) * 100;
         } else {
-            $registro = $this->vendas_model->getVenda($id);
+            $registro = $this->vendas_model->getById($id);
             $clienteId = $registro ? $registro->clientes_id : null;
-            $total = $registro ? $registro->valorTotal : 0;
+            // Calcula total somando itens + serviços se valorTotal for null
+            $vt = ($registro && !empty($registro->valorTotal)) ? floatval($registro->valorTotal) : 0;
+            if ($vt == 0) {
+                $soma  = $this->db->select_sum('subTotal')->where('vendas_id', $id)->get('itens_de_vendas')->row();
+                $soma2 = $this->db->select_sum('subTotal')->where('vendas_id', $id)->get('servicos_vendas')->row();
+                $vt = floatval($soma->subTotal ?? 0) + floatval($soma2->subTotal ?? 0);
+                if ($registro && !empty($registro->valor_desconto)) $vt -= floatval($registro->valor_desconto);
+            }
+            $total = $vt * 100; // cobrancas.total é em centavos
         }
 
         $data = [
