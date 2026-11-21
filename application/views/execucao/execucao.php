@@ -6,6 +6,14 @@
         <h5>Execução</h5>
     </div>
 
+    <?php if ($this->permission->checkPermission($this->session->userdata('permissao'), 'eArquivo')): ?>
+    <div style="margin:10px 0;">
+        <a href="<?= site_url('execucao/criar') ?>" class="button btn btn-mini btn-primary">
+            <span class="button__icon"><i class='bx bx-plus'></i></span><span class="button__text2">Nova Execução</span>
+        </a>
+    </div>
+    <?php endif ?>
+
     <div class="span12" style="margin-left: 0">
         <form method="get" action="<?= current_url(); ?>">
             <div class="span4">

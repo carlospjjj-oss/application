@@ -200,6 +200,57 @@ class Execucao extends MY_Controller
     }
 
     // ----------------------------------------------------------------
+    // Criar nova execução (sem OS prévia)
+    // ----------------------------------------------------------------
+    public function criar()
+    {
+        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'eArquivo')) {
+            $this->session->set_flashdata('error', 'Sem permissão.');
+            redirect('execucao');
+        }
+
+        $this->data['clientes'] = $this->db->order_by('nomeCliente','asc')->get('clientes')->result();
+        $this->data['usuarios'] = $this->db->order_by('nome','asc')->get('usuarios')->result();
+        $this->data['view']     = 'execucao/criarExecucao';
+
+        return $this->layout();
+    }
+
+    public function salvar_novo()
+    {
+        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'eArquivo')) {
+            $this->session->set_flashdata('error', 'Sem permissão.');
+            redirect('execucao');
+        }
+
+        $cliente_id  = $this->input->post('clientes_id');
+        $usuario_id  = $this->input->post('usuarios_id');
+        $dataInicial = $this->input->post('dataInicial');
+        $dataFinal   = $this->input->post('dataFinal');
+        $garantia    = $this->input->post('garantia') ?: 90;
+
+        if ($dataInicial) $dataInicial = $this->_formatDate($dataInicial);
+        if ($dataFinal)   $dataFinal   = $this->_formatDate($dataFinal);
+
+        // Cria OS mínima
+        $this->db->insert('os', [
+            'clientes_id' => $cliente_id,
+            'usuarios_id' => $usuario_id,
+            'dataInicial' => $dataInicial ?: date('Y-m-d'),
+            'dataFinal'   => $dataFinal   ?: null,
+            'garantia'    => $garantia,
+            'status'      => 'Aberto',
+        ]);
+        $os_id = $this->db->insert_id();
+
+        // Cria execução vinculada
+        $this->execucao_model->createFromOs($os_id);
+
+        $this->session->set_flashdata('success', 'Execução criada com sucesso!');
+        redirect(site_url('execucao/editar/' . $os_id));
+    }
+
+    // ----------------------------------------------------------------
     // Helpers
     // ----------------------------------------------------------------
     private function _formatDate($date)
