@@ -983,9 +983,17 @@ class Vendas extends MY_Controller
                 $partes[] = 'Na Entrega R$ ' . number_format($v->cond_entrega_serv, 2, ',', '.');
             if (!empty($v->cond_parcelas) && $v->cond_parcelas > 1) {
                 $val_parc = !empty($v->cond_parcelado) && floatval($v->cond_parcelado) > 0 ? floatval($v->cond_parcelado) : 0;
-                // Fallback: valorTotal da venda menos valores já cobertos por outras condições
+                // Fallback: soma subTotal dos itens e serviços da venda
                 if ($val_parc == 0) {
                     $vt = !empty($v->valorTotal) && floatval($v->valorTotal) > 0 ? floatval($v->valorTotal) : 0;
+                    if ($vt == 0) {
+                        $soma = $this->db->select_sum('subTotal')->where('vendas_id', $id)->get('itens_de_vendas')->row();
+                        $soma2 = $this->db->select_sum('subTotal')->where('vendas_id', $id)->get('servicos_vendas')->row();
+                        $vt = floatval($soma->subTotal ?? 0) + floatval($soma2->subTotal ?? 0);
+                        // Aplica desconto se houver
+                        if (!empty($v->valor_desconto) && floatval($v->valor_desconto) > 0)
+                            $vt -= floatval($v->valor_desconto);
+                    }
                     if ($vt > 0) {
                         $ja_coberto = floatval($v->cond_pix ?? 0) + floatval($v->cond_aceite ?? 0) + floatval($v->cond_entrega_serv ?? 0);
                         $val_parc = $vt - $ja_coberto;
