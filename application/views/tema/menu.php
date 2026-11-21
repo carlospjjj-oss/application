@@ -82,7 +82,7 @@
                     <li class="<?php if (isset($menuArquivos)) {
                         echo 'active';
                     }; ?>">
-                        <a class="tip-bottom" title="" href="<?= site_url('execucao') ?>"><i class='bx bx-hard-hat iconX'></i>
+                        <a class="tip-bottom" title="" href="<?= site_url('execucao') ?>"><i class='bx bx-plug iconX'></i>
                             <span class="title">Execução</span>
                             <span class="title-tooltip">Execução</span>
                         </a>

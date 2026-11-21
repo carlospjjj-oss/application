@@ -9,12 +9,11 @@ class Execucao_model extends CI_Model
     public function getAll($pesquisa = '', $status = '', $de = '', $ate = '', $perpage = 0, $start = 0)
     {
         $this->db->select('execucoes.*, os.idOs, os.dataInicial, os.dataFinal, os.garantia,
-                           os.tipo_instalacao, os.engenheiro,
                            clientes.nomeCliente, usuarios.nome as tecnico');
         $this->db->from('execucoes');
         $this->db->join('os',       'os.idOs = execucoes.os_id');
         $this->db->join('clientes', 'clientes.idClientes = os.clientes_id');
-        $this->db->join('usuarios', 'usuarios.idUsuarios = os.usuarios_id');
+        $this->db->join('usuarios', 'usuarios.idUsuarios = os.usuarios_id', 'left');
 
         if ($pesquisa) {
             $this->db->like('clientes.nomeCliente', $pesquisa, 'after');
@@ -58,15 +57,13 @@ class Execucao_model extends CI_Model
     public function getByOs($os_id)
     {
         $this->db->select('execucoes.*, os.idOs, os.dataInicial, os.dataFinal, os.garantia,
-                           os.tipo_instalacao, os.data_inicio_instalacao, os.data_fim_instalacao,
-                           os.engenheiro, os.engenheiro_id,
                            clientes.nomeCliente, clientes.idClientes,
                            clientes.email, clientes.celular as celular_cliente, clientes.telefone as telefone_cliente,
                            usuarios.nome as tecnico, usuarios.idUsuarios');
         $this->db->from('execucoes');
         $this->db->join('os',       'os.idOs = execucoes.os_id');
         $this->db->join('clientes', 'clientes.idClientes = os.clientes_id');
-        $this->db->join('usuarios', 'usuarios.idUsuarios = os.usuarios_id');
+        $this->db->join('usuarios', 'usuarios.idUsuarios = os.usuarios_id', 'left');
         $this->db->where('execucoes.os_id', $os_id);
         $this->db->limit(1);
 
@@ -76,15 +73,13 @@ class Execucao_model extends CI_Model
     public function getById($id)
     {
         $this->db->select('execucoes.*, os.idOs, os.dataInicial, os.dataFinal, os.garantia,
-                           os.tipo_instalacao, os.data_inicio_instalacao, os.data_fim_instalacao,
-                           os.engenheiro, os.engenheiro_id,
                            clientes.nomeCliente, clientes.idClientes,
                            clientes.email, clientes.celular as celular_cliente, clientes.telefone as telefone_cliente,
                            usuarios.nome as tecnico, usuarios.idUsuarios');
         $this->db->from('execucoes');
         $this->db->join('os',       'os.idOs = execucoes.os_id');
         $this->db->join('clientes', 'clientes.idClientes = os.clientes_id');
-        $this->db->join('usuarios', 'usuarios.idUsuarios = os.usuarios_id');
+        $this->db->join('usuarios', 'usuarios.idUsuarios = os.usuarios_id', 'left');
         $this->db->where('execucoes.idExecucao', $id);
         $this->db->limit(1);
 
