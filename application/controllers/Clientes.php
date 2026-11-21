@@ -244,8 +244,10 @@ class Clientes extends MY_Controller
     {
         require_once APPPATH . 'third_party/SimpleXLSXGen.php';
         $rows = [
-            ['Nome', 'Contato', 'CPF/CNPJ', 'Telefone', 'Celular', 'Email', 'CEP', 'Rua', 'Número', 'Complemento', 'Bairro', 'Cidade', 'Estado', 'Tipo (Cliente/Fornecedor)'],
+            ['Nome', 'Contato', 'CPF/CNPJ', 'Telefone', 'Celular', 'Email', 'CEP', 'Rua', 'Número', 'Complemento', 'Bairro', 'Cidade', 'Estado', 'Tipo (Cliente / Fornecedor / Terceiro)'],
             ['João Silva', 'Maria Silva', '123.456.789-00', '(11) 99999-0001', '(11) 99999-0002', 'joao@email.com', '01310-100', 'Av. Paulista', '1000', 'Apto 42', 'Bela Vista', 'São Paulo', 'SP', 'Cliente'],
+            ['Empresa ABC Ltda', 'Carlos', '12.345.678/0001-90', '(11) 3333-0001', '', 'contato@abc.com', '', '', '', '', '', 'São Paulo', 'SP', 'Fornecedor'],
+            ['Técnico Externo', '', '987.654.321-00', '(11) 98888-0001', '', '', '', '', '', '', '', '', '', 'Terceiro'],
         ];
         $xlsx = \Shuchkin\SimpleXLSXGen::fromArray($rows);
         $xlsx->downloadAs('modelo_importacao_clientes.xlsx');
@@ -276,6 +278,7 @@ class Clientes extends MY_Controller
 
                     $tipoStr = strtolower(isset($row[13]) ? trim($row[13]) : 'cliente');
                     $fornecedor = ($tipoStr === 'fornecedor') ? 1 : 0;
+                    $terceiro   = ($tipoStr === 'terceiro')   ? 1 : 0;
 
                     $email = isset($row[5]) ? trim($row[5]) : '';
                     if ($email && $this->clientes_model->emailExists($email)) {
@@ -300,7 +303,7 @@ class Clientes extends MY_Controller
                         'cidade'       => isset($row[11]) ? $row[11] : '',
                         'estado'       => isset($row[12]) ? $row[12] : '',
                         'fornecedor'   => $fornecedor,
-                        'terceiro'     => 0,
+                        'terceiro'     => $terceiro,
                         'dataCadastro' => date('Y-m-d'),
                     ];
 

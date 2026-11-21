@@ -25,7 +25,7 @@
                             <th>Nome*</th><th>Contato</th><th>CPF/CNPJ</th><th>Telefone</th>
                             <th>Celular</th><th>Email</th><th>CEP</th><th>Rua</th>
                             <th>Número</th><th>Complemento</th><th>Bairro</th><th>Cidade</th><th>Estado</th>
-                            <th>Tipo (Cliente/Fornecedor)</th>
+                            <th>Tipo</th>
                         </tr></thead>
                         <tbody><tr>
                             <td>João Silva</td><td>Maria Silva</td><td>123.456.789-00</td><td>(11) 99999-0001</td>
@@ -34,7 +34,7 @@
                             <td>Cliente</td>
                         </tr></tbody>
                     </table>
-                    <small>* Campo obrigatório. Tipo: "Cliente" ou "Fornecedor" (padrão: Cliente). A senha de acesso à área do cliente será gerada automaticamente a partir do CPF/CNPJ (somente números).</small>
+                    <small>* Campo obrigatório. <strong>Tipo</strong>: use <code>Cliente</code>, <code>Fornecedor</code> ou <code>Terceiro</code> (padrão: Cliente). A senha de acesso à área do cliente será gerada automaticamente a partir do CPF/CNPJ (somente números).</small>
                 </div>
             </div>
 
