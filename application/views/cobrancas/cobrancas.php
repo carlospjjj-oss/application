@@ -175,7 +175,18 @@
             document.getElementById('form-gerar-cobranca').reset();
             document.getElementById('cobr_grupo_numero').style.display = 'none';
             document.getElementById('cobr_info_ref').style.display     = 'none';
-            $("#cobr_forma_pag option.cobr-venda-opt").remove();
+            // Restaura select de forma de pagamento para opções padrão
+            $("#cobr_forma_pag").empty().append(
+                '<option value="">Selecione...</option>' +
+                '<option value="Dinheiro">Dinheiro</option>' +
+                '<option value="PIX">PIX</option>' +
+                '<option value="Cartão de Crédito">Cartão de Crédito</option>' +
+                '<option value="Cartão de Débito">Cartão de Débito</option>' +
+                '<option value="Boleto">Boleto</option>' +
+                '<option value="Transferência">Transferência Bancária</option>' +
+                '<option value="Cheque">Cheque</option>' +
+                '<option value="A combinar">A combinar</option>'
+            );
         });
 
         // Buscar OS ou Venda
@@ -195,19 +206,14 @@
 
                     // Atualiza opções de forma de pagamento
                     var $sel = $("#cobr_forma_pag");
-                    if (resp.formas && resp.formas.length > 0) {
-                        // Preserva opções padrão e adiciona as da venda no topo
-                        $sel.find("option.cobr-venda-opt").remove();
-                        $.each(resp.formas, function(i, f){
-                            $sel.prepend('<option class="cobr-venda-opt" value="' + f + '">' + f + '</option>');
-                        });
-                        // Seleciona automaticamente se só houver uma
-                        if (resp.formas.length === 1) {
-                            $sel.val(resp.formas[0]);
-                        } else {
-                            $sel.val('');
-                        }
-                    } else if (resp.forma_pagamento) {
+                    // Limpa e reconstrói o select com as formas da venda
+                    $sel.empty().append('<option value="">Selecione...</option>');
+                    var formas = resp.formas && resp.formas.length > 0 ? resp.formas : ["Dinheiro","PIX","Cartão de Crédito","Cartão de Débito","Boleto","Transferência Bancária","Cheque","A combinar"];
+                    $.each(formas, function(i, f){
+                        $sel.append('<option value="' + f + '">' + f + '</option>');
+                    });
+                    // Seleciona a forma principal automaticamente
+                    if (resp.forma_pagamento) {
                         $sel.val(resp.forma_pagamento);
                     }
 
