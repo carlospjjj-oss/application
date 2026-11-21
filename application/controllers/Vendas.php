@@ -971,34 +971,32 @@ class Vendas extends MY_Controller
         // Busca dados completos da venda para derivar forma de pagamento
         $v = $this->db->get_where('vendas', ['idVendas' => $id])->row();
 
-        $formas = [];
-        $formaPrincipal = '';
+        // Monta texto de forma de pagamento com valores
+        $forma_texto = '';
         if ($v) {
-            // Lógica igual à usada no faturamento
+            $partes = [];
+            if (!empty($v->cond_pix) && $v->cond_pix > 0)
+                $partes[] = 'PIX R$ ' . number_format($v->cond_pix, 2, ',', '.');
+            if (!empty($v->cond_aceite) && $v->cond_aceite > 0)
+                $partes[] = 'No Aceite R$ ' . number_format($v->cond_aceite, 2, ',', '.');
+            if (!empty($v->cond_entrega_serv) && $v->cond_entrega_serv > 0)
+                $partes[] = 'Na Entrega R$ ' . number_format($v->cond_entrega_serv, 2, ',', '.');
             if (!empty($v->cond_parcelas) && $v->cond_parcelas > 1) {
-                $formas[] = 'Cartão de Crédito';
-                $formas[] = 'Cartão de Crédito ' . intval($v->cond_parcelas) . 'x Sem Juros';
-                $formaPrincipal = 'Cartão de Crédito';
+                $val_parc = !empty($v->cond_parcelado) && $v->cond_parcelado > 0 ? $v->cond_parcelado : 0;
+                $por_parcela = $v->cond_parcelas > 0 && $val_parc > 0 ? $val_parc / $v->cond_parcelas : 0;
+                $txt = 'Cartão ' . intval($v->cond_parcelas) . 'x';
+                if ($por_parcela > 0) $txt .= ' de R$ ' . number_format($por_parcela, 2, ',', '.');
+                elseif ($val_parc > 0) $txt .= ' R$ ' . number_format($val_parc, 2, ',', '.');
+                $partes[] = $txt;
             }
-            if (!empty($v->cond_pix) && $v->cond_pix > 0) {
-                $formas[] = 'PIX';
-                if (!$formaPrincipal) $formaPrincipal = 'PIX';
-            }
-            if (!empty($v->cond_aceite) && $v->cond_aceite > 0) {
-                $formas[] = 'Dinheiro';
-                if (!$formaPrincipal) $formaPrincipal = 'Dinheiro';
-            }
-            if (!empty($v->cond_entrega_serv) && $v->cond_entrega_serv > 0) {
-                $formas[] = 'Pagamento na Entrega';
-                if (!$formaPrincipal) $formaPrincipal = 'Dinheiro';
-            }
+            $forma_texto = implode(' + ', $partes);
         }
 
         return $json([
             'result'          => true,
             'cliente'         => $venda->nomeCliente,
-            'formas'          => array_unique($formas),
-            'forma_pagamento' => $formaPrincipal,
+            'formas'          => [],
+            'forma_pagamento' => $forma_texto,
             'descricao'       => 'Venda #' . $id,
         ]);
     }

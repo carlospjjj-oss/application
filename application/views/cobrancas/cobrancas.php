@@ -166,7 +166,7 @@
             document.getElementById('form-gerar-cobranca').reset();
             document.getElementById('cobr_grupo_numero').style.display = 'none';
             document.getElementById('cobr_info_ref').style.display     = 'none';
-            $("#cobr_forma_pag").val('').autocomplete({ source: ["Dinheiro","PIX","Cartão de Crédito","Cartão de Débito","Boleto","Transferência Bancária","Cheque","A combinar"] });
+            $("#cobr_forma_pag").val('');
         });
 
         // Buscar OS ou Venda
@@ -184,16 +184,8 @@
                     // Preenche descrição
                     if (resp.descricao) $("#cobr_descricao").val(resp.descricao);
 
-                    // Preenche forma de pagamento como texto com autocomplete
-                    var $fp = $("#cobr_forma_pag");
-                    var formasDisponiveis = (resp.formas && resp.formas.length > 0)
-                        ? resp.formas
-                        : ["Dinheiro","PIX","Cartão de Crédito","Cartão de Débito","Boleto","Transferência Bancária","Cheque","A combinar"];
-                    // Preenche com a forma principal
-                    $fp.val(resp.forma_pagamento || formasDisponiveis[0] || '');
-                    // Autocomplete com as opções disponíveis
-                    $fp.autocomplete({ source: formasDisponiveis, minLength: 0 })
-                       .on("focus", function(){ $(this).autocomplete("search", ""); });
+                    // Preenche forma de pagamento direto
+                    $("#cobr_forma_pag").val(resp.forma_pagamento || '');
 
                     info.textContent   = "✓ Cliente: " + resp.cliente;
                     info.style.color   = "#3a7d3a";
