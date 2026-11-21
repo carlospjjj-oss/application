@@ -968,14 +968,14 @@ class Vendas extends MY_Controller
 
         // Montar opções de forma de pagamento da venda
         $formas = [];
-        if (!empty($venda->cond_aceite) && $venda->cond_aceite > 0)
+        if ((float)$venda->cond_aceite > 0)
             $formas[] = 'Pagamento no Aceite';
-        if (!empty($venda->cond_entrega_serv) && $venda->cond_entrega_serv > 0)
+        if ((float)$venda->cond_entrega_serv > 0)
             $formas[] = 'Pagamento na Entrega dos Serviços';
-        if (!empty($venda->cond_pix) && $venda->cond_pix > 0)
+        if ((float)$venda->cond_pix > 0)
             $formas[] = 'PIX';
-        if (!empty($venda->cond_parcelas) && $venda->cond_parcelas > 0)
-            $formas[] = 'Parcelado em ' . $venda->cond_parcelas . 'x Sem Juros';
+        if ((int)$venda->cond_parcelas > 0)
+            $formas[] = 'Parcelado em ' . (int)$venda->cond_parcelas . 'x Sem Juros';
 
         echo json_encode([
             'result'          => true,
@@ -983,6 +983,11 @@ class Vendas extends MY_Controller
             'formas'          => $formas,
             'forma_pagamento' => count($formas) === 1 ? $formas[0] : '',
             'descricao'       => 'Venda #' . $id,
+            '_debug'          => [
+                'cond_pix'      => $venda->cond_pix,
+                'cond_parcelas' => $venda->cond_parcelas,
+                'cond_aceite'   => $venda->cond_aceite,
+            ],
         ]);
     }
 
