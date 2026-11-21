@@ -16,26 +16,46 @@
 
     <div class="span12" style="margin-left: 0">
         <form method="get" action="<?= current_url(); ?>">
-            <div class="span4">
-                <input type="text" name="pesquisa" placeholder="Nome do cliente" class="span12" value="<?= $this->input->get('pesquisa') ?>">
+        <?php
+        $labelStyle  = 'display:block;margin-bottom:4px;font-size:12px;color:#555;font-weight:600;white-space:nowrap';
+        $inputStyle  = 'width:100%;box-sizing:border-box;height:30px;padding:4px 6px;border:1px solid #ccc;border-radius:4px;font-size:13px';
+        $selectStyle = 'width:100%;box-sizing:border-box;height:30px;border:1px solid #ccc;border-radius:4px;font-size:13px';
+        ?>
+        <div style="display:flex;gap:10px;flex-wrap:nowrap;align-items:flex-start;background:#f8f9fa;padding:12px 14px;border-radius:6px;border:1px solid #ddd;margin-bottom:12px;">
+
+            <div style="flex:0 0 200px">
+                <label style="<?= $labelStyle ?>">Cliente</label>
+                <input type="text" name="pesquisa" placeholder="Nome do cliente..." style="<?= $inputStyle ?>" value="<?= $this->input->get('pesquisa') ?>">
             </div>
-            <div class="span2">
-                <select name="status" class="span12">
-                    <option value="">Todos os status</option>
+
+            <div style="flex:0 0 155px">
+                <label style="<?= $labelStyle ?>">Status</label>
+                <select name="status" style="<?= $selectStyle ?>">
+                    <option value="">Todos</option>
                     <?php foreach (['Aberto','Em Andamento','Executado','Finalizado','Cancelado'] as $s): ?>
                         <option value="<?= $s ?>" <?= $this->input->get('status') == $s ? 'selected' : '' ?>><?= $s ?></option>
                     <?php endforeach ?>
                 </select>
             </div>
-            <div class="span3">
-                <input type="text" name="data"  placeholder="Data de"  class="span6 datepicker" value="<?= $this->input->get('data') ?>">
-                <input type="text" name="data2" placeholder="Data até" class="span6 datepicker" value="<?= $this->input->get('data2') ?>">
+
+            <div style="flex:0 0 115px">
+                <label style="<?= $labelStyle ?>">Data (de)</label>
+                <input type="text" name="data" class="datepicker" style="<?= $inputStyle ?>" value="<?= $this->input->get('data') ?>">
             </div>
-            <div class="span1">
-                <button class="button btn btn-mini btn-warning" style="min-width:30px">
-                    <span class="button__icon"><i class='bx bx-search-alt'></i></span>
+
+            <div style="flex:0 0 115px">
+                <label style="<?= $labelStyle ?>">Data (até)</label>
+                <input type="text" name="data2" class="datepicker" style="<?= $inputStyle ?>" value="<?= $this->input->get('data2') ?>">
+            </div>
+
+            <div style="flex-shrink:0">
+                <label style="display:block;margin-bottom:4px;font-size:12px;visibility:hidden">x</label>
+                <button type="submit" style="height:30px;padding:0 14px;white-space:nowrap;display:inline-flex;align-items:center;gap:5px;background:#f0810f;border:none;border-radius:4px;color:#fff;font-size:13px;font-weight:600;cursor:pointer">
+                    <i class='bx bx-search-alt' style="font-size:15px"></i> Filtrar
                 </button>
             </div>
+
+        </div>
         </form>
     </div>
 
