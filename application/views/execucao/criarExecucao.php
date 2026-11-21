@@ -93,6 +93,10 @@
                 $("#usuarios_id").val(ui.item.id);
             }
         });
+        $("#engenheiro").autocomplete({
+            source: "<?= base_url() ?>index.php/os/autoCompleteUsuario",
+            minLength: 1
+        });
 
         $("#formExecucao").validate({
             rules: {
