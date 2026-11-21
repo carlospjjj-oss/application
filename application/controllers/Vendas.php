@@ -850,8 +850,14 @@ class Vendas extends MY_Controller
                     $this->session->set_flashdata('error', 'Ocorreu um erro ao tentar faturar venda.');
                     $json = ['result' => false];
                 } else {
-                    // Cria registro em cobrancas automaticamente
-                    $this->db->insert('cobrancas', [
+                    // Cria cobranças separadas por NF (MO e/ou MT)
+                    $cliente_id  = $this->input->post('clientes_id');
+                    $chk_nf_mo   = $this->input->post('chk_nf_mo');
+                    $chk_nf_mt   = $this->input->post('chk_nf_mt');
+                    $nf_mo_valor = getAmount($this->input->post('nf_mo_valor'));
+                    $nf_mt_valor = getAmount($this->input->post('nf_mt_valor'));
+
+                    $cobr_base = [
                         'charge_id'       => null,
                         'payment_gateway' => 'Faturar (Venda)',
                         'payment_url'     => null,
@@ -859,14 +865,32 @@ class Vendas extends MY_Controller
                         'link'            => '',
                         'pdf'             => null,
                         'status'          => 'Pendente',
-                        'total'           => round($valorComDesconto * 100),
                         'expire_at'       => $vencimento,
-                        'message'         => 'Venda #' . $venda_id,
                         'payment'         => $formaPgto,
                         'vendas_id'       => $venda_id,
                         'os_id'           => null,
-                        'clientes_id'     => $this->input->post('clientes_id'),
-                    ]);
+                        'clientes_id'     => $cliente_id,
+                    ];
+
+                    if ($chk_nf_mo && $nf_mo_valor > 0) {
+                        $this->db->insert('cobrancas', array_merge($cobr_base, [
+                            'total'   => round($nf_mo_valor * 100),
+                            'message' => 'Venda #' . $venda_id . ' - NF Mão de Obra',
+                        ]));
+                    }
+                    if ($chk_nf_mt && $nf_mt_valor > 0) {
+                        $this->db->insert('cobrancas', array_merge($cobr_base, [
+                            'total'   => round($nf_mt_valor * 100),
+                            'message' => 'Venda #' . $venda_id . ' - NF Material',
+                        ]));
+                    }
+                    // Fallback: se nenhuma NF marcada, cria 1 cobrança com valor total
+                    if (!$chk_nf_mo && !$chk_nf_mt) {
+                        $this->db->insert('cobrancas', array_merge($cobr_base, [
+                            'total'   => round($valorComDesconto * 100),
+                            'message' => 'Venda #' . $venda_id,
+                        ]));
+                    }
 
                     $this->session->set_flashdata('success', 'Venda faturada com sucesso!');
                     $json = ['result' => true];

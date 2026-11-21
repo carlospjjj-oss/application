@@ -55,7 +55,7 @@
                         $isManual = in_array($r->payment_gateway, ['Manual', 'Faturar (Venda)']);
                         $origem = $r->payment_gateway === 'Manual' ? 'Manual' : ($r->payment_gateway === 'Faturar (Venda)' ? 'Faturar (Venda)' : $r->payment_gateway);
                         echo '<td>' . $origem . '</td>';
-                        $tipo = $r->payment_gateway === 'Manual'
+                        $tipo = $isManual
                             ? htmlspecialchars($r->payment ?? '')
                             : htmlspecialchars($r->payment_method ?? '');
                         echo '<td>' . $tipo . '</td>';
