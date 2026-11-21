@@ -1,7 +1,7 @@
 <style>
-  select {
-    width: 70px;
-  }
+  select { width: 70px; }
+  /* esconde busca duplicada do DataTables */
+  #tabela_wrapper .dataTables_filter { display: none !important; }
 </style>
 <div class="new122">
     <div class="widget-title" style="margin: -20px 0 0">
