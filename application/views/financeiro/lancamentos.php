@@ -120,9 +120,9 @@ $periodo = $this->input->get('periodo');
                 <input id="cliente_busca" type="text" name="cliente" style="<?= $inputStyle ?>" value="<?= $this->input->get('cliente') ?>">
             </div>
 
-            <div style="flex:0 0 auto;padding-top:20px">
-                <button type="submit" class="button btn btn-primary btn-sm" style="height:30px;padding:0 14px;white-space:nowrap;display:flex;align-items:center;gap:4px">
-                    <i class='bx bx-filter-alt'></i> Filtrar
+            <div style="flex-shrink:0;padding-top:20px">
+                <button type="submit" style="height:30px;padding:0 14px;white-space:nowrap;display:inline-flex;align-items:center;gap:5px;background:#f0810f;border:none;border-radius:4px;color:#fff;font-size:13px;font-weight:600;cursor:pointer">
+                    <i class='bx bx-search-alt' style="font-size:15px"></i> Filtrar
                 </button>
             </div>
 
