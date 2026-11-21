@@ -24,7 +24,7 @@
         $inputStyle  = 'width:100%;box-sizing:border-box;height:30px;padding:4px 6px;border:1px solid #ccc;border-radius:4px;font-size:13px';
         $selectStyle = 'width:100%;box-sizing:border-box;height:30px;border:1px solid #ccc;border-radius:4px;font-size:13px';
         ?>
-        <div style="display:flex;gap:10px;flex-wrap:nowrap;align-items:flex-start;background:#f8f9fa;padding:12px 14px;border-radius:6px;border:1px solid #ddd;margin-bottom:12px;">
+        <div style="display:flex;gap:10px;flex-wrap:nowrap;align-items:flex-end;background:#f8f9fa;padding:12px 14px;border-radius:6px;border:1px solid #ddd;margin-bottom:12px;">
 
             <div style="flex:0 0 200px">
                 <label style="<?= $labelStyle ?>">Cliente</label>
@@ -57,7 +57,7 @@
                 <input type="date" name="data2" id="data2" autocomplete="off" style="<?= $inputStyle ?>" value="<?= $this->input->get('data2') ?>">
             </div>
 
-            <div style="flex-shrink:0;padding-top:20px">
+            <div style="flex-shrink:0;display:flex;align-items:flex-end;padding-bottom:0">
                 <button type="submit" style="height:30px;padding:0 14px;white-space:nowrap;display:inline-flex;align-items:center;gap:5px;background:#f0810f;border:none;border-radius:4px;color:#fff;font-size:13px;font-weight:600;cursor:pointer">
                     <i class='bx bx-search-alt' style="font-size:15px"></i> Filtrar
                 </button>
