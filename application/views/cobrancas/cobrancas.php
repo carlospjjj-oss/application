@@ -175,6 +175,7 @@
             document.getElementById('form-gerar-cobranca').reset();
             document.getElementById('cobr_grupo_numero').style.display = 'none';
             document.getElementById('cobr_info_ref').style.display     = 'none';
+            $("#cobr_forma_pag option.cobr-venda-opt").remove();
         });
 
         // Buscar OS ou Venda
@@ -188,8 +189,27 @@
             $.getJSON(url, function(resp){
                 var info = document.getElementById('cobr_info_ref');
                 if (resp && resp.result) {
-                    if (resp.forma_pagamento) $("#cobr_forma_pag").val(resp.forma_pagamento);
-                    if (resp.descricao)       $("#cobr_descricao").val(resp.descricao);
+                    // Preenche descrição
+                    if (resp.descricao) $("#cobr_descricao").val(resp.descricao);
+
+                    // Atualiza opções de forma de pagamento
+                    var $sel = $("#cobr_forma_pag");
+                    if (resp.formas && resp.formas.length > 0) {
+                        // Preserva opções padrão e adiciona as da venda no topo
+                        $sel.find("option.cobr-venda-opt").remove();
+                        $.each(resp.formas, function(i, f){
+                            $sel.prepend('<option class="cobr-venda-opt" value="' + f + '">' + f + '</option>');
+                        });
+                        // Seleciona automaticamente se só houver uma
+                        if (resp.formas.length === 1) {
+                            $sel.val(resp.formas[0]);
+                        } else {
+                            $sel.val('');
+                        }
+                    } else if (resp.forma_pagamento) {
+                        $sel.val(resp.forma_pagamento);
+                    }
+
                     info.textContent   = "✓ Cliente: " + resp.cliente;
                     info.style.color   = "#3a7d3a";
                     info.style.display = 'block';

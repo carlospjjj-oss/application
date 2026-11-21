@@ -951,8 +951,11 @@ class Vendas extends MY_Controller
             return;
         }
 
-        // Busca venda + cliente
-        $this->db->select('vendas.idVendas, clientes.nomeCliente');
+        // Busca venda + cliente + condições de pagamento
+        $this->db->select('vendas.idVendas, clientes.nomeCliente,
+            vendas.cond_aceite, vendas.cond_entrega_serv,
+            vendas.cond_pix, vendas.cond_pix_pct,
+            vendas.cond_parcelas, vendas.cond_parcelado');
         $this->db->from('vendas');
         $this->db->join('clientes', 'clientes.idClientes = vendas.clientes_id');
         $this->db->where('vendas.idVendas', $id);
@@ -963,10 +966,22 @@ class Vendas extends MY_Controller
             return;
         }
 
+        // Montar opções de forma de pagamento da venda
+        $formas = [];
+        if (!empty($venda->cond_aceite) && $venda->cond_aceite > 0)
+            $formas[] = 'Pagamento no Aceite';
+        if (!empty($venda->cond_entrega_serv) && $venda->cond_entrega_serv > 0)
+            $formas[] = 'Pagamento na Entrega dos Serviços';
+        if (!empty($venda->cond_pix) && $venda->cond_pix > 0)
+            $formas[] = 'PIX';
+        if (!empty($venda->cond_parcelas) && $venda->cond_parcelas > 0)
+            $formas[] = 'Parcelado em ' . $venda->cond_parcelas . 'x Sem Juros';
+
         echo json_encode([
             'result'          => true,
             'cliente'         => $venda->nomeCliente,
-            'forma_pagamento' => '',
+            'formas'          => $formas,
+            'forma_pagamento' => count($formas) === 1 ? $formas[0] : '',
             'descricao'       => 'Venda #' . $id,
         ]);
     }
