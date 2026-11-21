@@ -1,6 +1,6 @@
 <!--sidebar-menu-->
 <nav id="sidebar">
-    <div id="newlog" style="justify-content:center;padding:0 10px;">
+    <div id="newlog" style="justify-content:center;padding:20px 10px 10px;">
         <div class="title1" style="width:auto;text-align:center;">
             <img src="<?php echo base_url() ?>assets/img/logo-proton-mobilidade.png" style="max-width:140px;display:block;margin:0 auto;">
         </div>
