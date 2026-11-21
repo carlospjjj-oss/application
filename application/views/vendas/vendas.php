@@ -26,7 +26,7 @@
         ?>
         <div style="display:flex;gap:10px;flex-wrap:nowrap;align-items:flex-start;background:#f8f9fa;padding:12px 14px;border-radius:6px;border:1px solid #ddd;margin-bottom:12px;">
 
-            <div style="flex:1 1 180px;min-width:130px">
+            <div style="flex:0 0 200px">
                 <label style="<?= $labelStyle ?>">Cliente</label>
                 <input type="text" name="pesquisa" id="pesquisa" placeholder="Nome do cliente..." style="<?= $inputStyle ?>" value="<?= $this->input->get('pesquisa') ?>">
             </div>
