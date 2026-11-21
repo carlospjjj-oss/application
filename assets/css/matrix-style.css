@@ -646,10 +646,10 @@ End hora certa */
 
 #newlog {
   display        : flex;
+  flex-shrink    : 0;
   width          : 100%;
   box-sizing     : border-box;
-  margin-top     : 50px;
-  padding        : 0 20px 10px;
+  padding        : 20px 20px 10px;
   align-items    : center;
   justify-content: center;
   z-index        : 99;
