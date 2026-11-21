@@ -1264,7 +1264,7 @@ class Os extends MY_Controller
             echo json_encode(['result' => false]);
             return;
         }
-        $this->db->select('os.idOs, os.forma_pagamento, clientes.nomeCliente');
+        $this->db->select('os.idOs, clientes.nomeCliente');
         $this->db->from('os');
         $this->db->join('clientes', 'clientes.idClientes = os.clientes_id');
         $this->db->where('os.idOs', $id);
@@ -1276,7 +1276,7 @@ class Os extends MY_Controller
         echo json_encode([
             'result'          => true,
             'cliente'         => $row->nomeCliente,
-            'forma_pagamento' => $row->forma_pagamento ?? '',
+            'forma_pagamento' => '',
             'descricao'       => 'Ordem de Serviço #' . $id,
         ]);
     }

@@ -947,24 +947,26 @@ class Vendas extends MY_Controller
     {
         $id = (int)($id ?: $this->input->get('id'));
         if (! $id) {
-            echo json_encode(['result' => false]);
+            echo json_encode(['result' => false, 'message' => 'ID inválido']);
             return;
         }
-        $this->load->model('Vendas_model');
-        $venda = $this->Vendas_model->getById($id);
+
+        // Busca venda + cliente
+        $this->db->select('vendas.idVendas, clientes.nomeCliente');
+        $this->db->from('vendas');
+        $this->db->join('clientes', 'clientes.idClientes = vendas.clientes_id');
+        $this->db->where('vendas.idVendas', $id);
+        $venda = $this->db->get()->row();
+
         if (! $venda) {
-            echo json_encode(['result' => false]);
+            echo json_encode(['result' => false, 'message' => 'Venda não encontrada']);
             return;
         }
-        // Pegar forma de pagamento do lancamento vinculado à venda
-        $lanc = $this->db->select('forma_pagamento')->from('lancamentos')
-            ->where('vendas_id', $id)->limit(1)->get()->row();
-        $forma = $lanc ? ($lanc->forma_pagamento ?? '') : '';
 
         echo json_encode([
             'result'          => true,
             'cliente'         => $venda->nomeCliente,
-            'forma_pagamento' => $forma,
+            'forma_pagamento' => '',
             'descricao'       => 'Venda #' . $id,
         ]);
     }
