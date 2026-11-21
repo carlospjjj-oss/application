@@ -27,6 +27,7 @@
                     <tr>
                         <th>#</th>
                         <th>Origem</th>
+                        <th>Tipo / Forma</th>
                         <th>Data de Vencimento</th>
                         <th>Referência</th>
                         <th>Status</th>
@@ -38,7 +39,7 @@
                     <?php
                     if (!$results) {
                         echo '<tr>
-                                <td colspan="7">Nenhuma cobrança Cadastrada</td>
+                                <td colspan="8">Nenhuma cobrança Cadastrada</td>
                             </tr>';
                     }
                     foreach ($results as $r) {
@@ -53,6 +54,10 @@
                         echo '<td>' . $r->idCobranca . '</td>';
                         $origem = $r->payment_gateway === 'Manual' ? 'Manual' : 'Faturar (Venda)';
                         echo '<td>' . $origem . '</td>';
+                        $tipo = $r->payment_gateway === 'Manual'
+                            ? htmlspecialchars($r->payment ?? '')
+                            : htmlspecialchars($r->payment_method ?? '');
+                        echo '<td>' . $tipo . '</td>';
                         echo '<td>' . $dataVenda . '</td>';
 
                         if ($r->os_id != '') {
