@@ -19,6 +19,9 @@
     <a href="<?= base_url('index.php/usuarios/adicionar') ?>" class="button btn btn-success" style="max-width: 160px">
         <span class="button__icon"><i class='bx bx-plus-circle'></i></span><span class="button__text2">Adicionar Usuário</span>
     </a>
+    <a href="<?= site_url('usuarios/importar') ?>" class="button btn btn-mini btn-info" style="max-width:180px;margin-left:8px;">
+        <span class="button__icon"><i class='bx bx-import'></i></span><span class="button__text2">Importar Planilha</span>
+    </a>
 
     <div class="widget-box">
         <div class="widget-title" style="margin: -20px 0 0">

@@ -186,4 +186,82 @@ class Usuarios extends MY_Controller
 
         redirect(site_url('usuarios/gerenciar/'));
     }
+
+    public function importar()
+    {
+        $this->data['view'] = 'usuarios/importarUsuarios';
+        return $this->layout();
+    }
+
+    public function modeloPlanilha()
+    {
+        require_once APPPATH . 'third_party/SimpleXLSXGen.php';
+        $rows = [
+            ['Nome', 'CPF', 'Email', 'Senha', 'Telefone', 'Celular', 'RG', 'CEP', 'Rua', 'Número', 'Bairro', 'Cidade', 'Estado', 'Situação', 'Expira em'],
+            ['João Silva', '123.456.789-00', 'joao@email.com', 'senha123', '(11) 99999-0001', '(11) 99999-0002', '12.345.678', '01310-100', 'Av. Paulista', '1000', 'Bela Vista', 'São Paulo', 'SP', 'Ativo', '2027-12-31'],
+        ];
+        $xlsx = \Shuchkin\SimpleXLSXGen::fromArray($rows);
+        $xlsx->downloadAs('modelo_importacao_usuarios.xlsx');
+    }
+
+    public function importarPlanilha()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['planilha'])) {
+            require_once APPPATH . 'third_party/SimpleXLSX.php';
+
+            // Busca a primeira permissão disponível como padrão
+            $this->load->model('permissoes_model');
+            $permissoes = $this->permissoes_model->getActive('permissoes', 'permissoes.idPermissao');
+            $permissaoDefault = !empty($permissoes) ? $permissoes[0]->idPermissao : 1;
+
+            $file = $_FILES['planilha']['tmp_name'];
+            if ($xlsx = \Shuchkin\SimpleXLSX::parse($file)) {
+                $rows = $xlsx->rows();
+                $importados = 0;
+                $erros = 0;
+                foreach ($rows as $i => $row) {
+                    if ($i === 0) continue; // pular cabeçalho
+                    if (empty($row[0]) || empty($row[2]) || empty($row[3])) continue; // nome, email e senha obrigatórios
+
+                    $situacaoStr = strtolower(isset($row[13]) ? trim($row[13]) : 'ativo');
+                    $situacao = ($situacaoStr === 'ativo' || $situacaoStr === '1') ? 1 : 0;
+
+                    $dataExpiracao = isset($row[14]) && $row[14] ? $row[14] : date('Y-m-d', strtotime('+1 year'));
+
+                    $data = [
+                        'nome'          => $row[0],
+                        'cpf'           => isset($row[1]) ? $row[1] : '',
+                        'email'         => $row[2],
+                        'senha'         => password_hash($row[3], PASSWORD_DEFAULT),
+                        'telefone'      => isset($row[4]) ? $row[4] : '',
+                        'celular'       => isset($row[5]) ? $row[5] : '',
+                        'rg'            => isset($row[6]) ? $row[6] : '',
+                        'cep'           => isset($row[7]) ? $row[7] : '',
+                        'rua'           => isset($row[8]) ? $row[8] : '',
+                        'numero'        => isset($row[9]) ? $row[9] : '',
+                        'bairro'        => isset($row[10]) ? $row[10] : '',
+                        'cidade'        => isset($row[11]) ? $row[11] : '',
+                        'estado'        => isset($row[12]) ? $row[12] : '',
+                        'situacao'      => $situacao,
+                        'dataExpiracao' => $dataExpiracao,
+                        'permissoes_id' => $permissaoDefault,
+                        'dataCadastro'  => date('Y-m-d'),
+                    ];
+
+                    if ($this->usuarios_model->add('usuarios', $data)) {
+                        $importados++;
+                    } else {
+                        $erros++;
+                    }
+                }
+                $this->session->set_flashdata('success', "Importação concluída: $importados usuário(s) importado(s)" . ($erros ? ", $erros erro(s)." : "."));
+            } else {
+                $this->session->set_flashdata('error', 'Erro ao ler a planilha. Verifique o formato.');
+            }
+            redirect(site_url('usuarios'));
+        }
+
+        $this->data['view'] = 'usuarios/importarUsuarios';
+        return $this->layout();
+    }
 }
