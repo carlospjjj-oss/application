@@ -1,7 +1,7 @@
 <!--sidebar-menu-->
 <nav id="sidebar">
     <div id="newlog">
-        <div class="title1" style="width:auto;">
+        <div class="title1" style="width:auto;text-align:center;">
             <img src="<?php echo base_url() ?>assets/img/logo-proton-mobilidade.png" style="max-width:150px;">
         </div>
     </div>
@@ -78,6 +78,17 @@
                     </li>
                 <?php } ?>
 
+                <?php if ($this->permission->checkPermission($this->session->userdata('permissao'), 'vArquivo')) { ?>
+                    <li class="<?php if (isset($menuArquivos)) {
+                        echo 'active';
+                    }; ?>">
+                        <a class="tip-bottom" title="" href="<?= site_url('arquivos') ?>"><i class='bx bx-box iconX'></i>
+                            <span class="title">Execução</span>
+                            <span class="title-tooltip">Execução</span>
+                        </a>
+                    </li>
+                <?php } ?>
+
                 <?php if ($this->permission->checkPermission($this->session->userdata('permissao'), 'vProduto')) { ?>
                     <li class="<?php if (isset($menuProdutos)) {
                         echo 'active';
@@ -107,17 +118,6 @@
                         <a class="tip-bottom" title="" href="<?= site_url('garantias') ?>"><i class='bx bx-receipt iconX'></i>
                             <span class="title">Termos de Garantias</span>
                             <span class="title-tooltip">Garantias</span>
-                        </a>
-                    </li>
-                <?php } ?>
-
-                <?php if ($this->permission->checkPermission($this->session->userdata('permissao'), 'vArquivo')) { ?>
-                    <li class="<?php if (isset($menuArquivos)) {
-                        echo 'active';
-                    }; ?>">
-                        <a class="tip-bottom" title="" href="<?= site_url('arquivos') ?>"><i class='bx bx-box iconX'></i>
-                            <span class="title">Arquivos</span>
-                            <span class="title-tooltip">Arquivos</span>
                         </a>
                     </li>
                 <?php } ?>
