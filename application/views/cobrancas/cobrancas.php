@@ -10,6 +10,14 @@
             </span>
             <h5>Cobranças</h5>
     </div>
+    <?php if ($this->permission->checkPermission($this->session->userdata('permissao'), 'aCobranca')): ?>
+    <div style="margin:10px 0;">
+        <a href="#modal-gerar-pagamento" data-toggle="modal" class="button btn btn-mini btn-success">
+            <span class="button__icon"><i class='bx bx-plus'></i></span><span class="button__text2">Nova Cobrança</span>
+        </a>
+    </div>
+    <?php endif ?>
+
     <div class="widget-box">
         <h5 style="padding: 3px 0"></h5>
         <div class="widget-content nopadding tab-content">
@@ -78,6 +86,117 @@
         </div>
     </div>
     <?php echo $this->pagination->create_links(); ?>
+
+    <!-- Modal Nova Cobrança -->
+    <?php if ($this->permission->checkPermission($this->session->userdata('permissao'), 'aCobranca')): ?>
+    <div class="modal hide fade" id="modal-gerar-pagamento" tabindex="-1" role="dialog">
+        <form id="form-gerar-cobranca" method="post" action="<?= base_url() ?>index.php/cobrancas/adicionar">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Nova Cobrança</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Tipo de Referência</label>
+                    <select name="tipo" id="cobr_tipo" class="span12" required>
+                        <option value="">Selecione...</option>
+                        <option value="os">Ordem de Serviço</option>
+                        <option value="venda">Venda</option>
+                    </select>
+                </div>
+                <div class="form-group" id="cobr_grupo_os" style="display:none">
+                    <label>Número da Ordem de Serviço</label>
+                    <input type="number" id="cobr_id_os" class="span12" placeholder="Ex: 42" min="1">
+                </div>
+                <div class="form-group" id="cobr_grupo_venda" style="display:none">
+                    <label>Número da Venda</label>
+                    <input type="number" id="cobr_id_venda" class="span12" placeholder="Ex: 10" min="1">
+                </div>
+                <input type="hidden" name="id" id="cobr_id">
+                <div class="form-group">
+                    <label>Descrição</label>
+                    <input type="text" name="descricao" id="cobr_descricao" class="span12" placeholder="Ex: Serviço de instalação" required>
+                </div>
+                <div class="form-group">
+                    <label>Forma de Pagamento</label>
+                    <select name="forma_pagamento" class="span12" required>
+                        <option value="">Selecione...</option>
+                        <option value="Dinheiro">Dinheiro</option>
+                        <option value="PIX">PIX</option>
+                        <option value="Cartão de Crédito">Cartão de Crédito</option>
+                        <option value="Cartão de Débito">Cartão de Débito</option>
+                        <option value="Boleto">Boleto</option>
+                        <option value="Transferência">Transferência Bancária</option>
+                        <option value="Cheque">Cheque</option>
+                        <option value="A combinar">A combinar</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Vencimento</label>
+                    <input type="text" name="vencimento" id="cobr_vencimento" class="span12 datepicker" placeholder="dd/mm/aaaa" required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="button btn btn-mini btn-warning" data-dismiss="modal">
+                    <span class="button__icon"><i class='bx bx-x'></i></span><span class="button__text2">Cancelar</span>
+                </button>
+                <button type="submit" class="button btn btn-mini btn-success" id="btn-registrar-cobranca">
+                    <span class="button__icon"><i class='bx bx-dollar'></i></span><span class="button__text2">Registrar Cobrança</span>
+                </button>
+            </div>
+        </form>
+    </div>
+    <script>
+    $(function(){
+        $("#cobr_vencimento").datepicker({ dateFormat:'dd/mm/yy' });
+
+        // Mostrar campo correto conforme tipo
+        $("#cobr_tipo").on("change", function(){
+            var tipo = $(this).val();
+            $("#cobr_grupo_os").toggle(tipo === 'os');
+            $("#cobr_grupo_venda").toggle(tipo === 'venda');
+            $("#cobr_id_os, #cobr_id_venda").val('');
+            $("#cobr_id").val('');
+        });
+
+        // Sincronizar campo hidden "id" ao digitar
+        $("#cobr_id_os").on("input", function(){ $("#cobr_id").val($(this).val()); });
+        $("#cobr_id_venda").on("input", function(){ $("#cobr_id").val($(this).val()); });
+
+        $("#form-gerar-cobranca").on("submit", function(e){
+            e.preventDefault();
+            var tipo = $("#cobr_tipo").val();
+            if (!tipo) { alert("Selecione o tipo de referência."); return; }
+            var refId = $("#cobr_id").val();
+            if (!refId || parseInt(refId) < 1) {
+                alert("Informe o número da " + (tipo === 'os' ? 'Ordem de Serviço' : 'Venda') + ".");
+                return;
+            }
+            var $btn = $("#btn-registrar-cobranca").prop("disabled", true);
+            $.ajax({
+                url: $(this).attr("action"),
+                method: "POST",
+                data: $(this).serialize(),
+                dataType: "json",
+                success: function(resp){
+                    if(resp.result){
+                        alert("Cobrança registrada com sucesso!");
+                        $("#modal-gerar-pagamento").modal("hide");
+                        location.reload();
+                    } else {
+                        alert(resp.message || "Erro ao registrar cobrança.");
+                        $btn.prop("disabled", false);
+                    }
+                },
+                error: function(){
+                    alert("Erro ao registrar cobrança.");
+                    $btn.prop("disabled", false);
+                }
+            });
+        });
+    });
+    </script>
+    <?php endif ?>
 
     <!-- Modal -->
     <div id="modal-excluir" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
