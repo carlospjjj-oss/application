@@ -227,7 +227,7 @@ class Execucao extends MY_Controller
         $usuario_id  = $this->input->post('usuarios_id');
         $dataInicial = $this->input->post('dataInicial');
         $dataFinal   = $this->input->post('dataFinal');
-        $garantia    = $this->input->post('garantia') ?: 90;
+        $garantia    = $this->input->post('garantia') ?: 365;
 
         if ($dataInicial) $dataInicial = $this->_formatDate($dataInicial);
         if ($dataFinal)   $dataFinal   = $this->_formatDate($dataFinal);

@@ -60,7 +60,7 @@
                     </div>
                     <div class="span4">
                         <label>Garantia (dias)</label>
-                        <input type="number" name="garantia" class="span12" value="90" min="0">
+                        <input type="number" name="garantia" class="span12" value="365" min="0">
                     </div>
                 </div>
 
