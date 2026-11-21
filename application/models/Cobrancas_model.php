@@ -142,6 +142,12 @@ class Cobrancas_model extends CI_Model
         }
 
         $gatewayDePagamento = $cobranca->payment_gateway;
+
+        // Cobranças manuais não possuem API para cancelar — apenas remove do banco
+        if (empty($gatewayDePagamento) || $gatewayDePagamento === 'Manual') {
+            return true;
+        }
+
         $this->load->library("Gateways/$gatewayDePagamento", null, 'PaymentGateway');
 
         $result = $this->PaymentGateway->cancelar($cobranca->idCobranca);
@@ -157,6 +163,12 @@ class Cobrancas_model extends CI_Model
         }
 
         $gatewayDePagamento = $cobranca->payment_gateway;
+
+        // Cobranças manuais não possuem link de pagamento para enviar por e-mail
+        if (empty($gatewayDePagamento) || $gatewayDePagamento === 'Manual') {
+            return false;
+        }
+
         $this->load->library("Gateways/$gatewayDePagamento", null, 'PaymentGateway');
 
         $result = $this->PaymentGateway->enviarPorEmail($cobranca->idCobranca);
