@@ -65,10 +65,10 @@ $periodo = $this->input->get('periodo');
     <?php } ?>
 
     <div class="span12" style="margin-left: 0;margin-top: 1rem;">
-        <form action="<?php echo current_url(); ?>" method="get">
-            <div class="span2" style="margin-left: 0">
-                <label>Período</label>
-                <select id="periodo" name="periodo" class="span12">
+        <form action="<?php echo current_url(); ?>" method="get" style="display:flex;align-items:flex-end;gap:8px;flex-wrap:nowrap;">
+            <div style="min-width:110px;flex:1">
+                <label style="display:block;margin-bottom:3px">Período</label>
+                <select id="periodo" name="periodo" style="width:100%">
                     <option value="dia" <?= $this->input->get('periodo') === 'dia' ? 'selected' : '' ?>>Dia</option>
                     <option value="semana" <?= $this->input->get('periodo') === 'semana' ? 'selected' : '' ?>>Semana</option>
                     <option value="mesAnterior" <?= $this->input->get('periodo') === 'mesAnterior' ? 'selected' : '' ?>>Mês Anterior</option>
@@ -79,44 +79,43 @@ $periodo = $this->input->get('periodo');
                 </select>
             </div>
 
-            <div class="span2">
-                <label>Vencimento (de)</label>
-                <input id="vencimento_de" type="text" class="span12 datepicker" name="vencimento_de" value="<?= $this->input->get('vencimento_de') ?: '' ?>">
+            <div style="min-width:110px;flex:1">
+                <label style="display:block;margin-bottom:3px">Vencimento (de)</label>
+                <input id="vencimento_de" type="text" class="datepicker" name="vencimento_de" style="width:100%" value="<?= $this->input->get('vencimento_de') ?: '' ?>">
             </div>
 
-            <div class="span2">
-                <label>Vencimento (até)</label>
-                <input id="vencimento_ate" type="text" class="span12 datepicker" name="vencimento_ate" value="<?= $this->input->get('vencimento_ate') ?: '' ?>">
+            <div style="min-width:110px;flex:1">
+                <label style="display:block;margin-bottom:3px">Vencimento (até)</label>
+                <input id="vencimento_ate" type="text" class="datepicker" name="vencimento_ate" style="width:100%" value="<?= $this->input->get('vencimento_ate') ?: '' ?>">
             </div>
 
-            <div class="span2">
-                <label>Tipo</label>
-                <select name="tipo" class="span12">
+            <div style="min-width:90px;flex:1">
+                <label style="display:block;margin-bottom:3px">Tipo</label>
+                <select name="tipo" style="width:100%">
                     <option value="">Todos</option>
-                    <option value="receita" <?= $this->input->get('tipo') === 'receita' ? 'selected' : '' ?>>Receita
-                    </option>
-                    <option value="despesa" <?= $this->input->get('tipo') === 'despesa' ? 'selected' : '' ?>>Despesa
-                    </option>
+                    <option value="receita" <?= $this->input->get('tipo') === 'receita' ? 'selected' : '' ?>>Receita</option>
+                    <option value="despesa" <?= $this->input->get('tipo') === 'despesa' ? 'selected' : '' ?>>Despesa</option>
                 </select>
             </div>
 
-            <div class="span2">
-                <label>Status</label>
-                <select name="status" class="span12">
+            <div style="min-width:140px;flex:1.5">
+                <label style="display:block;margin-bottom:3px">Status</label>
+                <select name="status" style="width:100%">
                     <option value="">Todos (Pendente e Pago)</option>
                     <option value="0" <?= $this->input->get('status') === '0' ? 'selected' : '' ?>>Pendente</option>
                     <option value="1" <?= $this->input->get('status') === '1' ? 'selected' : '' ?>>Pago</option>
                 </select>
             </div>
 
-            <div class="span2">
-                <label>Cliente/Fornecedor</label>
-                <input id="cliente_busca" type="text" class="span12" name="cliente" value="<?= $this->input->get('cliente') ?>">
+            <div style="min-width:120px;flex:1.5">
+                <label style="display:block;margin-bottom:3px">Cliente/Fornecedor</label>
+                <input id="cliente_busca" type="text" name="cliente" style="width:100%" value="<?= $this->input->get('cliente') ?>">
             </div>
 
-            <div class="span1" style="margin-top:18px;">
-                <button type="submit" class="button btn btn-primary btn-sm" style="min-width: 100px">
-                    <i class='bx bx-filter-alt'></i><span>Filtrar</span></button>
+            <div style="flex:0 0 auto;padding-bottom:1px;">
+                <button type="submit" class="button btn btn-primary btn-sm" style="white-space:nowrap">
+                    <i class='bx bx-filter-alt'></i><span>Filtrar</span>
+                </button>
             </div>
         </form>
     </div>
