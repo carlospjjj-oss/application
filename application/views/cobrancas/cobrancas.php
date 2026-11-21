@@ -1,7 +1,8 @@
 <link rel="stylesheet" href="<?php echo base_url(); ?>assets/js/jquery-ui/css/smoothness/jquery-ui-1.9.2.custom.css" />
 <script type="text/javascript" src="<?php echo base_url() ?>assets/js/jquery-ui/js/jquery-ui-1.9.2.custom.js"></script>
 <style>
-  select { width: 70px; }
+  .widget-content select { width: 70px; }
+  #modal-gerar-pagamento select { width: 100%; }
 </style>
 <div class="new122">
     <div class="widget-title" style="margin: -20px 0 0">
@@ -213,13 +214,20 @@
                         resp.formas.forEach(function(f) {
                             var opt = document.createElement('option');
                             opt.value = f;
-                            opt.textContent = f;
-                            selEl.appendChild(opt);
+                            opt.text  = f;
+                            selEl.add(opt);
                         });
+                        // Seleciona o índice 1 (primeira opção real) ou busca por valor
                         if (resp.forma_pagamento) {
-                            selEl.value = resp.forma_pagamento;
+                            for (var i = 0; i < selEl.options.length; i++) {
+                                if (selEl.options[i].value === resp.forma_pagamento) {
+                                    selEl.selectedIndex = i;
+                                    break;
+                                }
+                            }
+                        } else {
+                            selEl.selectedIndex = 1; // primeira opção real
                         }
-                        console.log('select options count:', selEl.options.length, 'selected:', selEl.value);
                     }
 
                     info.textContent   = "✓ Cliente: " + resp.cliente;
