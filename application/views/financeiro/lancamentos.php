@@ -114,9 +114,9 @@ $periodo = $this->input->get('periodo');
                 <input id="cliente_busca" type="text" class="span12" name="cliente" value="<?= $this->input->get('cliente') ?>">
             </div>
 
-            <div class="span2 pull-right">
+            <div class="span12" style="margin-left:0; margin-top:8px;">
                 <button type="submit" class="button btn btn-primary btn-sm" style="min-width: 120px">
-                    <i class='bx bx-filter-alt'></i><span>Filtrar</span></a></button>
+                    <i class='bx bx-filter-alt'></i><span>Filtrar</span></button>
             </div>
         </form>
     </div>
