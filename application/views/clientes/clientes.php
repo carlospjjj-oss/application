@@ -1,7 +1,6 @@
 <style>
-    select {
-        width: 70px;
-    }
+    select { width: 70px; }
+    #tabela_wrapper .dataTables_filter { display: none !important; }
 </style>
 <div class="new122">
     <div class="widget-title" style="margin: -20px 0 0">
@@ -12,37 +11,46 @@
     </div>
     <div class="span12" style="margin-left: 0">
         <?php if ($this->permission->checkPermission($this->session->userdata('permissao'), 'aCliente')) { ?>
-            <div class="span3" style="display:flex;gap:8px;flex-wrap:wrap;">
-                <a href="<?= base_url() ?>index.php/clientes/adicionar" class="button btn btn-mini btn-success"
-                    style="max-width: 165px">
-                    <span class="button__icon"><i class='bx bx-plus-circle'></i></span><span class="button__text2">
-                        Cliente / Fornecedor
-                    </span>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+                <a href="<?= base_url() ?>index.php/clientes/adicionar" class="button btn btn-mini btn-success" style="max-width:165px">
+                    <span class="button__icon"><i class='bx bx-plus-circle'></i></span><span class="button__text2">Cliente / Fornecedor</span>
                 </a>
                 <a href="<?= site_url('clientes/importar') ?>" class="button btn btn-mini btn-info" style="max-width:180px;">
                     <span class="button__icon"><i class='bx bx-import'></i></span><span class="button__text2">Importar Planilha</span>
                 </a>
             </div>
         <?php } ?>
-        <form class="span9" method="get" action="<?= base_url() ?>index.php/clientes"
-            style="display: flex; justify-content: flex-end; gap: 6px; align-items: center;">
-            <div class="span2">
-                <select name="tipo" style="width:140px;">
-                    <option value="">Todos os tipos</option>
-                    <option value="cliente"    <?= ($this->input->get('tipo') == 'cliente'    ? 'selected' : '') ?>>Cliente</option>
-                    <option value="fornecedor" <?= ($this->input->get('tipo') == 'fornecedor' ? 'selected' : '') ?>>Fornecedor</option>
-                    <option value="terceiro"   <?= ($this->input->get('tipo') == 'terceiro'   ? 'selected' : '') ?>>Terceiro</option>
+        <form method="get" action="<?= base_url() ?>index.php/clientes">
+        <?php
+        $labelStyle  = 'display:block;margin-bottom:4px;font-size:12px;color:#555;font-weight:600;white-space:nowrap';
+        $inputStyle  = 'width:100%;box-sizing:border-box;height:30px;padding:4px 6px;border:1px solid #ccc;border-radius:4px;font-size:13px';
+        $selectStyle = 'width:100%;box-sizing:border-box;height:30px;border:1px solid #ccc;border-radius:4px;font-size:13px';
+        ?>
+        <div style="display:flex;gap:10px;flex-wrap:nowrap;align-items:flex-start;background:#f8f9fa;padding:12px 14px;border-radius:6px;border:1px solid #ddd;margin-bottom:12px;">
+
+            <div style="flex:0 0 130px">
+                <label style="<?= $labelStyle ?>">Tipo</label>
+                <select name="tipo" style="<?= $selectStyle ?>">
+                    <option value="">Todos</option>
+                    <option value="cliente"    <?= $this->input->get('tipo') == 'cliente'    ? 'selected' : '' ?>>Cliente</option>
+                    <option value="fornecedor" <?= $this->input->get('tipo') == 'fornecedor' ? 'selected' : '' ?>>Fornecedor</option>
+                    <option value="terceiro"   <?= $this->input->get('tipo') == 'terceiro'   ? 'selected' : '' ?>>Terceiro</option>
                 </select>
             </div>
-            <div class="span3">
-                <input type="text" name="pesquisa" id="pesquisa"
-                    placeholder="Buscar por Nome, Doc, Email ou Telefone..." class="span12"
-                    value="<?= $this->input->get('pesquisa') ?>">
+
+            <div style="flex:0 0 300px">
+                <label style="<?= $labelStyle ?>">Buscar cliente</label>
+                <input type="text" name="pesquisa" id="pesquisa" placeholder="Nome, Doc, Email ou Tel..." style="<?= $inputStyle ?>" value="<?= $this->input->get('pesquisa') ?>">
             </div>
-            <div class="span1">
-                <button class="button btn btn-mini btn-warning" style="min-width: 30px">
-                    <span class="button__icon"><i class='bx bx-search-alt'></i></span></button>
+
+            <div style="flex-shrink:0">
+                <label style="display:block;margin-bottom:4px;font-size:12px;visibility:hidden">x</label>
+                <button type="submit" style="height:30px;padding:0 14px;white-space:nowrap;display:inline-flex;align-items:center;gap:5px;background:#f0810f;border:none;border-radius:4px;color:#fff;font-size:13px;font-weight:600;cursor:pointer">
+                    <i class='bx bx-search-alt' style="font-size:15px"></i> Filtrar
+                </button>
             </div>
+
+        </div>
         </form>
     </div>
 
