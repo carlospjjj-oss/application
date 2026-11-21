@@ -968,29 +968,37 @@ class Vendas extends MY_Controller
             return $json(['result' => false, 'message' => 'Venda não encontrada']);
         }
 
-        // Busca colunas de condição separadamente — se não existirem, não quebra
-        $conds = $this->db->query(
-            "SELECT cond_aceite, cond_entrega_serv, cond_pix, cond_parcelas
-             FROM vendas WHERE idVendas = ? LIMIT 1", [$id]
-        )->row();
+        // Busca dados completos da venda para derivar forma de pagamento
+        $v = $this->db->get_where('vendas', ['idVendas' => $id])->row();
 
         $formas = [];
-        if ($conds) {
-            if ((float)($conds->cond_aceite ?? 0) > 0)
-                $formas[] = 'Pagamento no Aceite';
-            if ((float)($conds->cond_entrega_serv ?? 0) > 0)
-                $formas[] = 'Pagamento na Entrega dos Serviços';
-            if ((float)($conds->cond_pix ?? 0) > 0)
+        $formaPrincipal = '';
+        if ($v) {
+            // Lógica igual à usada no faturamento
+            if (!empty($v->cond_parcelas) && $v->cond_parcelas > 1) {
+                $formas[] = 'Cartão de Crédito';
+                $formas[] = 'Cartão de Crédito ' . intval($v->cond_parcelas) . 'x Sem Juros';
+                $formaPrincipal = 'Cartão de Crédito';
+            }
+            if (!empty($v->cond_pix) && $v->cond_pix > 0) {
                 $formas[] = 'PIX';
-            if ((int)($conds->cond_parcelas ?? 0) > 0)
-                $formas[] = 'Parcelado em ' . (int)$conds->cond_parcelas . 'x Sem Juros';
+                if (!$formaPrincipal) $formaPrincipal = 'PIX';
+            }
+            if (!empty($v->cond_aceite) && $v->cond_aceite > 0) {
+                $formas[] = 'Dinheiro';
+                if (!$formaPrincipal) $formaPrincipal = 'Dinheiro';
+            }
+            if (!empty($v->cond_entrega_serv) && $v->cond_entrega_serv > 0) {
+                $formas[] = 'Pagamento na Entrega';
+                if (!$formaPrincipal) $formaPrincipal = 'Dinheiro';
+            }
         }
 
         return $json([
             'result'          => true,
             'cliente'         => $venda->nomeCliente,
-            'formas'          => $formas,
-            'forma_pagamento' => count($formas) === 1 ? $formas[0] : '',
+            'formas'          => array_unique($formas),
+            'forma_pagamento' => $formaPrincipal,
             'descricao'       => 'Venda #' . $id,
         ]);
     }
