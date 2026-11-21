@@ -112,6 +112,11 @@ class Cobrancas_model extends CI_Model
         }
 
         $gatewayDePagamento = $cobranca->payment_gateway;
+
+        if ($gatewayDePagamento === 'Manual') {
+            return $this->session->set_flashdata('info', 'Cobranças manuais não possuem gateway para atualizar.');
+        }
+
         $this->load->library("Gateways/$gatewayDePagamento", null, 'PaymentGateway');
 
         $result = $this->PaymentGateway->atualizarDados($cobranca->idCobranca);
@@ -127,6 +132,12 @@ class Cobrancas_model extends CI_Model
         }
 
         $gatewayDePagamento = $cobranca->payment_gateway;
+
+        if ($gatewayDePagamento === 'Manual') {
+            $this->db->where('idCobranca', $idCobranca)->update('cobrancas', ['status' => 'Pago']);
+            return $this->session->set_flashdata('success', 'Pagamento confirmado!');
+        }
+
         $this->load->library("Gateways/$gatewayDePagamento", null, 'PaymentGateway');
 
         $result = $this->PaymentGateway->confirmarPagamento($cobranca->idCobranca);
