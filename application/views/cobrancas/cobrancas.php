@@ -1,7 +1,7 @@
+<link rel="stylesheet" href="<?php echo base_url(); ?>assets/js/jquery-ui/css/smoothness/jquery-ui-1.9.2.custom.css" />
+<script type="text/javascript" src="<?php echo base_url() ?>assets/js/jquery-ui/js/jquery-ui-1.9.2.custom.js"></script>
 <style>
-  select {
-    width: 70px;
-  }
+  select { width: 70px; }
 </style>
 <div class="new122">
     <div class="widget-title" style="margin: -20px 0 0">
@@ -98,7 +98,7 @@
             <div class="modal-body">
                 <div class="form-group">
                     <label>Tipo de Referência</label>
-                    <select name="tipo" id="cobr_tipo" class="span12">
+                    <select name="tipo" id="cobr_tipo" class="span12" onchange="cobr_tipo_change(this.value)">
                         <option value="">Selecione...</option>
                         <option value="os">Ordem de Serviço</option>
                         <option value="venda">Venda</option>
@@ -148,73 +148,77 @@
         </form>
     </div>
     <script>
+    // Função global — sem depender de $(document).ready para o onchange
+    function cobr_tipo_change(tipo) {
+        var grp   = document.getElementById('cobr_grupo_numero');
+        var label = document.getElementById('cobr_label_numero');
+        var info  = document.getElementById('cobr_info_ref');
+        var inp   = document.getElementById('cobr_id');
+        if (tipo) {
+            label.textContent = tipo === 'os' ? 'Número da Ordem de Serviço' : 'Número da Venda';
+            grp.style.display = 'block';
+            inp.value = '';
+            info.style.display = 'none';
+            info.textContent   = '';
+            inp.focus();
+        } else {
+            grp.style.display = 'none';
+        }
+    }
+
     $(function(){
+        // Datepicker no campo vencimento do modal
         $("#cobr_vencimento").datepicker({ dateFormat:'dd/mm/yy' });
 
-        // Ao limpar o modal, resetar tudo
+        // Resetar modal ao fechar
         $("#modal-gerar-pagamento").on("hidden", function(){
-            $("#form-gerar-cobranca")[0].reset();
-            $("#cobr_grupo_numero, #cobr_info_ref").hide();
+            document.getElementById('form-gerar-cobranca').reset();
+            document.getElementById('cobr_grupo_numero').style.display = 'none';
+            document.getElementById('cobr_info_ref').style.display     = 'none';
         });
 
-        // Mostrar campo de número conforme tipo selecionado
-        $("#cobr_tipo").on("change", function(){
-            var tipo = $(this).val();
-            if (tipo) {
-                var label = tipo === 'os' ? 'Número da Ordem de Serviço' : 'Número da Venda';
-                $("#cobr_label_numero").text(label);
-                $("#cobr_grupo_numero").show();
-                $("#cobr_id").val('').focus();
-                $("#cobr_info_ref").hide().text('');
-            } else {
-                $("#cobr_grupo_numero").hide();
-            }
-        });
-
-        // Buscar dados da OS ou Venda ao clicar em Buscar
+        // Buscar OS ou Venda
         $("#cobr_btn_buscar").on("click", function(){
             var tipo = $("#cobr_tipo").val();
             var id   = $("#cobr_id").val();
             if (!tipo || !id) return;
-
             var url = tipo === 'os'
                 ? "<?= base_url() ?>index.php/os/getOsJson/" + id
                 : "<?= base_url() ?>index.php/vendas/getVendaJson/" + id;
-
             $.getJSON(url, function(resp){
-                if (resp && resp.cliente) {
-                    var info = "Cliente: " + resp.cliente;
-                    if (resp.forma_pagamento) {
-                        $("#cobr_forma_pag").val(resp.forma_pagamento);
-                        info += " | Pagamento: " + resp.forma_pagamento;
-                    }
-                    if (resp.descricao) {
-                        $("#cobr_descricao").val(resp.descricao);
-                    }
-                    $("#cobr_info_ref").text(info).show();
+                var info = document.getElementById('cobr_info_ref');
+                if (resp && resp.result) {
+                    if (resp.forma_pagamento) $("#cobr_forma_pag").val(resp.forma_pagamento);
+                    if (resp.descricao)       $("#cobr_descricao").val(resp.descricao);
+                    info.textContent   = "✓ Cliente: " + resp.cliente;
+                    info.style.color   = "#3a7d3a";
+                    info.style.display = 'block';
                 } else {
-                    $("#cobr_info_ref").text((tipo === 'os' ? 'OS' : 'Venda') + " #" + id + " não encontrada.").show();
+                    info.textContent   = "✗ " + (tipo==='os'?'OS':'Venda') + " #" + id + " não encontrada.";
+                    info.style.color   = "#c0392b";
+                    info.style.display = 'block';
                 }
             }).fail(function(){
-                $("#cobr_info_ref").text("Erro ao buscar dados.").show();
+                var info = document.getElementById('cobr_info_ref');
+                info.textContent   = "Erro ao buscar dados.";
+                info.style.color   = "#c0392b";
+                info.style.display = 'block';
             });
         });
 
-        // Buscar também ao pressionar Enter no campo número
+        // Enter no campo número dispara busca
         $("#cobr_id").on("keypress", function(e){
             if (e.which === 13) { e.preventDefault(); $("#cobr_btn_buscar").click(); }
         });
 
+        // Submit
         $("#form-gerar-cobranca").on("submit", function(e){
             e.preventDefault();
             var tipo = $("#cobr_tipo").val();
-            if (!tipo) { alert("Selecione o tipo de referência."); return; }
+            if (!tipo)                        { alert("Selecione o tipo de referência."); return; }
             var refId = $("#cobr_id").val();
-            if (!refId || parseInt(refId) < 1) {
-                alert("Informe o número da " + (tipo === 'os' ? 'Ordem de Serviço' : 'Venda') + ".");
-                return;
-            }
-            if (!$("#cobr_vencimento").val()) { alert("Informe a data de vencimento."); return; }
+            if (!refId || parseInt(refId)<1)  { alert("Informe o número da " + (tipo==='os'?'Ordem de Serviço':'Venda') + "."); return; }
+            if (!$("#cobr_vencimento").val())  { alert("Informe a data de vencimento."); return; }
 
             var $btn = $("#btn-registrar-cobranca").prop("disabled", true);
             $.ajax({
@@ -223,7 +227,7 @@
                 data: $(this).serialize(),
                 dataType: "json",
                 success: function(resp){
-                    if(resp.result){
+                    if (resp.result) {
                         alert("Cobrança registrada com sucesso!");
                         $("#modal-gerar-pagamento").modal("hide");
                         location.reload();
