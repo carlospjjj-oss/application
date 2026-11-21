@@ -648,7 +648,8 @@ End hora certa */
   display        : flex;
   width          : 100%;
   box-sizing     : border-box;
-  padding        : 50px 20px 10px;
+  margin-top     : 50px;
+  padding        : 0 20px 10px;
   align-items    : center;
   justify-content: center;
   z-index        : 99;
