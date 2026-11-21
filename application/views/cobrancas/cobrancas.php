@@ -27,6 +27,7 @@
                     <tr>
                         <th>#</th>
                         <th>Origem</th>
+                        <th>NF</th>
                         <th>Tipo / Forma</th>
                         <th>Data de Vencimento</th>
                         <th>Referência</th>
@@ -39,7 +40,7 @@
                     <?php
                     if (!$results) {
                         echo '<tr>
-                                <td colspan="8">Nenhuma cobrança Cadastrada</td>
+                                <td colspan="9">Nenhuma cobrança Cadastrada</td>
                             </tr>';
                     }
                     foreach ($results as $r) {
@@ -55,6 +56,13 @@
                         $isManual = in_array($r->payment_gateway, ['Manual', 'Faturar (Venda)']);
                         $origem = $r->payment_gateway === 'Manual' ? 'Manual' : ($r->payment_gateway === 'Faturar (Venda)' ? 'Faturar (Venda)' : $r->payment_gateway);
                         echo '<td>' . $origem . '</td>';
+                        // Coluna NF: extrai MO ou MT do campo message
+                        $nfTipo = '';
+                        if (!empty($r->message)) {
+                            if (strpos($r->message, 'NF Mão de Obra') !== false) $nfTipo = 'MO';
+                            elseif (strpos($r->message, 'NF Material') !== false) $nfTipo = 'MT';
+                        }
+                        echo '<td>' . $nfTipo . '</td>';
                         $tipo = $isManual
                             ? htmlspecialchars($r->payment ?? '')
                             : htmlspecialchars($r->payment_method ?? '');
