@@ -187,6 +187,7 @@
                 ? "<?= base_url() ?>index.php/os/getOsJson/" + id
                 : "<?= base_url() ?>index.php/vendas/getVendaJson/" + id;
             $.getJSON(url, function(resp){
+                console.log('getJson resp:', JSON.stringify(resp));
                 var info = document.getElementById('cobr_info_ref');
                 if (resp && resp.result) {
                     // Preenche descrição

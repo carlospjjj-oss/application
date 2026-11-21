@@ -946,48 +946,52 @@ class Vendas extends MY_Controller
     public function getVendaJson($id = null)
     {
         $id = (int)($id ?: $this->input->get('id'));
+
+        $json = function($data) {
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode($data));
+        };
+
         if (! $id) {
-            echo json_encode(['result' => false, 'message' => 'ID inválido']);
-            return;
+            return $json(['result' => false, 'message' => 'ID inválido']);
         }
 
-        // Busca venda + cliente + condições de pagamento
-        $this->db->select('vendas.idVendas, clientes.nomeCliente,
-            vendas.cond_aceite, vendas.cond_entrega_serv,
-            vendas.cond_pix, vendas.cond_pix_pct,
-            vendas.cond_parcelas, vendas.cond_parcelado');
-        $this->db->from('vendas');
-        $this->db->join('clientes', 'clientes.idClientes = vendas.clientes_id');
-        $this->db->where('vendas.idVendas', $id);
-        $venda = $this->db->get()->row();
+        // Busca só o essencial — sem colunas que podem não existir
+        $venda = $this->db->select('vendas.idVendas, clientes.nomeCliente')
+            ->from('vendas')
+            ->join('clientes', 'clientes.idClientes = vendas.clientes_id')
+            ->where('vendas.idVendas', $id)
+            ->get()->row();
 
         if (! $venda) {
-            echo json_encode(['result' => false, 'message' => 'Venda não encontrada']);
-            return;
+            return $json(['result' => false, 'message' => 'Venda não encontrada']);
         }
 
-        // Montar opções de forma de pagamento da venda
-        $formas = [];
-        if ((float)$venda->cond_aceite > 0)
-            $formas[] = 'Pagamento no Aceite';
-        if ((float)$venda->cond_entrega_serv > 0)
-            $formas[] = 'Pagamento na Entrega dos Serviços';
-        if ((float)$venda->cond_pix > 0)
-            $formas[] = 'PIX';
-        if ((int)$venda->cond_parcelas > 0)
-            $formas[] = 'Parcelado em ' . (int)$venda->cond_parcelas . 'x Sem Juros';
+        // Busca colunas de condição separadamente — se não existirem, não quebra
+        $conds = $this->db->query(
+            "SELECT cond_aceite, cond_entrega_serv, cond_pix, cond_parcelas
+             FROM vendas WHERE idVendas = ? LIMIT 1", [$id]
+        )->row();
 
-        echo json_encode([
+        $formas = [];
+        if ($conds) {
+            if ((float)($conds->cond_aceite ?? 0) > 0)
+                $formas[] = 'Pagamento no Aceite';
+            if ((float)($conds->cond_entrega_serv ?? 0) > 0)
+                $formas[] = 'Pagamento na Entrega dos Serviços';
+            if ((float)($conds->cond_pix ?? 0) > 0)
+                $formas[] = 'PIX';
+            if ((int)($conds->cond_parcelas ?? 0) > 0)
+                $formas[] = 'Parcelado em ' . (int)$conds->cond_parcelas . 'x Sem Juros';
+        }
+
+        return $json([
             'result'          => true,
             'cliente'         => $venda->nomeCliente,
             'formas'          => $formas,
             'forma_pagamento' => count($formas) === 1 ? $formas[0] : '',
             'descricao'       => 'Venda #' . $id,
-            '_debug'          => [
-                'cond_pix'      => $venda->cond_pix,
-                'cond_parcelas' => $venda->cond_parcelas,
-                'cond_aceite'   => $venda->cond_aceite,
-            ],
         ]);
     }
 

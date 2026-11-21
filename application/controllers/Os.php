@@ -1260,22 +1260,31 @@ class Os extends MY_Controller
     public function getOsJson($id = null)
     {
         $id = (int)($id ?: $this->input->get('id'));
+
+        $json = function($data) {
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode($data));
+        };
+
         if (! $id) {
-            echo json_encode(['result' => false]);
-            return;
+            return $json(['result' => false]);
         }
-        $this->db->select('os.idOs, clientes.nomeCliente');
-        $this->db->from('os');
-        $this->db->join('clientes', 'clientes.idClientes = os.clientes_id');
-        $this->db->where('os.idOs', $id);
-        $row = $this->db->get()->row();
+
+        $row = $this->db->select('os.idOs, clientes.nomeCliente')
+            ->from('os')
+            ->join('clientes', 'clientes.idClientes = os.clientes_id')
+            ->where('os.idOs', $id)
+            ->get()->row();
+
         if (! $row) {
-            echo json_encode(['result' => false]);
-            return;
+            return $json(['result' => false, 'message' => 'OS não encontrada']);
         }
-        echo json_encode([
+
+        return $json([
             'result'          => true,
             'cliente'         => $row->nomeCliente,
+            'formas'          => [],
             'forma_pagamento' => '',
             'descricao'       => 'Ordem de Serviço #' . $id,
         ]);
