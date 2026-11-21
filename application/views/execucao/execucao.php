@@ -2,7 +2,7 @@
 <script type="text/javascript" src="<?php echo base_url() ?>assets/js/jquery-ui/js/jquery-ui-1.9.2.custom.js"></script>
 <div class="new122">
     <div class="widget-title" style="margin: -20px 0 0">
-        <span class="icon"><i class='bx bx-hard-hat'></i></span>
+        <span class="icon"><i class='bx bx-plug'></i></span>
         <h5>Execução</h5>
     </div>
 

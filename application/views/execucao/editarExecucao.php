@@ -3,7 +3,7 @@
 
 <div class="new122">
     <div class="widget-title" style="margin:-20px 0 0">
-        <span class="icon"><i class='bx bx-hard-hat'></i></span>
+        <span class="icon"><i class='bx bx-plug'></i></span>
         <h5>Editar Execução</h5>
     </div>
 
