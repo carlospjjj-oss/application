@@ -850,6 +850,24 @@ class Vendas extends MY_Controller
                     $this->session->set_flashdata('error', 'Ocorreu um erro ao tentar faturar venda.');
                     $json = ['result' => false];
                 } else {
+                    // Cria registro em cobrancas automaticamente
+                    $this->db->insert('cobrancas', [
+                        'charge_id'       => null,
+                        'payment_gateway' => 'Faturar (Venda)',
+                        'payment_url'     => null,
+                        'barcode'         => '',
+                        'link'            => '',
+                        'pdf'             => null,
+                        'status'          => 'Pendente',
+                        'total'           => round($valorComDesconto * 100),
+                        'expire_at'       => $vencimento,
+                        'message'         => 'Venda #' . $venda_id,
+                        'payment'         => $formaPgto,
+                        'vendas_id'       => $venda_id,
+                        'os_id'           => null,
+                        'clientes_id'     => $this->input->post('clientes_id'),
+                    ]);
+
                     $this->session->set_flashdata('success', 'Venda faturada com sucesso!');
                     $json = ['result' => true];
                 }
