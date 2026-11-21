@@ -204,17 +204,22 @@
                     // Preenche descrição
                     if (resp.descricao) $("#cobr_descricao").val(resp.descricao);
 
-                    // Atualiza opções de forma de pagamento
-                    var $sel = $("#cobr_forma_pag");
-                    // Limpa e reconstrói o select com as formas da venda
-                    $sel.empty().append('<option value="">Selecione...</option>');
-                    var formas = resp.formas && resp.formas.length > 0 ? resp.formas : ["Dinheiro","PIX","Cartão de Crédito","Cartão de Débito","Boleto","Transferência Bancária","Cheque","A combinar"];
-                    $.each(formas, function(i, f){
-                        $sel.append('<option value="' + f + '">' + f + '</option>');
-                    });
-                    // Seleciona a forma principal automaticamente
-                    if (resp.forma_pagamento) {
-                        $sel.val(resp.forma_pagamento);
+                    // Atualiza select de forma de pagamento
+                    var selEl = document.getElementById('cobr_forma_pag');
+                    console.log('select el:', selEl, 'formas:', resp.formas);
+                    if (selEl && resp.formas && resp.formas.length > 0) {
+                        // Limpa e reconstrói via DOM puro
+                        selEl.innerHTML = '<option value="">Selecione...</option>';
+                        resp.formas.forEach(function(f) {
+                            var opt = document.createElement('option');
+                            opt.value = f;
+                            opt.textContent = f;
+                            selEl.appendChild(opt);
+                        });
+                        if (resp.forma_pagamento) {
+                            selEl.value = resp.forma_pagamento;
+                        }
+                        console.log('select options count:', selEl.options.length, 'selected:', selEl.value);
                     }
 
                     info.textContent   = "✓ Cliente: " + resp.cliente;
