@@ -228,6 +228,7 @@ class Execucao extends MY_Controller
         $dataInicial = $this->input->post('dataInicial');
         $dataFinal   = $this->input->post('dataFinal');
         $garantia    = $this->input->post('garantia') ?: 365;
+        $status      = $this->input->post('status') ?: 'Aberto';
 
         if ($dataInicial) $dataInicial = $this->_formatDate($dataInicial);
         if ($dataFinal)   $dataFinal   = $this->_formatDate($dataFinal);
@@ -239,7 +240,7 @@ class Execucao extends MY_Controller
             'dataInicial' => $dataInicial ?: date('Y-m-d'),
             'dataFinal'   => $dataFinal   ?: null,
             'garantia'    => $garantia,
-            'status'      => 'Aberto',
+            'status'      => $status,
         ]);
         $os_id = $this->db->insert_id();
 
