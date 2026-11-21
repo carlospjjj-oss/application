@@ -722,7 +722,7 @@ foreach ($produtos as $p) {
         var resultado = $("#resultado").val();
         var tipoDesconto = $("#tipoDesconto").val();
         var idVendas = $("#idVendas").val();
-        if (!desconto || parseFloat(desconto) <= 0) {
+        if (desconto === '' || desconto === null) {
             alert('Informe um valor de desconto.');
             return;
         }
@@ -756,7 +756,7 @@ foreach ($produtos as $p) {
         var desc = parseFloat($("#descontoServico").val().replace(',', '.')) || 0;
         var tipo = $("#tipoDescontoServico").val();
         var idVendas = $("#idVendasDescServico").val();
-        if (desc <= 0) { alert('Informe um valor de desconto.'); return; }
+        if (isNaN(desc) || desc < 0) { alert('Informe um valor de desconto válido.'); return; }
         var resultado = calcDesconto(total, desc, tipo);
         if (resultado < 0) { alert('Desconto não pode ser maior que o total.'); return; }
         var postData = { idVendas: idVendas, desconto: desc, tipoDesconto: tipo, valor_desconto: resultado };
