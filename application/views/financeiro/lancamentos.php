@@ -65,58 +65,68 @@ $periodo = $this->input->get('periodo');
     <?php } ?>
 
     <div class="span12" style="margin-left: 0;margin-top: 1rem;">
-        <form action="<?php echo current_url(); ?>" method="get" style="display:flex;align-items:flex-end;gap:10px;flex-wrap:nowrap;background:#f8f9fa;padding:12px 14px;border-radius:6px;border:1px solid #e0e0e0;margin-bottom:12px;">
-            <div style="width:120px;flex-shrink:0">
-                <label style="display:block;margin-bottom:4px;font-size:12px;color:#555;font-weight:600">Período</label>
-                <select id="periodo" name="periodo" style="width:100%">
-                    <option value="dia" <?= $this->input->get('periodo') === 'dia' ? 'selected' : '' ?>>Dia</option>
-                    <option value="semana" <?= $this->input->get('periodo') === 'semana' ? 'selected' : '' ?>>Semana</option>
+        <form action="<?php echo current_url(); ?>" method="get">
+        <div style="display:flex;gap:10px;flex-wrap:nowrap;align-items:flex-start;background:#f8f9fa;padding:12px 14px;border-radius:6px;border:1px solid #ddd;margin-bottom:12px;">
+
+            <?php
+            $labelStyle  = 'display:block;margin-bottom:4px;font-size:12px;color:#555;font-weight:600;white-space:nowrap';
+            $inputStyle  = 'width:100%;box-sizing:border-box;height:30px;padding:4px 6px;border:1px solid #ccc;border-radius:4px;font-size:13px';
+            $selectStyle = 'width:100%;box-sizing:border-box;height:30px;border:1px solid #ccc;border-radius:4px;font-size:13px';
+            ?>
+
+            <div style="flex:0 0 115px">
+                <label style="<?= $labelStyle ?>">Período</label>
+                <select id="periodo" name="periodo" style="<?= $selectStyle ?>">
+                    <option value="dia"         <?= $this->input->get('periodo') === 'dia'         ? 'selected' : '' ?>>Dia</option>
+                    <option value="semana"      <?= $this->input->get('periodo') === 'semana'      ? 'selected' : '' ?>>Semana</option>
                     <option value="mesAnterior" <?= $this->input->get('periodo') === 'mesAnterior' ? 'selected' : '' ?>>Mês Anterior</option>
-                    <option value="mes" <?= $this->input->get('periodo') === 'mes' ? 'selected' : '' ?>>Mês</option>
-                    <option value="mesPosterior" <?= $this->input->get('periodo') === 'mesPosterior' ? 'selected' : '' ?>>Mês Posterior</option>
-                    <option value="ano" <?= $this->input->get('periodo') === 'ano' ? 'selected' : '' ?>>Ano</option>
-                    <option value="personalizado" <?= $this->input->get('periodo') === 'personalizado' ? 'selected' : '' ?>>Personalizado</option>
+                    <option value="mes"         <?= $this->input->get('periodo') === 'mes'         ? 'selected' : '' ?>>Mês</option>
+                    <option value="mesPosterior"<?= $this->input->get('periodo') === 'mesPosterior'? 'selected' : '' ?>>Mês Posterior</option>
+                    <option value="ano"         <?= $this->input->get('periodo') === 'ano'         ? 'selected' : '' ?>>Ano</option>
+                    <option value="personalizado"<?= $this->input->get('periodo') === 'personalizado'? 'selected':'' ?>>Personalizado</option>
                 </select>
             </div>
 
-            <div style="width:120px;flex-shrink:0">
-                <label style="display:block;margin-bottom:4px;font-size:12px;color:#555;font-weight:600">Vencimento (de)</label>
-                <input id="vencimento_de" type="text" class="datepicker" name="vencimento_de" style="width:100%;box-sizing:border-box" value="<?= $this->input->get('vencimento_de') ?: '' ?>">
+            <div style="flex:0 0 115px">
+                <label style="<?= $labelStyle ?>">Vencimento (de)</label>
+                <input id="vencimento_de" type="text" class="datepicker" name="vencimento_de" style="<?= $inputStyle ?>" value="<?= $this->input->get('vencimento_de') ?: '' ?>">
             </div>
 
-            <div style="width:120px;flex-shrink:0">
-                <label style="display:block;margin-bottom:4px;font-size:12px;color:#555;font-weight:600">Vencimento (até)</label>
-                <input id="vencimento_ate" type="text" class="datepicker" name="vencimento_ate" style="width:100%;box-sizing:border-box" value="<?= $this->input->get('vencimento_ate') ?: '' ?>">
+            <div style="flex:0 0 115px">
+                <label style="<?= $labelStyle ?>">Vencimento (até)</label>
+                <input id="vencimento_ate" type="text" class="datepicker" name="vencimento_ate" style="<?= $inputStyle ?>" value="<?= $this->input->get('vencimento_ate') ?: '' ?>">
             </div>
 
-            <div style="width:100px;flex-shrink:0">
-                <label style="display:block;margin-bottom:4px;font-size:12px;color:#555;font-weight:600">Tipo</label>
-                <select name="tipo" style="width:100%">
+            <div style="flex:0 0 100px">
+                <label style="<?= $labelStyle ?>">Tipo</label>
+                <select name="tipo" style="<?= $selectStyle ?>">
                     <option value="">Todos</option>
                     <option value="receita" <?= $this->input->get('tipo') === 'receita' ? 'selected' : '' ?>>Receita</option>
                     <option value="despesa" <?= $this->input->get('tipo') === 'despesa' ? 'selected' : '' ?>>Despesa</option>
                 </select>
             </div>
 
-            <div style="width:175px;flex-shrink:0">
-                <label style="display:block;margin-bottom:4px;font-size:12px;color:#555;font-weight:600">Status</label>
-                <select name="status" style="width:100%">
+            <div style="flex:0 0 170px">
+                <label style="<?= $labelStyle ?>">Status</label>
+                <select name="status" style="<?= $selectStyle ?>">
                     <option value="">Todos (Pendente e Pago)</option>
                     <option value="0" <?= $this->input->get('status') === '0' ? 'selected' : '' ?>>Pendente</option>
                     <option value="1" <?= $this->input->get('status') === '1' ? 'selected' : '' ?>>Pago</option>
                 </select>
             </div>
 
-            <div style="width:160px;flex-shrink:0">
-                <label style="display:block;margin-bottom:4px;font-size:12px;color:#555;font-weight:600">Cliente/Fornecedor</label>
-                <input id="cliente_busca" type="text" name="cliente" style="width:100%;box-sizing:border-box" value="<?= $this->input->get('cliente') ?>">
+            <div style="flex:0 0 150px">
+                <label style="<?= $labelStyle ?>">Cliente/Fornecedor</label>
+                <input id="cliente_busca" type="text" name="cliente" style="<?= $inputStyle ?>" value="<?= $this->input->get('cliente') ?>">
             </div>
 
-            <div style="flex-shrink:0;padding-top:20px">
-                <button type="submit" class="button btn btn-primary" style="white-space:nowrap">
+            <div style="flex:0 0 auto;padding-top:20px">
+                <button type="submit" class="button btn btn-primary btn-sm" style="height:30px;padding:0 14px;white-space:nowrap;display:flex;align-items:center;gap:4px">
                     <i class='bx bx-filter-alt'></i> Filtrar
                 </button>
             </div>
+
+        </div>
         </form>
     </div>
 
