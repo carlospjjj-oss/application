@@ -98,28 +98,29 @@
             <div class="modal-body">
                 <div class="form-group">
                     <label>Tipo de Referência</label>
-                    <select name="tipo" id="cobr_tipo" class="span12" required>
+                    <select name="tipo" id="cobr_tipo" class="span12">
                         <option value="">Selecione...</option>
                         <option value="os">Ordem de Serviço</option>
                         <option value="venda">Venda</option>
                     </select>
                 </div>
-                <div class="form-group" id="cobr_grupo_os" style="display:none">
-                    <label>Número da Ordem de Serviço</label>
-                    <input type="number" id="cobr_id_os" class="span12" placeholder="Ex: 42" min="1">
+                <div class="form-group" id="cobr_grupo_numero" style="display:none">
+                    <label id="cobr_label_numero">Número</label>
+                    <div style="display:flex;gap:6px;align-items:center">
+                        <input type="number" name="id" id="cobr_id" class="span10" placeholder="Ex: 42" min="1">
+                        <button type="button" id="cobr_btn_buscar" class="btn btn-mini btn-info" style="white-space:nowrap">
+                            <i class='bx bx-search'></i> Buscar
+                        </button>
+                    </div>
+                    <small id="cobr_info_ref" style="color:#666;display:none"></small>
                 </div>
-                <div class="form-group" id="cobr_grupo_venda" style="display:none">
-                    <label>Número da Venda</label>
-                    <input type="number" id="cobr_id_venda" class="span12" placeholder="Ex: 10" min="1">
-                </div>
-                <input type="hidden" name="id" id="cobr_id">
                 <div class="form-group">
                     <label>Descrição</label>
-                    <input type="text" name="descricao" id="cobr_descricao" class="span12" placeholder="Ex: Serviço de instalação" required>
+                    <input type="text" name="descricao" id="cobr_descricao" class="span12" placeholder="Ex: Serviço de instalação">
                 </div>
                 <div class="form-group">
                     <label>Forma de Pagamento</label>
-                    <select name="forma_pagamento" class="span12" required>
+                    <select name="forma_pagamento" id="cobr_forma_pag" class="span12">
                         <option value="">Selecione...</option>
                         <option value="Dinheiro">Dinheiro</option>
                         <option value="PIX">PIX</option>
@@ -133,10 +134,10 @@
                 </div>
                 <div class="form-group">
                     <label>Vencimento</label>
-                    <input type="text" name="vencimento" id="cobr_vencimento" class="span12 datepicker" placeholder="dd/mm/aaaa" required>
+                    <input type="text" name="vencimento" id="cobr_vencimento" class="span12" placeholder="dd/mm/aaaa">
                 </div>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer" style="display:flex;gap:8px;justify-content:flex-end">
                 <button type="button" class="button btn btn-mini btn-warning" data-dismiss="modal">
                     <span class="button__icon"><i class='bx bx-x'></i></span><span class="button__text2">Cancelar</span>
                 </button>
@@ -150,18 +151,59 @@
     $(function(){
         $("#cobr_vencimento").datepicker({ dateFormat:'dd/mm/yy' });
 
-        // Mostrar campo correto conforme tipo
-        $("#cobr_tipo").on("change", function(){
-            var tipo = $(this).val();
-            $("#cobr_grupo_os").toggle(tipo === 'os');
-            $("#cobr_grupo_venda").toggle(tipo === 'venda');
-            $("#cobr_id_os, #cobr_id_venda").val('');
-            $("#cobr_id").val('');
+        // Ao limpar o modal, resetar tudo
+        $("#modal-gerar-pagamento").on("hidden", function(){
+            $("#form-gerar-cobranca")[0].reset();
+            $("#cobr_grupo_numero, #cobr_info_ref").hide();
         });
 
-        // Sincronizar campo hidden "id" ao digitar
-        $("#cobr_id_os").on("input", function(){ $("#cobr_id").val($(this).val()); });
-        $("#cobr_id_venda").on("input", function(){ $("#cobr_id").val($(this).val()); });
+        // Mostrar campo de número conforme tipo selecionado
+        $("#cobr_tipo").on("change", function(){
+            var tipo = $(this).val();
+            if (tipo) {
+                var label = tipo === 'os' ? 'Número da Ordem de Serviço' : 'Número da Venda';
+                $("#cobr_label_numero").text(label);
+                $("#cobr_grupo_numero").show();
+                $("#cobr_id").val('').focus();
+                $("#cobr_info_ref").hide().text('');
+            } else {
+                $("#cobr_grupo_numero").hide();
+            }
+        });
+
+        // Buscar dados da OS ou Venda ao clicar em Buscar
+        $("#cobr_btn_buscar").on("click", function(){
+            var tipo = $("#cobr_tipo").val();
+            var id   = $("#cobr_id").val();
+            if (!tipo || !id) return;
+
+            var url = tipo === 'os'
+                ? "<?= base_url() ?>index.php/os/getOsJson/" + id
+                : "<?= base_url() ?>index.php/vendas/getVendaJson/" + id;
+
+            $.getJSON(url, function(resp){
+                if (resp && resp.cliente) {
+                    var info = "Cliente: " + resp.cliente;
+                    if (resp.forma_pagamento) {
+                        $("#cobr_forma_pag").val(resp.forma_pagamento);
+                        info += " | Pagamento: " + resp.forma_pagamento;
+                    }
+                    if (resp.descricao) {
+                        $("#cobr_descricao").val(resp.descricao);
+                    }
+                    $("#cobr_info_ref").text(info).show();
+                } else {
+                    $("#cobr_info_ref").text((tipo === 'os' ? 'OS' : 'Venda') + " #" + id + " não encontrada.").show();
+                }
+            }).fail(function(){
+                $("#cobr_info_ref").text("Erro ao buscar dados.").show();
+            });
+        });
+
+        // Buscar também ao pressionar Enter no campo número
+        $("#cobr_id").on("keypress", function(e){
+            if (e.which === 13) { e.preventDefault(); $("#cobr_btn_buscar").click(); }
+        });
 
         $("#form-gerar-cobranca").on("submit", function(e){
             e.preventDefault();
@@ -172,6 +214,8 @@
                 alert("Informe o número da " + (tipo === 'os' ? 'Ordem de Serviço' : 'Venda') + ".");
                 return;
             }
+            if (!$("#cobr_vencimento").val()) { alert("Informe a data de vencimento."); return; }
+
             var $btn = $("#btn-registrar-cobranca").prop("disabled", true);
             $.ajax({
                 url: $(this).attr("action"),

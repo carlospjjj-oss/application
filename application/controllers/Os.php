@@ -1256,4 +1256,28 @@ class Os extends MY_Controller
         }
         return null;
     }
+
+    public function getOsJson($id = null)
+    {
+        $id = (int)($id ?: $this->input->get('id'));
+        if (! $id) {
+            echo json_encode(['result' => false]);
+            return;
+        }
+        $this->db->select('os.idOs, os.forma_pagamento, clientes.nomeCliente');
+        $this->db->from('os');
+        $this->db->join('clientes', 'clientes.idClientes = os.clientes_id');
+        $this->db->where('os.idOs', $id);
+        $row = $this->db->get()->row();
+        if (! $row) {
+            echo json_encode(['result' => false]);
+            return;
+        }
+        echo json_encode([
+            'result'          => true,
+            'cliente'         => $row->nomeCliente,
+            'forma_pagamento' => $row->forma_pagamento ?? '',
+            'descricao'       => 'Ordem de Serviço #' . $id,
+        ]);
+    }
 }

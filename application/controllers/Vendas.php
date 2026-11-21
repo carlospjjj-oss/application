@@ -935,12 +935,38 @@ class Vendas extends MY_Controller
         $venda = $this->Vendas_model->getById($id);
         $produtos = $this->Vendas_model->getProdutos($id);
         $total = $this->Vendas_model->getTotalVendas($id);
-        
+
         $data['venda'] = $venda;
         $data['produtos'] = $produtos;
         $data['total'] = $total;
 
         $this->load->view('vendas/vendas', $data);
+    }
+
+    public function getVendaJson($id = null)
+    {
+        $id = (int)($id ?: $this->input->get('id'));
+        if (! $id) {
+            echo json_encode(['result' => false]);
+            return;
+        }
+        $this->load->model('Vendas_model');
+        $venda = $this->Vendas_model->getById($id);
+        if (! $venda) {
+            echo json_encode(['result' => false]);
+            return;
+        }
+        // Pegar forma de pagamento do lancamento vinculado à venda
+        $lanc = $this->db->select('forma_pagamento')->from('lancamentos')
+            ->where('vendas_id', $id)->limit(1)->get()->row();
+        $forma = $lanc ? ($lanc->forma_pagamento ?? '') : '';
+
+        echo json_encode([
+            'result'          => true,
+            'cliente'         => $venda->nomeCliente,
+            'forma_pagamento' => $forma,
+            'descricao'       => 'Venda #' . $id,
+        ]);
     }
 
 }
