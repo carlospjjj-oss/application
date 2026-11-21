@@ -78,4 +78,13 @@ class Usuarios_model extends CI_Model
     {
         return $this->db->count_all($table);
     }
+
+    public function emailExists($email, $id = null)
+    {
+        $this->db->where('email', $email);
+        if ($id !== null) {
+            $this->db->where('idUsuarios !=', $id);
+        }
+        return $this->db->get('usuarios')->num_rows() > 0;
+    }
 }

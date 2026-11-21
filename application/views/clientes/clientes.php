@@ -25,7 +25,15 @@
             </div>
         <?php } ?>
         <form class="span9" method="get" action="<?= base_url() ?>index.php/clientes"
-            style="display: flex; justify-content: flex-end;">
+            style="display: flex; justify-content: flex-end; gap: 6px; align-items: center;">
+            <div class="span2">
+                <select name="tipo" style="width:140px;">
+                    <option value="">Todos os tipos</option>
+                    <option value="cliente"    <?= ($this->input->get('tipo') == 'cliente'    ? 'selected' : '') ?>>Cliente</option>
+                    <option value="fornecedor" <?= ($this->input->get('tipo') == 'fornecedor' ? 'selected' : '') ?>>Fornecedor</option>
+                    <option value="terceiro"   <?= ($this->input->get('tipo') == 'terceiro'   ? 'selected' : '') ?>>Terceiro</option>
+                </select>
+            </div>
             <div class="span3">
                 <input type="text" name="pesquisa" id="pesquisa"
                     placeholder="Buscar por Nome, Doc, Email ou Telefone..." class="span12"
@@ -72,9 +80,11 @@
             echo '<td>' . $r->celular . '</td>';
             echo '<td>' . $r->email . '</td>';
 
-            // Verifica se é Fornecedor ou Cliente
+            // Verifica se é Fornecedor, Terceiro ou Cliente
             if ($r->fornecedor == 1) {
                 echo '<td><span class="label label-primary">Fornecedor</span></td>';
+            } elseif (!empty($r->terceiro) && $r->terceiro == 1) {
+                echo '<td><span class="label label-warning">Terceiro</span></td>';
             } else {
                 echo '<td><span class="label label-success">Cliente</span></td>';
             }

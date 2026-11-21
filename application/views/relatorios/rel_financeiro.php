@@ -9,6 +9,7 @@
             </div>
             <div class="widget-content">
                 <ul style="flex-direction: row;" class="site-stats">
+                    <li><a href="<?php echo site_url('relatorios/financeiroDashboard') ?>"><i class="fas fa-chart-line"></i> <small>Dashboard com totais</small></a></li>
                     <li><a target="_blank" href="<?php echo base_url() ?>index.php/relatorios/financeiroRapid"><i class="fas fa-hand-holding-usd"></i> <small>Relatório do mês - pdf</small></a></li>
                     <li><a target="_blank" href="<?php echo base_url() ?>index.php/relatorios/financeiroRapid?format=xls"><i class="fas fa-hand-holding-usd"></i> <small>Relatório do mês - xls</small></a></li>
                 </ul>

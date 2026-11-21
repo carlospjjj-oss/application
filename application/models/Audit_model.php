@@ -43,6 +43,11 @@ class Audit_model extends CI_Model
         return $this->db->count_all('logs');
     }
 
+    public function getUsuarios()
+    {
+        return $this->db->select('usuario')->distinct()->from('logs')->order_by('usuario')->get()->result();
+    }
+
     public function clean()
     {
         $this->db->where('data <', date('Y-m-d', strtotime('- 30 days')));

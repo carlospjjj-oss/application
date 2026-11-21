@@ -50,6 +50,14 @@ class Usuarios extends MY_Controller
         if ($this->form_validation->run('usuarios') == false) {
             $this->data['custom_error'] = (validation_errors() ? '<div class="alert alert-danger">' . validation_errors() . '</div>' : false);
         } else {
+            $email = $this->input->post('email');
+            if ($email && $this->usuarios_model->emailExists($email)) {
+                $this->data['custom_error'] = '<div class="alert alert-danger">Este e-mail já está em uso por outro usuário.</div>';
+                $this->load->model('permissoes_model');
+                $this->data['permissoes'] = $this->permissoes_model->getActive('permissoes', 'permissoes.idPermissao,permissoes.nome');
+                $this->data['view'] = 'usuarios/adicionarUsuario';
+                return $this->layout();
+            }
             $data = [
                 'nome' => set_value('nome'),
                 'rg' => set_value('rg'),
@@ -112,6 +120,16 @@ class Usuarios extends MY_Controller
         if ($this->form_validation->run() == false) {
             $this->data['custom_error'] = (validation_errors() ? '<div class="form_error">' . validation_errors() . '</div>' : false);
         } else {
+            $emailEdit = $this->input->post('email');
+            $idEdit    = $this->input->post('idUsuarios');
+            if ($emailEdit && $this->usuarios_model->emailExists($emailEdit, $idEdit)) {
+                $this->data['custom_error'] = '<div class="alert alert-danger">Este e-mail já está em uso por outro usuário.</div>';
+                $this->data['result'] = $this->usuarios_model->getById($this->uri->segment(3));
+                $this->load->model('permissoes_model');
+                $this->data['permissoes'] = $this->permissoes_model->getActive('permissoes', 'permissoes.idPermissao,permissoes.nome');
+                $this->data['view'] = 'usuarios/editarUsuario';
+                return $this->layout();
+            }
             if ($this->input->post('idUsuarios') == 1 && $this->input->post('situacao') == 0) {
                 $this->session->set_flashdata('error', 'O usuário super admin não pode ser desativado!');
                 redirect(base_url() . 'index.php/usuarios/editar/' . $this->input->post('idUsuarios'));
@@ -219,9 +237,16 @@ class Usuarios extends MY_Controller
                 $rows = $xlsx->rows();
                 $importados = 0;
                 $erros = 0;
+                $ignorados = 0;
+                $limite = 500;
+                $processados = 0;
                 foreach ($rows as $i => $row) {
                     if ($i === 0) continue; // pular cabeçalho
                     if (empty($row[0]) || empty($row[2]) || empty($row[3])) continue; // nome, email e senha obrigatórios
+                    if ($processados >= $limite) { $ignorados++; continue; }
+                    // Verificar e-mail duplicado
+                    if (!empty($row[2]) && $this->usuarios_model->emailExists(trim($row[2]))) { $erros++; continue; }
+                    $processados++;
 
                     $situacaoStr = strtolower(isset($row[13]) ? trim($row[13]) : 'ativo');
                     $situacao = ($situacaoStr === 'ativo' || $situacaoStr === '1') ? 1 : 0;
@@ -254,7 +279,10 @@ class Usuarios extends MY_Controller
                         $erros++;
                     }
                 }
-                $this->session->set_flashdata('success', "Importação concluída: $importados usuário(s) importado(s)" . ($erros ? ", $erros erro(s)." : "."));
+                $msg = "Importação concluída: $importados usuário(s) importado(s)";
+                if ($erros)     $msg .= ", $erros erro(s) (e-mail duplicado ou dados inválidos)";
+                if ($ignorados) $msg .= ", $ignorados linha(s) ignorada(s) — limite de $limite registros por importação";
+                $this->session->set_flashdata('success', $msg . '.');
             } else {
                 $this->session->set_flashdata('error', 'Erro ao ler a planilha. Verifique o formato.');
             }

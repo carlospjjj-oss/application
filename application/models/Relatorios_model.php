@@ -367,6 +367,44 @@ class Relatorios_model extends CI_Model
         return $result->result();
     }
 
+    public function financeiroResumo($dataInicial = null, $dataFinal = null)
+    {
+        $where = [];
+        if ($dataInicial) $where['data_vencimento >='] = $dataInicial;
+        if ($dataFinal)   $where['data_vencimento <='] = $dataFinal;
+
+        // Totais gerais
+        $this->db->select('
+            SUM(CASE WHEN tipo="receita" THEN valor ELSE 0 END) as total_receitas,
+            SUM(CASE WHEN tipo="despesa" THEN valor ELSE 0 END) as total_despesas,
+            SUM(CASE WHEN tipo="receita" AND baixado=1 THEN valor ELSE 0 END) as receitas_pagas,
+            SUM(CASE WHEN tipo="despesa" AND baixado=1 THEN valor ELSE 0 END) as despesas_pagas,
+            SUM(CASE WHEN tipo="receita" AND baixado=0 THEN valor ELSE 0 END) as receitas_pendentes,
+            SUM(CASE WHEN tipo="despesa" AND baixado=0 THEN valor ELSE 0 END) as despesas_pendentes,
+            COUNT(*) as total_lancamentos
+        ');
+        if ($where) $this->db->where($where);
+        $totais = $this->db->get('lancamentos')->row();
+
+        // Por categoria
+        $this->db->select('categoria, tipo, SUM(valor) as total, COUNT(*) as qtd');
+        if ($where) $this->db->where($where);
+        $this->db->group_by(['categoria', 'tipo']);
+        $this->db->order_by('total', 'DESC');
+        $por_categoria = $this->db->get('lancamentos')->result();
+
+        // Por mês
+        $this->db->select("DATE_FORMAT(data_vencimento,'%Y-%m') as mes,
+            SUM(CASE WHEN tipo='receita' THEN valor ELSE 0 END) as receitas,
+            SUM(CASE WHEN tipo='despesa' THEN valor ELSE 0 END) as despesas");
+        if ($where) $this->db->where($where);
+        $this->db->group_by("DATE_FORMAT(data_vencimento,'%Y-%m')");
+        $this->db->order_by('mes', 'ASC');
+        $por_mes = $this->db->get('lancamentos')->result();
+
+        return compact('totais', 'por_categoria', 'por_mes');
+    }
+
     public function vendasRapid($array = false)
     {
         $this->db->select('vendas.*,clientes.nomeCliente, usuarios.nome');

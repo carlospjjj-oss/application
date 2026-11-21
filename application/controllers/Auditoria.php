@@ -20,12 +20,19 @@ class Auditoria extends MY_Controller
     {
         $this->load->library('pagination');
 
+        $usuario  = $this->input->get('usuario');
+        $where    = $usuario ? ['usuario' => $usuario] : '';
+
         $this->data['configuration']['base_url'] = site_url('auditoria/index/');
         $this->data['configuration']['total_rows'] = $this->Audit_model->count('logs');
+        if ($usuario) {
+            $this->data['configuration']['suffix'] = "?usuario={$usuario}";
+        }
 
         $this->pagination->initialize($this->data['configuration']);
 
-        $this->data['results'] = $this->Audit_model->get('logs', '*', '', $this->data['configuration']['per_page'], $this->uri->segment(3));
+        $this->data['results']  = $this->Audit_model->get('logs', '*', $where, $this->data['configuration']['per_page'], $this->uri->segment(3));
+        $this->data['usuarios'] = $this->Audit_model->getUsuarios();
 
         $this->data['view'] = 'auditoria/logs';
 

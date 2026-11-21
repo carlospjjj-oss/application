@@ -27,19 +27,25 @@ class Clientes extends MY_Controller
         }
 
         $pesquisa = $this->input->get('pesquisa');
+        $tipo     = $this->input->get('tipo'); // cliente | fornecedor | terceiro
 
         $this->load->library('pagination');
 
         $this->data['configuration']['base_url'] = site_url('clientes/gerenciar/');
         $this->data['configuration']['total_rows'] = $this->clientes_model->count('clientes');
-        if ($pesquisa) {
-            $this->data['configuration']['suffix'] = "?pesquisa={$pesquisa}";
-            $this->data['configuration']['first_url'] = base_url("index.php/clientes")."\?pesquisa={$pesquisa}";
+        $suffix = [];
+        if ($pesquisa) $suffix[] = "pesquisa={$pesquisa}";
+        if ($tipo)     $suffix[] = "tipo={$tipo}";
+        if ($suffix) {
+            $qs = implode('&', $suffix);
+            $this->data['configuration']['suffix'] = "?{$qs}";
+            $this->data['configuration']['first_url'] = base_url("index.php/clientes") . "?{$qs}";
         }
 
         $this->pagination->initialize($this->data['configuration']);
 
-        $this->data['results'] = $this->clientes_model->get('clientes', '*', $pesquisa, $this->data['configuration']['per_page'], $this->uri->segment(3));
+        $this->data['results'] = $this->clientes_model->get('clientes', '*', $pesquisa, $this->data['configuration']['per_page'], $this->uri->segment(3), false, 'array', $tipo);
+        $this->data['tipo_filtro'] = $tipo;
 
         $this->data['view'] = 'clientes/clientes';
 
@@ -267,9 +273,17 @@ class Clientes extends MY_Controller
                 $rows = $xlsx->rows();
                 $importados = 0;
                 $erros = 0;
+                $ignorados = 0;
+                $limite = 500;
+                $processados = 0;
                 foreach ($rows as $i => $row) {
                     if ($i === 0) continue; // pular cabeçalho
                     if (empty($row[0])) continue; // nome obrigatório
+                    if ($processados >= $limite) {
+                        $ignorados++;
+                        continue;
+                    }
+                    $processados++;
 
                     $documento = isset($row[2]) ? $row[2] : '';
                     $cpf_cnpj  = preg_replace('/[^\d]/', '', $documento);
@@ -313,7 +327,10 @@ class Clientes extends MY_Controller
                         $erros++;
                     }
                 }
-                $this->session->set_flashdata('success', "Importação concluída: $importados cliente(s) importado(s)" . ($erros ? ", $erros erro(s) (e-mail duplicado ou dados inválidos)." : "."));
+                $msg = "Importação concluída: $importados cliente(s) importado(s)";
+                if ($erros)    $msg .= ", $erros erro(s) (e-mail duplicado ou dados inválidos)";
+                if ($ignorados) $msg .= ", $ignorados linha(s) ignorada(s) — limite de $limite registros por importação";
+                $this->session->set_flashdata('success', $msg . '.');
             } else {
                 $this->session->set_flashdata('error', 'Erro ao ler a planilha. Verifique o formato.');
             }
@@ -334,6 +351,14 @@ class Clientes extends MY_Controller
         $id = $this->input->post('id');
         if ($id == null) {
             $this->session->set_flashdata('error', 'Erro ao tentar excluir cliente.');
+            redirect(site_url('clientes/gerenciar/'));
+        }
+
+        // Bloquear exclusão se houver OS em aberto
+        $osAbertas = $this->clientes_model->getOsAbertasByClient($id);
+        if (!empty($osAbertas)) {
+            $qtd = count($osAbertas);
+            $this->session->set_flashdata('error', "Não é possível excluir este cliente. Existem {$qtd} Ordem(ns) de Serviço em aberto vinculada(s) a ele. Finalize ou cancele as OS antes de excluir.");
             redirect(site_url('clientes/gerenciar/'));
         }
 

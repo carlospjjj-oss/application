@@ -641,6 +641,24 @@ class Relatorios extends MY_Controller
         return $this->layout();
     }
 
+    public function financeiroDashboard()
+    {
+        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'rFinanceiro')) {
+            $this->session->set_flashdata('error', 'Você não tem permissão para gerar relatórios financeiros.');
+            redirect(base_url());
+        }
+
+        $dataInicial = $this->input->get('dataInicial') ?: date('Y-m-01');
+        $dataFinal   = $this->input->get('dataFinal')   ?: date('Y-m-t');
+
+        $this->data['resumo']      = $this->Relatorios_model->financeiroResumo($dataInicial, $dataFinal);
+        $this->data['dataInicial'] = $dataInicial;
+        $this->data['dataFinal']   = $dataFinal;
+        $this->data['view']        = 'relatorios/rel_financeiro_dashboard';
+
+        return $this->layout();
+    }
+
     public function financeiroRapid()
     {
         if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'rFinanceiro')) {

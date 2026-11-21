@@ -7,7 +7,7 @@ class Clientes_model extends CI_Model
         parent::__construct();
     }
 
-    public function get($table, $fields, $where = '', $perpage = 0, $start = 0, $one = false, $array = 'array')
+    public function get($table, $fields, $where = '', $perpage = 0, $start = 0, $one = false, $array = 'array', $tipo = '')
     {
         $this->db->select($fields);
         $this->db->from($table);
@@ -15,17 +15,23 @@ class Clientes_model extends CI_Model
         $this->db->limit($perpage, $start);
         if ($where) {
             if (strpos($where, '@') !== false) {
-                // Contém @ → busca por email
                 $this->db->like('email', $where);
             } elseif (preg_match('/^[0-9\s\(\)\-\.]+$/', $where)) {
-                // Só números/símbolos → busca por documento ou telefone
                 $this->db->like('documento', $where);
                 $this->db->or_like('telefone', $where);
                 $this->db->or_like('celular', $where);
             } else {
-                // Texto → busca nome que COMEÇA com o termo
                 $this->db->like('nomeCliente', $where, 'after');
             }
+        }
+        // Filtro por tipo
+        if ($tipo === 'fornecedor') {
+            $this->db->where('fornecedor', 1);
+        } elseif ($tipo === 'terceiro') {
+            $this->db->where('terceiro', 1);
+        } elseif ($tipo === 'cliente') {
+            $this->db->where('fornecedor', 0);
+            $this->db->where('terceiro', 0);
         }
 
         $query = $this->db->get();
@@ -100,6 +106,16 @@ class Clientes_model extends CI_Model
     {
         $this->db->where('clientes_id', $id);
 
+        return $this->db->get('os')->result();
+    }
+
+    /**
+     * Retorna OS em aberto (não Finalizado/Cancelado) do cliente
+     */
+    public function getOsAbertasByClient($id)
+    {
+        $this->db->where('clientes_id', $id);
+        $this->db->where_not_in('status', ['Finalizado', 'Cancelado']);
         return $this->db->get('os')->result();
     }
 

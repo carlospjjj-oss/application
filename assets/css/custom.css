@@ -143,3 +143,100 @@ textarea {
 .lanc-table tbody > tr > th {
     padding: 7px;
 }
+
+/* ===== RESPONSIVIDADE MOBILE ===== */
+@media (max-width: 768px) {
+    /* Sidebar: colapsa no mobile */
+    #sidebar-left {
+        display: none !important;
+    }
+    #sidebar-left.mobile-open {
+        display: block !important;
+        position: fixed;
+        top: 0; left: 0;
+        width: 240px;
+        height: 100vh;
+        z-index: 9999;
+        overflow-y: auto;
+    }
+    .main-content, #content-wrapper {
+        margin-left: 0 !important;
+        width: 100% !important;
+    }
+
+    /* Header */
+    .navbar-fixed-top .container,
+    .navbar .container {
+        padding: 0 8px;
+    }
+
+    /* Tabelas: scroll horizontal */
+    .widget-content, .table-responsive-mobile {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    table.table {
+        min-width: 600px;
+    }
+
+    /* Formulários de busca: empilha */
+    form[method="get"] {
+        flex-wrap: wrap !important;
+        gap: 6px !important;
+    }
+    form[method="get"] input[type="text"],
+    form[method="get"] select {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box;
+    }
+
+    /* Botões de ação: empilha */
+    .span3[style*="display:flex"],
+    div[style*="display:flex"][style*="gap"] {
+        flex-wrap: wrap !important;
+    }
+
+    /* Cards do dashboard */
+    .cardBox {
+        flex-direction: column;
+    }
+    .cardBox .card {
+        width: 100% !important;
+        margin: 4px 0 !important;
+    }
+
+    /* Widget boxes */
+    .new122 {
+        padding: 8px !important;
+    }
+
+    /* Paginação */
+    .pagination {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    /* Botão mobile menu (adiciona via JS) */
+    #mobile-menu-toggle {
+        display: inline-block !important;
+    }
+}
+
+/* Botão de menu mobile (oculto em desktop) */
+#mobile-menu-toggle {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 10000;
+    background: #3a7bd5;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    font-size: 22px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}

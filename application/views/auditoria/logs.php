@@ -10,8 +10,23 @@
         </span>
         <h5>Logs</h5>
 </div>
-  <a href="#modal-excluir" role="button" data-toggle="modal" class="button btn btn-danger tip-top" style="max-width: 250px" title="Excluir Logs">
-  <span class="button__icon"><i class='bx bx-trash'></i></span> <span class="button__text2">Remover Logs - 30 dias ou mais</span></a>
+  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px;">
+    <a href="#modal-excluir" role="button" data-toggle="modal" class="button btn btn-danger tip-top" style="max-width: 250px" title="Excluir Logs">
+      <span class="button__icon"><i class='bx bx-trash'></i></span> <span class="button__text2">Remover Logs - 30 dias ou mais</span>
+    </a>
+    <form method="get" action="<?= site_url('auditoria') ?>" style="display:flex;gap:6px;align-items:center;">
+      <select name="usuario" style="width:200px;">
+        <option value="">Todos os usuários</option>
+        <?php foreach ($usuarios as $u): ?>
+          <option value="<?= htmlspecialchars($u->usuario) ?>" <?= ($this->input->get('usuario') == $u->usuario ? 'selected' : '') ?>><?= htmlspecialchars($u->usuario) ?></option>
+        <?php endforeach; ?>
+      </select>
+      <button class="button btn btn-mini btn-warning"><span class="button__icon"><i class='bx bx-search-alt'></i></span></button>
+      <?php if ($this->input->get('usuario')): ?>
+        <a href="<?= site_url('auditoria') ?>" class="btn btn-mini">Limpar</a>
+      <?php endif; ?>
+    </form>
+  </div>
 
 <div class="widget-box">
     <h5 style="padding: 3px 0"></h5>
