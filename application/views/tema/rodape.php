@@ -6,27 +6,21 @@
 <!--end-Footer-part-->
 <script src="<?= base_url() ?>assets/js/bootstrap.min.js"></script>
 <script src="<?= base_url() ?>assets/js/matrix.js"></script>
-</body>
 <script type="text/javascript">
-    // Toggle do menu lateral (seta > / <)
     $(document).ready(function() {
+        // Toggle do menu lateral (seta > / <)
         var $sidebar = $('#sidebar');
         var STORAGE_KEY = 'sidebar_open';
-
-        // Restaura estado salvo
         if (localStorage.getItem(STORAGE_KEY) === '1') {
             $sidebar.addClass('open');
         }
-
-        // Clique na seta
         $sidebar.find('.mode').on('click', function(e) {
             e.preventDefault();
             $sidebar.toggleClass('open');
             localStorage.setItem(STORAGE_KEY, $sidebar.hasClass('open') ? '1' : '0');
         });
-    });
 
-    $(document).ready(function() {
+        // DataTable
         var dataTableEnabled = '<?= $configuration['control_datatable'] ?>';
         if(dataTableEnabled == '1') {
             $('#tabela').dataTable( {
@@ -40,6 +34,7 @@
                 }
             } );
         }
-    } );
+    });
 </script>
+</body>
 </html>
