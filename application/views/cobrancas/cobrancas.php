@@ -26,7 +26,7 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Forma de Pagamento</th>
+                        <th>Origem</th>
                         <th>Data de Vencimento</th>
                         <th>Referência</th>
                         <th>Status</th>
@@ -51,7 +51,8 @@
 
                         echo '<tr>';
                         echo '<td>' . $r->idCobranca . '</td>';
-                        echo '<td>' . htmlspecialchars($r->payment ?? $r->payment_method ?? '') . '</td>';
+                        $origem = $r->payment_gateway === 'Manual' ? 'Manual' : 'Faturar (Venda)';
+                        echo '<td>' . $origem . '</td>';
                         echo '<td>' . $dataVenda . '</td>';
 
                         if ($r->os_id != '') {
