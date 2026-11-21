@@ -26,57 +26,81 @@ class Cobrancas extends MY_Controller
             return $this->output
                 ->set_content_type('application/json')
                 ->set_status_header(403)
-                ->set_output(json_encode(['message' => 'Você não tem permissão para adicionar cobrança!']));
+                ->set_output(json_encode(['result' => false, 'message' => 'Você não tem permissão para adicionar cobrança!']));
         }
 
-        $this->load->library('form_validation');
-        if ($this->form_validation->run('cobrancas') == false) {
+        $id            = (int) $this->input->post('id');
+        $tipo          = $this->input->post('tipo');          // 'os' ou 'venda'
+        $formaPagamento = $this->input->post('forma_pagamento');
+        $descricao     = $this->input->post('descricao');
+        $vencimentoRaw = $this->input->post('vencimento');   // dd/mm/aaaa
+
+        if (! $id || ! $tipo || ! $formaPagamento || ! $vencimentoRaw) {
             return $this->output
                 ->set_content_type('application/json')
                 ->set_status_header(400)
-                ->set_output(json_encode(['message' => validation_errors()]));
+                ->set_output(json_encode(['result' => false, 'message' => 'Preencha todos os campos obrigatórios.']));
+        }
+
+        // Converter vencimento para Y-m-d
+        try {
+            $vencimento = DateTime::createFromFormat('d/m/Y', $vencimentoRaw)->format('Y-m-d');
+        } catch (Exception $e) {
+            $vencimento = date('Y-m-d');
+        }
+
+        // Buscar dados do cliente e valor total conforme tipo
+        $this->load->model('Os_model');
+        $this->load->model('vendas_model');
+
+        if ($tipo === 'os') {
+            $registro = $this->Os_model->getOs($id);
+            $clienteId = $registro ? $registro->clientes_id : null;
+            $valorTotalData = $this->os_model->valorTotalOS($id);
+            $total = ($valorTotalData['totalServico'] + $valorTotalData['totalProdutos']) - $valorTotalData['valor_desconto'];
         } else {
-            $id = $this->input->post('id');
-            $tipo = $this->input->post('tipo');
-            $formaPagamento = $this->input->post('forma_pagamento');
-            $gatewayDePagamento = $this->input->post('gateway_de_pagamento');
+            $registro = $this->vendas_model->getVenda($id);
+            $clienteId = $registro ? $registro->clientes_id : null;
+            $total = $registro ? $registro->valorTotal : 0;
+        }
 
-            $this->load->model('Os_model');
-            $this->load->model('vendas_model');
-            $cobranca = $tipo === 'os'
-                ? $this->Os_model->getCobrancas($this->input->post('id'))
-                : $this->vendas_model->getCobrancas($this->input->post('id'));
-            if ($cobranca) {
-                return $this->output
-                    ->set_content_type('application/json')
-                    ->set_status_header(400)
-                    ->set_output(json_encode(['message' => 'Já existe cobrança!']));
-            }
+        $data = [
+            'charge_id'         => null,
+            'payment_gateway'   => 'Manual',
+            'payment_url'       => null,
+            'barcode'           => '',
+            'link'              => '',
+            'pdf'               => null,
+            'status'            => 'Pendente',
+            'total'             => $total > 0 ? $total : 0,
+            'expire_at'         => $vencimento,
+            'message'           => $descricao ?: ($tipo === 'os' ? 'OS #' . $id : 'Venda #' . $id),
+            'payment'           => $formaPagamento,
+            'os_id'             => $tipo === 'os'    ? $id : null,
+            'vendas_id'         => $tipo === 'venda' ? $id : null,
+            'clientes_id'       => $clienteId,
+        ];
 
-            $this->load->library("Gateways/$gatewayDePagamento", null, 'PaymentGateway');
+        try {
+            $this->db->insert('cobrancas', $data);
 
-            try {
-                $cobranca = $this->PaymentGateway->gerarCobranca(
-                    $id,
-                    $tipo,
-                    $formaPagamento
-                );
-
+            if ($this->db->affected_rows() > 0) {
+                log_info('Cobrança manual registrada. Tipo: ' . $tipo . ' ID: ' . $id);
                 return $this->output
                     ->set_content_type('application/json')
                     ->set_status_header(200)
-                    ->set_output(json_encode($cobranca));
-            } catch (\Exception $e) {
-                $expMsg = $e->getMessage();
-                if ($expMsg == 'unauthorized: Must provide your access_token to proceed' || $expMsg == 'Unauthorized') {
-                    $expMsg = 'Por favor configurar os dados da API em Config/payment_gatways.php';
-                }
-
-                return $this->output
-                    ->set_content_type('application/json')
-                    ->set_status_header(500)
-                    ->set_output(json_encode(['message' => $expMsg]));
+                    ->set_output(json_encode(['result' => true, 'message' => 'Cobrança registrada com sucesso!']));
             }
+
+            return $this->output
+                ->set_content_type('application/json')
+                ->set_status_header(500)
+                ->set_output(json_encode(['result' => false, 'message' => 'Erro ao salvar cobrança no banco de dados.']));
+        } catch (Exception $e) {
+            return $this->output
+                ->set_content_type('application/json')
+                ->set_status_header(500)
+                ->set_output(json_encode(['result' => false, 'message' => $e->getMessage()]));
         }
     }
 

@@ -1,42 +1,48 @@
-<?php
-$this->load->config('payment_gateways');
-?>
-
-<script>
-    var paymentGatewaysConfig = JSON.parse("<?php echo addslashes(json_encode($this->config->item('payment_gateways'))); ?>");
-</script>
-
 <div class="modal fade" id="modal-gerar-pagamento" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <form id="form-gerar-cobranca" name="cobranca" method="post" action="<?php echo base_url() . 'index.php/cobrancas/adicionar'; ?>">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" >Escolher Forma de Pagamento</h4>
+                    <h4 class="modal-title">Registrar Cobrança</h4>
                 </div>
                 <div class="modal-body">
-                    <div id="forma-pag" class="">
-                        <div class="form-group">
-                            <input value="<?php echo $id ?>" name="id" hidden>
-                            <input value="<?php echo $tipo ?>" name="tipo" hidden>
-                            <label for="gateway_de_pagamento">Gateway de Pagamento: </label>
-                            <select id="gateway_de_pagamento" class="form-control span12" name="gateway_de_pagamento" required>
-                                <option value="" selected>Escolha o gateway de pagamento</option>
-                                <?php foreach ($this->config->item('payment_gateways') as $paymentGateway) : ?>
-                                    <option value="<?php echo $paymentGateway['library_name']; ?>"><?php echo $paymentGateway['name']; ?></option>
-                                <?php endforeach ?>
-                            </select>
-                            <label id="label_forma_pagamento" for="forma_pagamento" hidden>Forma de Pagamento: </label>
-                            <select id="forma_pagamento" class="form-control span12" name="forma_pagamento" required hidden>
-                            </select>
-                        </div>
+                    <input value="<?php echo $id ?>" name="id" type="hidden">
+                    <input value="<?php echo $tipo ?>" name="tipo" type="hidden">
+
+                    <div class="form-group">
+                        <label for="cobr_descricao">Descrição</label>
+                        <input type="text" id="cobr_descricao" name="descricao" class="span12"
+                               placeholder="Ex: OS #<?php echo $id ?> — Serviço de instalação" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cobr_forma_pagamento">Forma de Pagamento</label>
+                        <select id="cobr_forma_pagamento" name="forma_pagamento" class="span12" required>
+                            <option value="">Selecione...</option>
+                            <option value="Dinheiro">Dinheiro</option>
+                            <option value="PIX">PIX</option>
+                            <option value="Cartão de Crédito">Cartão de Crédito</option>
+                            <option value="Cartão de Débito">Cartão de Débito</option>
+                            <option value="Boleto">Boleto</option>
+                            <option value="Transferência">Transferência Bancária</option>
+                            <option value="Cheque">Cheque</option>
+                            <option value="A combinar">A combinar</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cobr_vencimento">Vencimento</label>
+                        <input type="text" id="cobr_vencimento" name="vencimento" class="span12 datepicker"
+                               placeholder="dd/mm/aaaa" required>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <div>
-                        <button id="payment" type="submit" class="button btn btn-mini btn-info" style="float: right;">
-                        <span class="button__icon"><i class='bx bx-qr'></i></span><span class="button__text">Gerar Pagamento</span></i></button>
-                    </div>
+                    <button type="button" class="button btn btn-mini btn-default" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="button btn btn-mini btn-info">
+                        <span class="button__icon"><i class='bx bx-dollar'></i></span>
+                        <span class="button__text">Registrar Cobrança</span>
+                    </button>
                 </div>
             </div>
         </form>
@@ -44,7 +50,36 @@ $this->load->config('payment_gateways');
 </div>
 
 <script>
-    $("#forma_pagamento").hide();
-    $("#label_forma_pagamento").hide();
+$(function () {
+    $("#cobr_vencimento").datepicker({ dateFormat: 'dd/mm/yy' });
+
+    $("#form-gerar-cobranca").on("submit", function (e) {
+        e.preventDefault();
+        var $btn = $(this).find('[type=submit]');
+        $btn.prop('disabled', true).text('Aguarde...');
+
+        $.ajax({
+            url: $(this).attr('action'),
+            method: 'POST',
+            data: $(this).serialize(),
+            dataType: 'json',
+            success: function (resp) {
+                if (resp.result) {
+                    toastr.success('Cobrança registrada com sucesso!');
+                    $('#modal-gerar-pagamento').modal('hide');
+                    setTimeout(function () { location.reload(); }, 1200);
+                } else {
+                    toastr.error(resp.message || 'Erro ao registrar cobrança.');
+                    $btn.prop('disabled', false).text('Registrar Cobrança');
+                }
+            },
+            error: function (xhr) {
+                var msg = 'Erro ao registrar cobrança.';
+                try { msg = JSON.parse(xhr.responseText).message || msg; } catch(x) {}
+                toastr.error(msg);
+                $btn.prop('disabled', false).text('Registrar Cobrança');
+            }
+        });
+    });
+});
 </script>
-<script src="<?= base_url('assets/js/script-payments.js'); ?>"></script>

@@ -1123,6 +1123,30 @@ class Os extends MY_Controller
 
                 log_info('Faturou uma OS. ID: ' . $os_id);
 
+                // Criar cobrança manual automaticamente (sem chamar API)
+                $cobrancaData = [
+                    'charge_id'       => null,
+                    'payment_gateway' => 'Manual',
+                    'payment_url'     => null,
+                    'barcode'         => '',
+                    'link'            => '',
+                    'pdf'             => null,
+                    'status'          => 'Pendente',
+                    'total'           => $valorDesconto > 0 ? $valorTotalComDesconto : $valorTotal,
+                    'expire_at'       => $vencimento,
+                    'message'         => set_value('descricao') ?: 'OS #' . $os_id,
+                    'payment'         => $data['forma_pgto'] ?: 'A combinar',
+                    'os_id'           => $os_id,
+                    'vendas_id'       => null,
+                    'clientes_id'     => $this->input->post('clientes_id'),
+                ];
+                // Insere cobrança somente se ainda não existir para esta OS
+                $this->db->where('os_id', $os_id);
+                $jaExiste = $this->db->count_all_results('cobrancas');
+                if (! $jaExiste) {
+                    $this->db->insert('cobrancas', $cobrancaData);
+                }
+
                 $this->db->trans_complete();
 
                 if ($this->db->trans_status() === false) {
