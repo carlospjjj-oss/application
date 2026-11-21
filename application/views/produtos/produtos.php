@@ -12,7 +12,7 @@
     </div>
     <div class="span12" style="margin-left: 0">
         <?php if ($this->permission->checkPermission($this->session->userdata('permissao'), 'aProduto')) : ?>
-            <div class="span6" style="display:flex; gap:6px; flex-wrap:wrap;">
+            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;">
                 <a href="<?= base_url() ?>index.php/produtos/adicionar" class="button btn btn-mini btn-success">
                     <span class="button__icon"><i class='bx bx-plus-circle'></i></span><span class="button__text2">Novo Produto</span>
                 </a>
@@ -24,14 +24,26 @@
                 </a>
             </div>
         <?php endif; ?>
-        <form class="span9" method="get" action="<?= base_url() ?>index.php/produtos" style="display: flex; justify-content: flex-end;">
-            <div class="span3">
-                <input type="text" name="pesquisa" id="pesquisa" placeholder="Buscar por Nome ou Cod. barra..." class="span12" value="<?=$this->input->get('pesquisa')?>">
+        <form method="get" action="<?= base_url() ?>index.php/produtos">
+        <?php
+        $labelStyle = 'display:block;margin-bottom:4px;font-size:12px;color:#555;font-weight:600;white-space:nowrap';
+        $inputStyle = 'width:100%;box-sizing:border-box;height:30px;padding:4px 6px;border:1px solid #ccc;border-radius:4px;font-size:13px';
+        ?>
+        <div style="display:flex;gap:10px;flex-wrap:nowrap;align-items:flex-start;background:#f8f9fa;padding:12px 14px;border-radius:6px;border:1px solid #ddd;margin-bottom:12px;">
+
+            <div style="flex:0 0 300px">
+                <label style="<?= $labelStyle ?>">Buscar produto</label>
+                <input type="text" name="pesquisa" id="pesquisa" placeholder="Nome ou Cód. de barras..." style="<?= $inputStyle ?>" value="<?= $this->input->get('pesquisa') ?>">
             </div>
-            <div class="span1">
-                <button class="button btn btn-mini btn-warning" style="min-width: 30px">
-                    <span class="button__icon"><i class='bx bx-search-alt'></i></span></button>
+
+            <div style="flex-shrink:0">
+                <label style="display:block;margin-bottom:4px;font-size:12px;visibility:hidden">x</label>
+                <button type="submit" style="height:30px;padding:0 14px;white-space:nowrap;display:inline-flex;align-items:center;gap:5px;background:#f0810f;border:none;border-radius:4px;color:#fff;font-size:13px;font-weight:600;cursor:pointer">
+                    <i class='bx bx-search-alt' style="font-size:15px"></i> Filtrar
+                </button>
             </div>
+
+        </div>
         </form>
     </div>
 
