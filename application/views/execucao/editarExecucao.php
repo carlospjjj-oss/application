@@ -339,3 +339,7 @@
 
     </div><!-- /tab-content -->
 </div>
+
+<script>
+$(function(){ $(".datepicker").datepicker({ dateFormat:'dd/mm/yy' }); });
+</script>
