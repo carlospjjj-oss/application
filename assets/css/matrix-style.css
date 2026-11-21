@@ -646,7 +646,9 @@ End hora certa */
 
 #newlog {
   display        : flex;
-  padding        : 60px 20px 10px;
+  width          : 100%;
+  box-sizing     : border-box;
+  padding        : 15px 20px 10px;
   align-items    : center;
   justify-content: center;
   z-index        : 99;
