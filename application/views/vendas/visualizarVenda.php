@@ -34,6 +34,9 @@ if (($result->faturado != 1 || $editavel) && $this->permission->checkPermission(
                         <a href="#modal-gerar-pagamento" id="btn-forma-pagamento" role="button" data-toggle="modal" class="button btn btn-mini btn-primary">
                             <span class="button__icon"><i class='bx bx-dollar'></i></span><span class="button__text">Gerar Pagamento</span>
                         </a>
+                        <a href="<?php echo base_url() ?>index.php/vendas" class="button btn btn-mini btn-warning">
+                            <span class="button__icon"><i class="bx bx-undo"></i></span><span class="button__text">Voltar</span>
+                        </a>
 
                         <?php if ($qrCode): ?>
                             <a href="#modal-pix" id="btn-pix" role="button" data-toggle="modal" class="button btn btn-mini btn-info">
