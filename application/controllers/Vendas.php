@@ -982,12 +982,15 @@ class Vendas extends MY_Controller
             if (!empty($v->cond_entrega_serv) && $v->cond_entrega_serv > 0)
                 $partes[] = 'Na Entrega R$ ' . number_format($v->cond_entrega_serv, 2, ',', '.');
             if (!empty($v->cond_parcelas) && $v->cond_parcelas > 1) {
-                $val_parc = !empty($v->cond_parcelado) && $v->cond_parcelado > 0 ? floatval($v->cond_parcelado) : 0;
-                // Fallback: total da venda menos valores já cobertos por outras condições
-                if ($val_parc == 0 && !empty($v->total) && $v->total > 0) {
-                    $ja_coberto = floatval($v->cond_pix ?? 0) + floatval($v->cond_aceite ?? 0) + floatval($v->cond_entrega_serv ?? 0);
-                    $val_parc = floatval($v->total) - $ja_coberto;
-                    if ($val_parc < 0) $val_parc = 0;
+                $val_parc = !empty($v->cond_parcelado) && floatval($v->cond_parcelado) > 0 ? floatval($v->cond_parcelado) : 0;
+                // Fallback: valorTotal da venda menos valores já cobertos por outras condições
+                if ($val_parc == 0) {
+                    $vt = !empty($v->valorTotal) && floatval($v->valorTotal) > 0 ? floatval($v->valorTotal) : 0;
+                    if ($vt > 0) {
+                        $ja_coberto = floatval($v->cond_pix ?? 0) + floatval($v->cond_aceite ?? 0) + floatval($v->cond_entrega_serv ?? 0);
+                        $val_parc = $vt - $ja_coberto;
+                        if ($val_parc < 0) $val_parc = 0;
+                    }
                 }
                 $por_parcela = $v->cond_parcelas > 0 && $val_parc > 0 ? $val_parc / intval($v->cond_parcelas) : 0;
                 $txt = 'Cartão ' . intval($v->cond_parcelas) . 'x';
@@ -1002,7 +1005,6 @@ class Vendas extends MY_Controller
             'result'          => true,
             'cliente'         => $venda->nomeCliente,
             'formas'          => [],
-            '_debug'          => $v ? ['cond_pix'=>$v->cond_pix,'cond_parcelas'=>$v->cond_parcelas,'cond_parcelado'=>$v->cond_parcelado,'total'=>$v->total ?? null] : null,
             'forma_pagamento' => $forma_texto,
             'descricao'       => 'Venda #' . $id,
         ]);
