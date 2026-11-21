@@ -26,8 +26,7 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Gateway</th>
-                        <th>Tipo</th>
+                        <th>Forma de Pagamento</th>
                         <th>Data de Vencimento</th>
                         <th>Referência</th>
                         <th>Status</th>
@@ -39,7 +38,7 @@
                     <?php
                     if (!$results) {
                         echo '<tr>
-                                <td colspan="8">Nenhuma cobrança Cadastrada</td>
+                                <td colspan="7">Nenhuma cobrança Cadastrada</td>
                             </tr>';
                     }
                     foreach ($results as $r) {
@@ -52,8 +51,7 @@
 
                         echo '<tr>';
                         echo '<td>' . $r->idCobranca . '</td>';
-                        echo '<td>' . $r->payment_gateway . '</td>';
-                        echo '<td>' . $r->payment_method . '</td>';
+                        echo '<td>' . htmlspecialchars($r->payment ?? $r->payment_method ?? '') . '</td>';
                         echo '<td>' . $dataVenda . '</td>';
 
                         if ($r->os_id != '') {
