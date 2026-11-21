@@ -230,6 +230,97 @@ class Clientes extends MY_Controller
         return $this->layout();
     }
 
+    public function importar()
+    {
+        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'aCliente')) {
+            $this->session->set_flashdata('error', 'Você não tem permissão para importar clientes.');
+            redirect(base_url());
+        }
+        $this->data['view'] = 'clientes/importarClientes';
+        return $this->layout();
+    }
+
+    public function modeloPlanilha()
+    {
+        require_once APPPATH . 'third_party/SimpleXLSXGen.php';
+        $rows = [
+            ['Nome', 'Contato', 'CPF/CNPJ', 'Telefone', 'Celular', 'Email', 'CEP', 'Rua', 'Número', 'Complemento', 'Bairro', 'Cidade', 'Estado', 'Tipo (Cliente/Fornecedor)'],
+            ['João Silva', 'Maria Silva', '123.456.789-00', '(11) 99999-0001', '(11) 99999-0002', 'joao@email.com', '01310-100', 'Av. Paulista', '1000', 'Apto 42', 'Bela Vista', 'São Paulo', 'SP', 'Cliente'],
+        ];
+        $xlsx = \Shuchkin\SimpleXLSXGen::fromArray($rows);
+        $xlsx->downloadAs('modelo_importacao_clientes.xlsx');
+    }
+
+    public function importarPlanilha()
+    {
+        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'aCliente')) {
+            $this->session->set_flashdata('error', 'Você não tem permissão para importar clientes.');
+            redirect(base_url());
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['planilha'])) {
+            require_once APPPATH . 'third_party/SimpleXLSX.php';
+            $file = $_FILES['planilha']['tmp_name'];
+            if ($xlsx = \Shuchkin\SimpleXLSX::parse($file)) {
+                $rows = $xlsx->rows();
+                $importados = 0;
+                $erros = 0;
+                foreach ($rows as $i => $row) {
+                    if ($i === 0) continue; // pular cabeçalho
+                    if (empty($row[0])) continue; // nome obrigatório
+
+                    $documento = isset($row[2]) ? $row[2] : '';
+                    $cpf_cnpj  = preg_replace('/[^\d]/', '', $documento);
+                    $pessoa_fisica = strlen($cpf_cnpj) == 11;
+                    $senha = $cpf_cnpj ? password_hash($cpf_cnpj, PASSWORD_DEFAULT) : password_hash('voltcore', PASSWORD_DEFAULT);
+
+                    $tipoStr = strtolower(isset($row[13]) ? trim($row[13]) : 'cliente');
+                    $fornecedor = ($tipoStr === 'fornecedor') ? 1 : 0;
+
+                    $email = isset($row[5]) ? trim($row[5]) : '';
+                    if ($email && $this->clientes_model->emailExists($email)) {
+                        $erros++;
+                        continue;
+                    }
+
+                    $data = [
+                        'nomeCliente'  => $row[0],
+                        'contato'      => isset($row[1]) ? $row[1] : '',
+                        'documento'    => $documento,
+                        'pessoa_fisica'=> $pessoa_fisica,
+                        'telefone'     => isset($row[3]) ? $row[3] : '',
+                        'celular'      => isset($row[4]) ? $row[4] : '',
+                        'email'        => $email,
+                        'senha'        => $senha,
+                        'cep'          => isset($row[6]) ? $row[6] : '',
+                        'rua'          => isset($row[7]) ? $row[7] : '',
+                        'numero'       => isset($row[8]) ? $row[8] : '',
+                        'complemento'  => isset($row[9]) ? $row[9] : '',
+                        'bairro'       => isset($row[10]) ? $row[10] : '',
+                        'cidade'       => isset($row[11]) ? $row[11] : '',
+                        'estado'       => isset($row[12]) ? $row[12] : '',
+                        'fornecedor'   => $fornecedor,
+                        'terceiro'     => 0,
+                        'dataCadastro' => date('Y-m-d'),
+                    ];
+
+                    if ($this->clientes_model->add('clientes', $data)) {
+                        $importados++;
+                    } else {
+                        $erros++;
+                    }
+                }
+                $this->session->set_flashdata('success', "Importação concluída: $importados cliente(s) importado(s)" . ($erros ? ", $erros erro(s) (e-mail duplicado ou dados inválidos)." : "."));
+            } else {
+                $this->session->set_flashdata('error', 'Erro ao ler a planilha. Verifique o formato.');
+            }
+            redirect(site_url('clientes'));
+        }
+
+        $this->data['view'] = 'clientes/importarClientes';
+        return $this->layout();
+    }
+
     public function excluir()
     {
         if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'dCliente')) {

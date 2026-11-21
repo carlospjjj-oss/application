@@ -12,12 +12,15 @@
     </div>
     <div class="span12" style="margin-left: 0">
         <?php if ($this->permission->checkPermission($this->session->userdata('permissao'), 'aCliente')) { ?>
-            <div class="span3">
+            <div class="span3" style="display:flex;gap:8px;flex-wrap:wrap;">
                 <a href="<?= base_url() ?>index.php/clientes/adicionar" class="button btn btn-mini btn-success"
                     style="max-width: 165px">
                     <span class="button__icon"><i class='bx bx-plus-circle'></i></span><span class="button__text2">
                         Cliente / Fornecedor
                     </span>
+                </a>
+                <a href="<?= site_url('clientes/importar') ?>" class="button btn btn-mini btn-info" style="max-width:180px;">
+                    <span class="button__icon"><i class='bx bx-import'></i></span><span class="button__text2">Importar Planilha</span>
                 </a>
             </div>
         <?php } ?>
