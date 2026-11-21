@@ -579,24 +579,20 @@ foreach ($produtos as $p) {
             </div>
             <?php endif; ?>
 
-            <div class="span12" style="margin-left: 0; margin-top: 8px;">
-                <div class="span4" style="margin-left: 0">
-                    <label>NF MO (Mão de Obra)?</label>
-                    &nbsp;&nbsp;<input id="chkNfMo" type="checkbox" name="chk_nf_mo" value="1" />
+            <div class="span12" style="margin-left:0; margin-top:8px; display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                <label style="margin:0; white-space:nowrap;">
+                    <input id="chkNfMo" type="checkbox" name="chk_nf_mo" value="1" style="margin-right:4px;" />
+                    NF MO
+                </label>
+                <div id="divNfMo" style="display:none; flex:1; min-width:120px;">
+                    <input class="span12 money" id="nf_mo_valor" type="text" name="nf_mo_valor" placeholder="0,00" style="margin:0;" />
                 </div>
-                <div id="divNfMo" class="span7" style="display:none; margin-left:4px;">
-                    <label for="nf_mo_valor">Valor NF MO</label>
-                    <input class="span12 money" id="nf_mo_valor" type="text" name="nf_mo_valor" placeholder="0,00" />
-                </div>
-            </div>
-            <div class="span12" style="margin-left: 0; margin-top: 4px;">
-                <div class="span4" style="margin-left: 0">
-                    <label>NF MT (Material)?</label>
-                    &nbsp;&nbsp;<input id="chkNfMt" type="checkbox" name="chk_nf_mt" value="1" />
-                </div>
-                <div id="divNfMt" class="span7" style="display:none; margin-left:4px;">
-                    <label for="nf_mt_valor">Valor NF MT</label>
-                    <input class="span12 money" id="nf_mt_valor" type="text" name="nf_mt_valor" value="<?php echo number_format($total, 2, '.', ''); ?>" />
+                <label style="margin:0; white-space:nowrap;">
+                    <input id="chkNfMt" type="checkbox" name="chk_nf_mt" value="1" style="margin-right:4px;" />
+                    NF MT
+                </label>
+                <div id="divNfMt" style="display:none; flex:1; min-width:120px;">
+                    <input class="span12 money" id="nf_mt_valor" type="text" name="nf_mt_valor" placeholder="0,00" value="<?php echo number_format($total, 2, '.', ''); ?>" style="margin:0;" />
                 </div>
             </div>
 
