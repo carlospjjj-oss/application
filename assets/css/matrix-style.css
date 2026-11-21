@@ -645,12 +645,10 @@ End hora certa */
 }
 
 #newlog {
-  position       : relative;
   display        : flex;
-  top            : 15px;
-  padding        : 0 30px;
+  padding        : 20px 20px 10px;
   align-items    : center;
-  justify-content: space-evenly;
+  justify-content: center;
   z-index        : 99;
 }
 
