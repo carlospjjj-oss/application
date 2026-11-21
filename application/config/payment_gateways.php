@@ -73,6 +73,15 @@ $config['payment_gateways'] = [
             'charged_back' => 'Foi feito um estorno no cartão de crédito do comprador',
         ],
     ],
+    'Manual' => [
+        'name' => 'Manual',
+        'transaction_status' => [
+            'Pendente'   => 'Pendente',
+            'Pago'       => 'Pago',
+            'Cancelado'  => 'Cancelado',
+            'Vencido'    => 'Vencido',
+        ],
+    ],
     'Asaas' => [
         'name' => 'Asaas',
         'library_name' => 'Asaas',
