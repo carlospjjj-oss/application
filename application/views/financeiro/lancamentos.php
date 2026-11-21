@@ -65,9 +65,9 @@ $periodo = $this->input->get('periodo');
     <?php } ?>
 
     <div class="span12" style="margin-left: 0;margin-top: 1rem;">
-        <form action="<?php echo current_url(); ?>" method="get" style="display:flex;align-items:flex-end;gap:12px;flex-wrap:nowrap;">
+        <form action="<?php echo current_url(); ?>" method="get" style="display:flex;align-items:flex-end;gap:10px;flex-wrap:nowrap;background:#f8f9fa;padding:12px 14px;border-radius:6px;border:1px solid #e0e0e0;margin-bottom:12px;">
             <div style="width:120px;flex-shrink:0">
-                <label style="display:block;margin-bottom:3px">Período</label>
+                <label style="display:block;margin-bottom:4px;font-size:12px;color:#555;font-weight:600">Período</label>
                 <select id="periodo" name="periodo" style="width:100%">
                     <option value="dia" <?= $this->input->get('periodo') === 'dia' ? 'selected' : '' ?>>Dia</option>
                     <option value="semana" <?= $this->input->get('periodo') === 'semana' ? 'selected' : '' ?>>Semana</option>
@@ -80,17 +80,17 @@ $periodo = $this->input->get('periodo');
             </div>
 
             <div style="width:120px;flex-shrink:0">
-                <label style="display:block;margin-bottom:3px">Vencimento (de)</label>
-                <input id="vencimento_de" type="text" class="datepicker" name="vencimento_de" style="width:100%" value="<?= $this->input->get('vencimento_de') ?: '' ?>">
+                <label style="display:block;margin-bottom:4px;font-size:12px;color:#555;font-weight:600">Vencimento (de)</label>
+                <input id="vencimento_de" type="text" class="datepicker" name="vencimento_de" style="width:100%;box-sizing:border-box" value="<?= $this->input->get('vencimento_de') ?: '' ?>">
             </div>
 
             <div style="width:120px;flex-shrink:0">
-                <label style="display:block;margin-bottom:3px">Vencimento (até)</label>
-                <input id="vencimento_ate" type="text" class="datepicker" name="vencimento_ate" style="width:100%" value="<?= $this->input->get('vencimento_ate') ?: '' ?>">
+                <label style="display:block;margin-bottom:4px;font-size:12px;color:#555;font-weight:600">Vencimento (até)</label>
+                <input id="vencimento_ate" type="text" class="datepicker" name="vencimento_ate" style="width:100%;box-sizing:border-box" value="<?= $this->input->get('vencimento_ate') ?: '' ?>">
             </div>
 
             <div style="width:100px;flex-shrink:0">
-                <label style="display:block;margin-bottom:3px">Tipo</label>
+                <label style="display:block;margin-bottom:4px;font-size:12px;color:#555;font-weight:600">Tipo</label>
                 <select name="tipo" style="width:100%">
                     <option value="">Todos</option>
                     <option value="receita" <?= $this->input->get('tipo') === 'receita' ? 'selected' : '' ?>>Receita</option>
@@ -99,7 +99,7 @@ $periodo = $this->input->get('periodo');
             </div>
 
             <div style="width:175px;flex-shrink:0">
-                <label style="display:block;margin-bottom:3px">Status</label>
+                <label style="display:block;margin-bottom:4px;font-size:12px;color:#555;font-weight:600">Status</label>
                 <select name="status" style="width:100%">
                     <option value="">Todos (Pendente e Pago)</option>
                     <option value="0" <?= $this->input->get('status') === '0' ? 'selected' : '' ?>>Pendente</option>
@@ -108,12 +108,12 @@ $periodo = $this->input->get('periodo');
             </div>
 
             <div style="width:160px;flex-shrink:0">
-                <label style="display:block;margin-bottom:3px">Cliente/Fornecedor</label>
+                <label style="display:block;margin-bottom:4px;font-size:12px;color:#555;font-weight:600">Cliente/Fornecedor</label>
                 <input id="cliente_busca" type="text" name="cliente" style="width:100%;box-sizing:border-box" value="<?= $this->input->get('cliente') ?>">
             </div>
 
-            <div style="flex-shrink:0">
-                <button type="submit" class="button btn btn-primary btn-sm" style="white-space:nowrap;margin-bottom:0">
+            <div style="flex-shrink:0;padding-top:20px">
+                <button type="submit" class="button btn btn-primary" style="white-space:nowrap">
                     <i class='bx bx-filter-alt'></i> Filtrar
                 </button>
             </div>
