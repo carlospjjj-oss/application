@@ -212,10 +212,10 @@
         $("#form-gerar-cobranca").on("submit", function(e){
             e.preventDefault();
             var tipo = $("#cobr_tipo").val();
-            if (!tipo)                        { alert("Selecione o tipo de referência."); return; }
+            if (!tipo)                        { return; }
             var refId = $("#cobr_id").val();
-            if (!refId || parseInt(refId)<1)  { alert("Informe o número da " + (tipo==='os'?'Ordem de Serviço':'Venda') + "."); return; }
-            if (!$("#cobr_vencimento").val())  { alert("Informe a data de vencimento."); return; }
+            if (!refId || parseInt(refId)<1)  { return; }
+            if (!$("#cobr_vencimento").val())  { return; }
 
             var $btn = $("#btn-registrar-cobranca").prop("disabled", true);
             $.ajax({
@@ -225,16 +225,12 @@
                 dataType: "json",
                 success: function(resp){
                     if (resp.result) {
-                        alert("Cobrança registrada com sucesso!");
-                        $("#modal-gerar-pagamento").modal("hide");
                         location.reload();
                     } else {
-                        alert(resp.message || "Erro ao registrar cobrança.");
                         $btn.prop("disabled", false);
                     }
                 },
                 error: function(){
-                    alert("Erro ao registrar cobrança.");
                     $btn.prop("disabled", false);
                 }
             });
