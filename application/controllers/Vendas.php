@@ -1002,6 +1002,7 @@ class Vendas extends MY_Controller
             'result'          => true,
             'cliente'         => $venda->nomeCliente,
             'formas'          => [],
+            '_debug'          => $v ? ['cond_pix'=>$v->cond_pix,'cond_parcelas'=>$v->cond_parcelas,'cond_parcelado'=>$v->cond_parcelado,'total'=>$v->total ?? null] : null,
             'forma_pagamento' => $forma_texto,
             'descricao'       => 'Venda #' . $id,
         ]);
