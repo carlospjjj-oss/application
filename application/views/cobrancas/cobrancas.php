@@ -121,17 +121,7 @@
                 </div>
                 <div class="form-group">
                     <label>Forma de Pagamento</label>
-                    <select name="forma_pagamento" id="cobr_forma_pag" class="span12">
-                        <option value="">Selecione...</option>
-                        <option value="Dinheiro">Dinheiro</option>
-                        <option value="PIX">PIX</option>
-                        <option value="Cartão de Crédito">Cartão de Crédito</option>
-                        <option value="Cartão de Débito">Cartão de Débito</option>
-                        <option value="Boleto">Boleto</option>
-                        <option value="Transferência">Transferência Bancária</option>
-                        <option value="Cheque">Cheque</option>
-                        <option value="A combinar">A combinar</option>
-                    </select>
+                    <input type="text" name="forma_pagamento" id="cobr_forma_pag" class="span12" placeholder="Ex: PIX, Cartão de Crédito...">
                 </div>
                 <div class="form-group">
                     <label>Vencimento</label>
@@ -176,18 +166,7 @@
             document.getElementById('form-gerar-cobranca').reset();
             document.getElementById('cobr_grupo_numero').style.display = 'none';
             document.getElementById('cobr_info_ref').style.display     = 'none';
-            // Restaura select de forma de pagamento para opções padrão
-            $("#cobr_forma_pag").empty().append(
-                '<option value="">Selecione...</option>' +
-                '<option value="Dinheiro">Dinheiro</option>' +
-                '<option value="PIX">PIX</option>' +
-                '<option value="Cartão de Crédito">Cartão de Crédito</option>' +
-                '<option value="Cartão de Débito">Cartão de Débito</option>' +
-                '<option value="Boleto">Boleto</option>' +
-                '<option value="Transferência">Transferência Bancária</option>' +
-                '<option value="Cheque">Cheque</option>' +
-                '<option value="A combinar">A combinar</option>'
-            );
+            $("#cobr_forma_pag").val('').autocomplete({ source: ["Dinheiro","PIX","Cartão de Crédito","Cartão de Débito","Boleto","Transferência Bancária","Cheque","A combinar"] });
         });
 
         // Buscar OS ou Venda
@@ -205,30 +184,16 @@
                     // Preenche descrição
                     if (resp.descricao) $("#cobr_descricao").val(resp.descricao);
 
-                    // Atualiza select de forma de pagamento
-                    var selEl = document.getElementById('cobr_forma_pag');
-                    console.log('select el:', selEl, 'formas:', resp.formas);
-                    if (selEl && resp.formas && resp.formas.length > 0) {
-                        // Limpa e reconstrói via DOM puro
-                        selEl.innerHTML = '<option value="">Selecione...</option>';
-                        resp.formas.forEach(function(f) {
-                            var opt = document.createElement('option');
-                            opt.value = f;
-                            opt.text  = f;
-                            selEl.add(opt);
-                        });
-                        // Seleciona o índice 1 (primeira opção real) ou busca por valor
-                        if (resp.forma_pagamento) {
-                            for (var i = 0; i < selEl.options.length; i++) {
-                                if (selEl.options[i].value === resp.forma_pagamento) {
-                                    selEl.selectedIndex = i;
-                                    break;
-                                }
-                            }
-                        } else {
-                            selEl.selectedIndex = 1; // primeira opção real
-                        }
-                    }
+                    // Preenche forma de pagamento como texto com autocomplete
+                    var $fp = $("#cobr_forma_pag");
+                    var formasDisponiveis = (resp.formas && resp.formas.length > 0)
+                        ? resp.formas
+                        : ["Dinheiro","PIX","Cartão de Crédito","Cartão de Débito","Boleto","Transferência Bancária","Cheque","A combinar"];
+                    // Preenche com a forma principal
+                    $fp.val(resp.forma_pagamento || formasDisponiveis[0] || '');
+                    // Autocomplete com as opções disponíveis
+                    $fp.autocomplete({ source: formasDisponiveis, minLength: 0 })
+                       .on("focus", function(){ $(this).autocomplete("search", ""); });
 
                     info.textContent   = "✓ Cliente: " + resp.cliente;
                     info.style.color   = "#3a7d3a";
