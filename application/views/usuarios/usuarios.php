@@ -1,7 +1,6 @@
 <style>
-    select {
-        width: 70px;
-    }
+    select { width: 70px; }
+    #tabela_wrapper .dataTables_filter { display: none !important; }
     .situacao-ativo {
         background-color: #00cd00;
         color: white;
@@ -16,12 +15,14 @@
     <div class="widget-title" style="margin:-15px -10px 0">
         <h5>Usuários</h5>
     </div>
-    <a href="<?= base_url('index.php/usuarios/adicionar') ?>" class="button btn btn-success" style="max-width: 160px">
-        <span class="button__icon"><i class='bx bx-plus-circle'></i></span><span class="button__text2">Adicionar Usuário</span>
-    </a>
-    <a href="<?= site_url('usuarios/importar') ?>" class="button btn btn-mini btn-info" style="max-width:180px;margin-left:8px;">
-        <span class="button__icon"><i class='bx bx-import'></i></span><span class="button__text2">Importar Planilha</span>
-    </a>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+        <a href="<?= base_url('index.php/usuarios/adicionar') ?>" class="button btn btn-success" style="max-width:160px">
+            <span class="button__icon"><i class='bx bx-plus-circle'></i></span><span class="button__text2">Adicionar Usuário</span>
+        </a>
+        <a href="<?= site_url('usuarios/importar') ?>" class="button btn btn-mini btn-info" style="max-width:180px;">
+            <span class="button__icon"><i class='bx bx-import'></i></span><span class="button__text2">Importar Planilha</span>
+        </a>
+    </div>
 
     <div class="widget-box">
         <div class="widget-title" style="margin: -20px 0 0">
