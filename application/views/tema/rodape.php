@@ -8,12 +8,6 @@
 <script src="<?= base_url() ?>assets/js/matrix.js"></script>
 <script type="text/javascript">
     $(document).ready(function() {
-        // Toggle sidebar
-        $('#sidebar .mode').on('click', function(e) {
-            e.preventDefault();
-            $('#sidebar').toggleClass('open');
-        });
-
         var dataTableEnabled = '<?= $configuration['control_datatable'] ?>';
         if(dataTableEnabled == '1') {
             $('#tabela').dataTable( {
