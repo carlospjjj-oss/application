@@ -144,6 +144,9 @@
                 echo '<a style="margin-right: 1%" href="' . base_url() . 'index.php/vendas/visualizar/' . $r->idVendas . '" class="btn-nwe" title="Ver mais detalhes"><i class="bx bx-show bx-xs"></i></a>';
                 echo '<a style="margin-right: 1%" href="' . base_url() . 'index.php/vendas/imprimir/' . $r->idVendas . '" target="_blank" class="btn-nwe6" title="Imprimir A4"><i class="bx bx-printer bx-xs"></i></a>';
                 echo '<a style="margin-right: 1%" href="' . base_url() . 'index.php/vendas/imprimirTermica/' . $r->idVendas . '" target="_blank" class="btn-nwe6" title="Imprimir Não Fiscal"><i class="bx bx-printer bx-xs"></i></a>';
+                if (!empty($r->os_id)) {
+                    echo '<a style="margin-right: 1%" href="' . base_url() . 'index.php/os/editar/' . $r->os_id . '" class="btn-nwe" title="Ver OS #' . $r->os_id . '"><i class="bx bx-wrench bx-xs"></i></a>';
+                }
             }
 
             $editavel = $this->vendas_model->isEditable($r->idVendas);

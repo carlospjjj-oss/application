@@ -33,9 +33,7 @@ class Vendas_model extends CI_Model
         $this->db->limit($perpage, $start);
         $this->db->join('clientes', 'clientes.idClientes = ' . $table . '.clientes_id');
         $this->db->join('usuarios', 'usuarios.idUsuarios = ' . $table . '.usuarios_id');
-        if ($table === 'vendas') {
-            $this->db->where('vendas.convertida', 0);
-        }
+        // vendas convertidas em OS continuam visíveis na listagem
         $this->db->order_by('idVendas', 'desc');
         
         // condicionais da pesquisa
