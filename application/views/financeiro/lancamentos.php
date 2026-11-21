@@ -74,7 +74,7 @@ $periodo = $this->input->get('periodo');
             $selectStyle = 'width:100%;box-sizing:border-box;height:30px;border:1px solid #ccc;border-radius:4px;font-size:13px';
             ?>
 
-            <div style="flex:0 0 115px">
+            <div style="flex:0 0 100px">
                 <label style="<?= $labelStyle ?>">Período</label>
                 <select id="periodo" name="periodo" style="<?= $selectStyle ?>">
                     <option value="dia"         <?= $this->input->get('periodo') === 'dia'         ? 'selected' : '' ?>>Dia</option>
@@ -87,17 +87,17 @@ $periodo = $this->input->get('periodo');
                 </select>
             </div>
 
-            <div style="flex:0 0 115px">
+            <div style="flex:0 0 100px">
                 <label style="<?= $labelStyle ?>">Vencimento (de)</label>
                 <input id="vencimento_de" type="text" class="datepicker" name="vencimento_de" style="<?= $inputStyle ?>" value="<?= $this->input->get('vencimento_de') ?: '' ?>">
             </div>
 
-            <div style="flex:0 0 115px">
+            <div style="flex:0 0 100px">
                 <label style="<?= $labelStyle ?>">Vencimento (até)</label>
                 <input id="vencimento_ate" type="text" class="datepicker" name="vencimento_ate" style="<?= $inputStyle ?>" value="<?= $this->input->get('vencimento_ate') ?: '' ?>">
             </div>
 
-            <div style="flex:0 0 100px">
+            <div style="flex:0 0 80px">
                 <label style="<?= $labelStyle ?>">Tipo</label>
                 <select name="tipo" style="<?= $selectStyle ?>">
                     <option value="">Todos</option>
@@ -106,7 +106,7 @@ $periodo = $this->input->get('periodo');
                 </select>
             </div>
 
-            <div style="flex:0 0 170px">
+            <div style="flex:0 0 155px">
                 <label style="<?= $labelStyle ?>">Status</label>
                 <select name="status" style="<?= $selectStyle ?>">
                     <option value="">Todos (Pendente e Pago)</option>
@@ -115,7 +115,7 @@ $periodo = $this->input->get('periodo');
                 </select>
             </div>
 
-            <div style="flex:0 0 150px">
+            <div style="flex:0 0 130px">
                 <label style="<?= $labelStyle ?>">Cliente/Fornecedor</label>
                 <input id="cliente_busca" type="text" name="cliente" style="<?= $inputStyle ?>" value="<?= $this->input->get('cliente') ?>">
             </div>
