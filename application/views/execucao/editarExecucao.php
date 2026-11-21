@@ -77,31 +77,36 @@
                     </div>
                 </div>
 
-                <?php if (!empty($result->tipo_instalacao)): ?>
                 <div style="margin-top:16px; border-top:1px solid #eee; padding-top:14px;">
-                    <strong style="font-size:13px;">Tipo de Instalação</strong>
-                    <div class="row-fluid" style="margin-top:8px;">
+                    <strong style="font-size:13px; display:block; margin-bottom:8px;">Tipo de Instalação</strong>
+                    <div class="row-fluid">
                         <div class="span6">
                             <label>Tipo</label>
-                            <input type="text" class="span12" value="<?= $result->tipo_instalacao ?>" disabled>
+                            <select name="tipo_instalacao" class="span12">
+                                <option value="">Selecione...</option>
+                                <?php foreach (['Residencial','Comercial','Industrial','Condomínio','Estacionamento','Posto de Recarga','Outro'] as $t): ?>
+                                    <option value="<?= $t ?>" <?= $result->tipo_instalacao == $t ? 'selected' : '' ?>><?= $t ?></option>
+                                <?php endforeach ?>
+                            </select>
                         </div>
                         <div class="span3">
                             <label>Início da Instalação</label>
-                            <input type="text" class="span12" value="<?= (!empty($result->data_inicio_instalacao) && $result->data_inicio_instalacao != '0000-00-00') ? date('d/m/Y', strtotime($result->data_inicio_instalacao)) : '' ?>" disabled>
+                            <input type="text" name="data_inicio_instalacao" class="span12 datepicker" autocomplete="off"
+                                value="<?= (!empty($result->data_inicio_instalacao) && $result->data_inicio_instalacao != '0000-00-00') ? date('d/m/Y', strtotime($result->data_inicio_instalacao)) : '' ?>">
                         </div>
                         <div class="span3">
                             <label>Fim da Instalação</label>
-                            <input type="text" class="span12" value="<?= (!empty($result->data_fim_instalacao) && $result->data_fim_instalacao != '0000-00-00') ? date('d/m/Y', strtotime($result->data_fim_instalacao)) : '' ?>" disabled>
+                            <input type="text" name="data_fim_instalacao" class="span12 datepicker" autocomplete="off"
+                                value="<?= (!empty($result->data_fim_instalacao) && $result->data_fim_instalacao != '0000-00-00') ? date('d/m/Y', strtotime($result->data_fim_instalacao)) : '' ?>">
                         </div>
                     </div>
                 </div>
-                <?php endif ?>
 
-                <div style="margin-top:20px; text-align:center;">
-                    <button type="submit" class="button btn btn-mini btn-success">
+                <div style="margin-top:20px; display:flex; gap:8px;">
+                    <button type="submit" class="button btn btn-success">
                         <span class="button__icon"><i class='bx bx-save'></i></span><span class="button__text2">Atualizar</span>
                     </button>
-                    <a href="<?= base_url() ?>index.php/execucao" class="button btn btn-mini btn-warning">
+                    <a href="<?= base_url() ?>index.php/execucao" class="button btn btn-warning">
                         <span class="button__icon"><i class='bx bx-undo'></i></span><span class="button__text2">Voltar</span>
                     </a>
                 </div>

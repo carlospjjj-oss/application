@@ -110,7 +110,18 @@ class Execucao extends MY_Controller
             'doc_relatorio_comissionamento','doc_orientacao_operacao','doc_orientacao_emergencia',
         ];
 
-        $data = ['status' => $status];
+        $tipo_instalacao       = $this->input->post('tipo_instalacao');
+        $data_inicio_instalacao= $this->input->post('data_inicio_instalacao');
+        $data_fim_instalacao   = $this->input->post('data_fim_instalacao');
+        if ($data_inicio_instalacao) $data_inicio_instalacao = $this->_formatDate($data_inicio_instalacao);
+        if ($data_fim_instalacao)    $data_fim_instalacao    = $this->_formatDate($data_fim_instalacao);
+
+        $data = [
+            'status'                 => $status,
+            'tipo_instalacao'        => $tipo_instalacao ?: null,
+            'data_inicio_instalacao' => $data_inicio_instalacao ?: null,
+            'data_fim_instalacao'    => $data_fim_instalacao    ?: null,
+        ];
         foreach (array_merge($checklistInstalacao, $checklistDocs) as $field) {
             $data[$field] = $this->input->post($field) ? 1 : 0;
         }
