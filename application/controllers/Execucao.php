@@ -244,7 +244,8 @@ class Execucao extends MY_Controller
         $os_id = $this->db->insert_id();
 
         // Cria execução vinculada
-        $this->execucao_model->createFromOs($os_id);
+        $engenheiro = $this->input->post('engenheiro');
+        $this->execucao_model->createFromOs($os_id, $engenheiro);
 
         $this->session->set_flashdata('success', 'Execução criada com sucesso!');
         redirect(site_url('execucao/editar/' . $os_id));

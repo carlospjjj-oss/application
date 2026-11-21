@@ -89,12 +89,13 @@ class Execucao_model extends CI_Model
     // ----------------------------------------------------------------
     // Criar execução a partir de uma OS
     // ----------------------------------------------------------------
-    public function createFromOs($os_id)
+    public function createFromOs($os_id, $engenheiro = null)
     {
         // Evita duplicata
         if ($this->getByOs($os_id)) return true;
 
         $data = ['os_id' => $os_id, 'status' => 'Aberto'];
+        if ($engenheiro) $data['engenheiro'] = $engenheiro;
         $this->db->insert('execucoes', $data);
         return $this->db->affected_rows() == 1 ? $this->db->insert_id() : false;
     }

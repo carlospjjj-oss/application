@@ -43,6 +43,13 @@
                 </div>
 
                 <div class="row-fluid" style="margin-bottom:15px;">
+                    <div class="span12">
+                        <label>Engenheiro Responsável *</label>
+                        <input type="text" name="engenheiro" class="span12" placeholder="Nome do engenheiro responsável" required>
+                    </div>
+                </div>
+
+                <div class="row-fluid" style="margin-bottom:15px;">
                     <div class="span4">
                         <label>Data Inicial</label>
                         <input type="text" name="dataInicial" class="span12 datepicker" placeholder="dd/mm/aaaa">
