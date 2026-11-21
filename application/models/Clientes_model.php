@@ -14,10 +14,18 @@ class Clientes_model extends CI_Model
         $this->db->order_by('idClientes', 'desc');
         $this->db->limit($perpage, $start);
         if ($where) {
-            $this->db->like('nomeCliente', $where);
-            $this->db->or_like('documento', $where);
-            $this->db->or_like('email', $where);
-            $this->db->or_like('telefone', $where);
+            if (strpos($where, '@') !== false) {
+                // Contém @ → busca por email
+                $this->db->like('email', $where);
+            } elseif (preg_match('/^[0-9\s\(\)\-\.]+$/', $where)) {
+                // Só números/símbolos → busca por documento ou telefone
+                $this->db->like('documento', $where);
+                $this->db->or_like('telefone', $where);
+                $this->db->or_like('celular', $where);
+            } else {
+                // Texto → busca nome que COMEÇA com o termo
+                $this->db->like('nomeCliente', $where, 'after');
+            }
         }
 
         $query = $this->db->get();
