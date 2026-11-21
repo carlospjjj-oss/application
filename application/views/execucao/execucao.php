@@ -79,6 +79,7 @@
                             <a href="<?= base_url() ?>index.php/execucao/visualizar/<?= $r->os_id ?>" class="btn-nwe" title="Visualizar"><i class="bx bx-show bx-xs"></i></a>
                             <?php if ($this->permission->checkPermission($this->session->userdata('permissao'), 'eArquivo')): ?>
                             <a href="<?= base_url() ?>index.php/execucao/editar/<?= $r->os_id ?>" class="btn-nwe3" title="Editar"><i class="bx bx-edit bx-xs"></i></a>
+                            <a href="<?= base_url() ?>index.php/execucao/excluir/<?= $r->idExecucao ?>" class="btn-nwe2" title="Excluir" onclick="return confirm('Confirma exclusão desta execução?')"><i class="bx bx-trash bx-xs"></i></a>
                             <?php endif ?>
                         </td>
                     </tr>

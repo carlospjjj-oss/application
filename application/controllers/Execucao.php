@@ -200,6 +200,27 @@ class Execucao extends MY_Controller
     }
 
     // ----------------------------------------------------------------
+    // Excluir execução
+    // ----------------------------------------------------------------
+    public function excluir($id = null)
+    {
+        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'eArquivo')) {
+            $this->session->set_flashdata('error', 'Sem permissão.');
+            redirect('execucao');
+        }
+
+        if (! $id || ! is_numeric($id)) {
+            redirect('execucao');
+        }
+
+        $this->db->where('idExecucao', $id);
+        $this->db->delete('execucoes');
+
+        $this->session->set_flashdata('success', 'Execução excluída com sucesso!');
+        redirect('execucao');
+    }
+
+    // ----------------------------------------------------------------
     // Criar nova execução (sem OS prévia)
     // ----------------------------------------------------------------
     public function criar()
