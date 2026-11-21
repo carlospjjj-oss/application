@@ -155,7 +155,7 @@ class Cobrancas_model extends CI_Model
         $gatewayDePagamento = $cobranca->payment_gateway;
 
         // Cobranças manuais não possuem API para cancelar — apenas remove do banco
-        if (empty($gatewayDePagamento) || $gatewayDePagamento === 'Manual') {
+        if (empty($gatewayDePagamento) || in_array($gatewayDePagamento, ['Manual', 'Faturar (Venda)'])) {
             return true;
         }
 
