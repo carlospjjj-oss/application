@@ -484,7 +484,7 @@ foreach ($produtos as $p) {
                                             <div style="display:flex; align-items:center; gap:12px; padding:8px 10px; background:#fff; border:1px solid #e0e0e0; border-radius:4px;">
                                                 <input type="checkbox" id="chkParcelado" <?php echo $result->cond_parcelado > 0 ? 'checked' : '' ?> style="margin:0;" />
                                                 <span style="flex:1;">Condição Especial - Pagamento em
-                                                    <input type="number" id="condParcelas" min="1" max="24" value="<?php echo $result->cond_parcelas > 0 ? $result->cond_parcelas : '' ?>" placeholder="Nº" style="width:44px; display:inline-block; text-align:center;" />
+                                                    <input type="number" id="condParcelas" min="1" max="24" value="<?php echo ($result->cond_parcelado > 0 && $result->cond_parcelas > 0) ? $result->cond_parcelas : '' ?>" placeholder="Nº" style="width:44px; display:inline-block; text-align:center;" />
                                                     x Sem Juros
                                                 </span>
                                                 <div id="wrapParcelado" style="display:none;">
