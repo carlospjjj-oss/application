@@ -90,7 +90,7 @@
 
                 <div class="span12" style="margin-left:0;">
                     <label for="inputMidia" style="cursor:pointer;display:inline-flex;align-items:center;gap:6px;background:#5cb85c;color:#fff;padding:0 14px;height:30px;border-radius:4px;font-size:13px;font-weight:600;margin-bottom:10px;">
-                        <i class="fas fa-upload"></i> Anexar Foto/Vídeo
+                        <i class="fas fa-upload" style="vertical-align:middle;line-height:1;font-size:14px;"></i> Anexar Foto/Vídeo
                     </label>
                     <!-- BUG 3 CORRIGIDO: adicionado multiple para selecionar vários arquivos -->
                     <input type="file" id="inputMidia" accept=".jpg,.jpeg,.png,.mp4,.mov,.webm" style="display:none;" multiple>
