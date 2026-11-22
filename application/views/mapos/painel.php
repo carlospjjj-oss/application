@@ -256,8 +256,8 @@
                 <div class="widget-box-statist">
                     <h5 class="cardHeader">Estatísticas Financeira</h5>
                     <div class="widget-content" style="padding:10px;margin:25px 0 0">
-                        <div style="position:relative;width:100%;max-height:280px">
-                            <canvas id="statusOS" style="max-height:280px"> </canvas>
+                        <div id="statusOS-container" style="position:relative;width:100%;height:320px">
+                            <canvas id="statusOS"> </canvas>
                         </div>
                     </div>
                 </div>
@@ -464,8 +464,9 @@
                     position: "bottom",
                     labels: {
                         usePointStyle: true,
-                        boxWidth: 10,
-                        font: { size: window.innerWidth < 480 ? 9 : 11 }
+                        boxWidth: 8,
+                        padding: 6,
+                        font: { size: window.innerWidth < 480 ? 8 : 11 }
                     }
                 }
             }
