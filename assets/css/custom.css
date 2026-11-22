@@ -144,6 +144,20 @@ textarea {
     padding: 7px;
 }
 
+/* ===== BOTÕES: garante alinhamento ícone+texto ===== */
+/*
+ * .button.btn combina a classe customizada com Bootstrap.
+ * Bootstrap define display:inline-block que quebra o flex do .button.
+ * Força display:flex e alinhamento vertical corretos.
+ */
+.button.btn,
+a.button.btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 0 !important;
+    line-height: 1 !important;
+}
+
 /* ===== RESPONSIVIDADE MOBILE ===== */
 
 /*
