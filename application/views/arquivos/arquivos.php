@@ -2,37 +2,47 @@
     <link rel="stylesheet" href="<?= base_url(); ?>assets/js/jquery-ui/css/smoothness/jquery-ui-1.9.2.custom.css" />
     <script type="text/javascript" src="<?= base_url() ?>assets/js/jquery-ui/js/jquery-ui-1.9.2.custom.js"></script>
 
-    <div class="span12" style="margin-left: 0">
-    <div class="widget-title" style="margin: -20px 0 0">
-                <span class="icon">
-                    <i class="fas fa-hdd"></i>
-                </span>
-                <h5>Arquivos</h5>
-            </div>
-        <form method="get" action="<?= current_url(); ?>">
-            <?php if ($this->permission->checkPermission($this->session->userdata('permissao'), 'aArquivo')) : ?>
-                <div class="span3">
-                    <a href="<?= base_url(); ?>index.php/arquivos/adicionar" class="button btn btn-mini btn-success" style="max-width:150px">
-                        <span class="button__icon"><i class='bx bx-plus-circle'></i></span><span class="button__text2">Arquivo</span></a>
-                </div>
-            <?php endif ?>
-
-            <div class="span5">
-                <input type="text" name="pesquisa" id="pesquisa" placeholder="Digite o nome do documento para pesquisar" class="span12" value="<?= $this->input->get('pesquisa') ?>">
-            </div>
-            <div class="span3">
-                <input type="text" name="data" id="data" placeholder="Data de" class="span6 datepicker" value="<?= $this->input->get('data') ?>">
-                <input type="text" name="data2" id="data2" placeholder="Data até" class="span6 datepicker" value="<?= $this->input->get('data2') ?>">
-            </div>
-            <div class="span1">
-                <button class="button btn btn-mini btn-warning" style="min-width: 30px"><span class="button__icon"><i class='bx bx-search-alt'></i></span></button>
-            </div>
-        </form>
+    <div class="widget-title" style="margin:-15px -10px 0">
+        <h5>Arquivos</h5>
     </div>
 
-    <div>
-        <div class="widget-box">
-            <div class="widget-content nopadding tab-content">
+    <?php if ($this->permission->checkPermission($this->session->userdata('permissao'), 'aArquivo')) : ?>
+    <div style="margin:10px 0;">
+        <a href="<?= base_url(); ?>index.php/arquivos/adicionar" class="button btn btn-mini btn-success" style="max-width:150px">
+            <span class="button__icon"><i class='bx bx-plus-circle'></i></span><span class="button__text2">Arquivo</span>
+        </a>
+    </div>
+    <?php endif ?>
+
+    <?php
+    $labelStyle = 'display:block;margin-bottom:4px;font-size:12px;color:#555;font-weight:600;white-space:nowrap';
+    $inputStyle = 'width:100%;box-sizing:border-box;height:30px;padding:4px 6px;border:1px solid #ccc;border-radius:4px;font-size:13px';
+    ?>
+    <form method="get" action="<?= current_url(); ?>">
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-start;background:#f8f9fa;padding:12px 14px;border-radius:6px;border:1px solid #ddd;margin-bottom:12px;">
+        <div style="flex:0 0 200px">
+            <label style="<?= $labelStyle ?>">Buscar arquivo</label>
+            <input type="text" name="pesquisa" id="pesquisa" placeholder="Nome do documento..." style="<?= $inputStyle ?>" value="<?= $this->input->get('pesquisa') ?>">
+        </div>
+        <div style="flex:0 0 115px">
+            <label style="<?= $labelStyle ?>">Data de</label>
+            <input type="text" name="data" id="data" placeholder="dd/mm/aaaa" class="datepicker" style="<?= $inputStyle ?>" value="<?= $this->input->get('data') ?>">
+        </div>
+        <div style="flex:0 0 115px">
+            <label style="<?= $labelStyle ?>">Data até</label>
+            <input type="text" name="data2" id="data2" placeholder="dd/mm/aaaa" class="datepicker" style="<?= $inputStyle ?>" value="<?= $this->input->get('data2') ?>">
+        </div>
+        <div style="flex-shrink:0">
+            <label style="display:block;margin-bottom:4px;font-size:12px;visibility:hidden">x</label>
+            <button type="submit" style="height:30px;padding:0 14px;white-space:nowrap;display:inline-flex;align-items:center;gap:5px;background:#f0810f;border:none;border-radius:4px;color:#fff;font-size:13px;font-weight:600;cursor:pointer">
+                <i class='bx bx-search-alt' style="font-size:15px"></i> Filtrar
+            </button>
+        </div>
+    </div>
+    </form>
+
+    <div class="widget-box">
+        <div class="widget-content nopadding tab-content" style="overflow-x:auto;-webkit-overflow-scrolling:touch">
                 <table id="tabela" width="100%" class="table table-bordered ">
                     <thead>
                         <tr>

@@ -16,7 +16,7 @@
 
 <div class="widget-box">
 <h5 style="padding: 3px 0"></h5>
-    <div class="widget-content nopadding tab-content">
+    <div class="widget-content nopadding tab-content" style="overflow-x:auto;-webkit-overflow-scrolling:touch">
         <table id="tabela" class="table table-bordered ">
             <thead>
                 <tr>
