@@ -1,17 +1,21 @@
-<div class="row-fluid" style="margin-top:0">
-    <div class="span12">
-        <div class="widget-box">
-            <div class="widget-title" style="margin: -20px 0 0">
-                <span class="icon"><i class="fas fa-calendar-check"></i></span>
-                <h5>Visitas Técnicas</h5>
-            </div>
-            <div class="widget-content nopadding">
-                <div style="padding:10px;">
-                    <a href="<?php echo site_url('visita_tecnica/adicionar') ?>" class="button btn btn-mini btn-success">
-                        <span class="button__icon"><i class='bx bx-plus-circle'></i></span>
-                        <span class="button__text2">Nova Visita</span>
-                    </a>
-                </div>
+<style>
+    @media (max-width: 768px) {
+        .vt-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .vt-table-wrap table { min-width: 520px; }
+    }
+</style>
+<div class="new122">
+    <div class="widget-title" style="margin:-15px -10px 0">
+        <h5>Visitas Técnicas</h5>
+    </div>
+    <div style="margin-bottom:10px;margin-top:10px;">
+        <a href="<?php echo site_url('visita_tecnica/adicionar') ?>" class="button btn btn-mini btn-success" style="max-width:160px">
+            <span class="button__icon"><i class='bx bx-plus-circle'></i></span>
+            <span class="button__text2">Nova Visita</span>
+        </a>
+    </div>
+    <div class="widget-box">
+        <div class="widget-content nopadding vt-table-wrap">
                 <table class="table table-bordered table-striped">
                     <thead>
                         <tr>
@@ -64,7 +68,6 @@
                     </tbody>
                 </table>
                 <?php echo $this->pagination->create_links(); ?>
-            </div>
         </div>
     </div>
 </div>
