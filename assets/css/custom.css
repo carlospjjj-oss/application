@@ -144,6 +144,14 @@ textarea {
     padding: 7px;
 }
 
+/* ===== LABEL usado como botão (Anexar Foto/Vídeo) ===== */
+label[for="inputMidia"] {
+    display: inline-flex !important;
+    align-items: center !important;
+    line-height: 1 !important;
+    vertical-align: middle !important;
+}
+
 /* ===== BOTÕES: garante alinhamento ícone+texto ===== */
 /*
  * .button.btn combina a classe customizada com Bootstrap.
