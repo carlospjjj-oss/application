@@ -89,7 +89,7 @@
                 <p class="text-muted">Máximo 6 fotos e 1 vídeo (até 1:30 cada) por visita.</p>
 
                 <div class="span12" style="margin-left:0;">
-                    <label for="inputMidia" style="cursor:pointer;display:inline-flex;align-items:center;gap:6px;background:#5cb85c;color:#fff;padding:0 14px;height:30px;border-radius:4px;font-size:13px;font-weight:600;margin-bottom:10px;">
+                    <label for="inputMidia" style="cursor:pointer;display:inline-flex;align-items:center;gap:6px;background:#5cb85c;color:#fff;padding:0 14px;height:30px;border-radius:4px;font-size:13px;font-weight:600;margin-top:8px;margin-bottom:0;">
                         <i class="fas fa-upload" style="vertical-align:middle;line-height:1;font-size:14px;"></i> Anexar Foto/Vídeo
                     </label>
                     <!-- BUG 3 CORRIGIDO: adicionado multiple para selecionar vários arquivos -->
