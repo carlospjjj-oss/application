@@ -98,7 +98,7 @@
                     <span id="uploadStatus" style="margin-left:10px;"></span>
                 </div>
 
-                <div id="galeriaMidia" class="span12" style="margin-left:0; margin-top:15px; display:flex; flex-wrap:wrap; gap:10px;">
+                <div id="galeriaMidia" class="span12" style="margin-left:0; margin-top:15px; margin-bottom:30px; display:flex; flex-wrap:wrap; gap:10px;">
                     <?php foreach ($midias as $m): ?>
                         <div class="midia-item" data-id="<?php echo $m->id; ?>" style="width:150px; text-align:center; border:1px solid #ddd; border-radius:4px; padding:5px;">
                             <?php if ($m->tipo == 'foto'): ?>
@@ -113,7 +113,7 @@
                     <?php endforeach; ?>
                 </div>
 
-                <div class="form-actions" style="margin-top:70px;">
+                <div class="form-actions" style="margin-top:20px;">
                     <div class="span12">
                         <div class="span6 offset3" style="display:flex;justify-content:center">
                                 <button type="submit" class="button btn btn-primary">
