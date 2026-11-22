@@ -187,8 +187,13 @@ textarea {
         flex-wrap: wrap !important;
     }
     /* Gráficos: limita altura */
+    .widget-box-statist .widget-content > div {
+        max-height: 260px !important;
+        height: 260px !important;
+    }
     #statusOS {
-        max-height: 240px !important;
+        max-height: 260px !important;
+        height: 260px !important;
     }
     #myChart {
         max-height: 200px !important;

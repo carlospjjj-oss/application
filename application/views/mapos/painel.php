@@ -256,7 +256,9 @@
                 <div class="widget-box-statist">
                     <h5 class="cardHeader">Estatísticas Financeira</h5>
                     <div class="widget-content" style="padding:10px;margin:25px 0 0">
-                        <canvas id="statusOS"> </canvas>
+                        <div style="position:relative;width:100%;max-height:280px">
+                            <canvas id="statusOS" style="max-height:280px"> </canvas>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -442,6 +444,7 @@
         type: 'polarArea',
         options: {
             locale: 'pt-BR',
+            maintainAspectRatio: false,
             scales: {
                 r: {
                     ticks: {
@@ -461,7 +464,8 @@
                     position: "bottom",
                     labels: {
                         usePointStyle: true,
-
+                        boxWidth: 10,
+                        font: { size: window.innerWidth < 480 ? 9 : 11 }
                     }
                 }
             }
