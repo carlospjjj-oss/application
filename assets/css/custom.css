@@ -145,6 +145,56 @@ textarea {
 }
 
 /* ===== RESPONSIVIDADE MOBILE ===== */
+
+/* Fix: matrix-style.css oculta labels em 480px — nossos filtros precisam delas */
+@media (max-width: 480px) {
+    form[method="get"] label,
+    form[method="post"] label {
+        display: block !important;
+    }
+    /* Filtros empilham no mobile */
+    form[method="get"] > div[style*="flex"] {
+        flex-wrap: wrap !important;
+    }
+    form[method="get"] > div[style*="flex"] > div {
+        flex: 0 0 100% !important;
+        width: 100% !important;
+    }
+    form[method="get"] input[type="text"],
+    form[method="get"] input[type="date"],
+    form[method="get"] select {
+        width: 100% !important;
+    }
+    form[method="get"] > div[style*="flex"] > div > button[type="submit"] {
+        width: 100%;
+        justify-content: center;
+    }
+    /* Scroll horizontal nas tabelas */
+    .widget-content {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+    }
+    .widget-box .widget-content,
+    .widget-box0 .widget-content,
+    .widget-box2 .widget-content {
+        overflow-x: auto !important;
+    }
+    table.table {
+        min-width: 450px;
+    }
+    /* Botões de ação lado a lado empilham */
+    div[style*="display:flex"][style*="gap"] {
+        flex-wrap: wrap !important;
+    }
+    /* Gráficos: limita altura */
+    #statusOS {
+        max-height: 240px !important;
+    }
+    #myChart {
+        max-height: 200px !important;
+    }
+}
+
 @media (max-width: 768px) {
     /* Sidebar: colapsa no mobile */
     #sidebar-left {
@@ -171,20 +221,22 @@ textarea {
     }
 
     /* Tabelas: scroll horizontal */
-    .widget-content, .table-responsive-mobile {
+    .widget-content, .table-responsive-mobile,
+    .widget-box .widget-content,
+    .widget-box2 .widget-content {
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
     }
     table.table {
-        min-width: 600px;
+        min-width: 500px;
     }
 
     /* Formulários de busca: empilha */
-    form[method="get"] {
+    form[method="get"] > div[style*="flex"] {
         flex-wrap: wrap !important;
-        gap: 6px !important;
     }
     form[method="get"] input[type="text"],
+    form[method="get"] input[type="date"],
     form[method="get"] select {
         width: 100% !important;
         max-width: 100% !important;
@@ -192,18 +244,70 @@ textarea {
     }
 
     /* Botões de ação: empilha */
-    .span3[style*="display:flex"],
     div[style*="display:flex"][style*="gap"] {
         flex-wrap: wrap !important;
     }
 
-    /* Cards do dashboard */
+    /* ---- DASHBOARD ---- */
+
+    /* Cards de atalho (Clientes, Produtos, etc.) */
     .cardBox {
-        flex-direction: column;
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 8px !important;
+        padding: 0 !important;
     }
     .cardBox .card {
+        width: auto !important;
+        margin: 0 !important;
+        min-height: 70px;
+    }
+
+    /* Gráficos: empilha verticalmente */
+    .new-balance {
+        flex-direction: column !important;
+        gap: 12px !important;
+    }
+    .new-balance .widget-box0,
+    .new-balance .widget-box-statist {
         width: 100% !important;
-        margin: 4px 0 !important;
+        min-width: 0 !important;
+    }
+    /* Gráfico radar: limita altura no mobile */
+    #statusOS {
+        max-height: 260px !important;
+    }
+    #myChart {
+        max-height: 220px !important;
+    }
+
+    /* Estatísticas do sistema: grid 2 colunas */
+    .new-statisc {
+        width: 100% !important;
+    }
+    .new-bottons {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 8px !important;
+    }
+    .new-bottons .card {
+        width: auto !important;
+        margin: 0 !important;
+    }
+
+    /* Layout do painel: empilha */
+    .row-fluid[style*="display: flex"],
+    .row-fluid[style*="display:flex"] {
+        flex-direction: column !important;
+    }
+    .Sspan12 {
+        width: 100% !important;
+    }
+
+    /* Tabelas de OS no painel */
+    .new-balance ~ div table,
+    .widget-box table {
+        min-width: 400px;
     }
 
     /* Widget boxes */
