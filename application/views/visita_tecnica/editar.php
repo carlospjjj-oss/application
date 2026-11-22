@@ -113,7 +113,7 @@
                     <?php endforeach; ?>
                 </div>
 
-                <div class="form-actions" style="margin-top:20px;">
+                <div class="form-actions" style="margin-top:40px;">
                     <div class="span12">
                         <div class="span6 offset3" style="display:flex;justify-content:center">
                                 <button type="submit" class="button btn btn-primary">
