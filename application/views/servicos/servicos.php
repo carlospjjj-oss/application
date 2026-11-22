@@ -48,7 +48,7 @@
                         <th>Cod.</th>
                         <th>Nome</th>
                         <th>Preço</th>
-                        <th>Descrição</th>
+                        <th class="col-mobile-hide">Descrição</th>
                         <th>Ações</th>
                     </tr>
                 </thead>
@@ -64,7 +64,7 @@
             echo '<td>' . $r->idServicos . '</td>';
             echo '<td>' . $r->nome . '</td>';
             echo '<td>' . number_format($r->preco, 2, ',', '.') . '</td>';
-            echo '<td>' . $r->descricao . '</td>';
+            echo '<td class="col-mobile-hide">' . $r->descricao . '</td>';
             echo '<td>';
             if ($this->permission->checkPermission($this->session->userdata('permissao'), 'eServico')) {
                 echo '<a style="margin-right: 1%" href="' . base_url() . 'index.php/servicos/editar/' . $r->idServicos . '" class="btn-nwe3" title="Editar Serviço"><i class="bx bx-edit bx-xs"></i></a>';

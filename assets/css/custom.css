@@ -146,6 +146,19 @@ textarea {
 
 /* ===== RESPONSIVIDADE MOBILE ===== */
 
+/*
+ * Classes para ocultar colunas secundárias no mobile.
+ * Aplique .col-mobile-hide no <th> e no <td> correspondente
+ * para que a coluna desapareça em telas ≤ 768px.
+ * Use .col-mobile-hide-sm para ocultar apenas em ≤ 480px.
+ */
+@media (max-width: 768px) {
+    .col-mobile-hide { display: none !important; }
+}
+@media (max-width: 480px) {
+    .col-mobile-hide-sm { display: none !important; }
+}
+
 /* Fix: matrix-style.css oculta labels em 480px — nossos filtros precisam delas */
 @media (max-width: 480px) {
     form[method="get"] label,
@@ -169,7 +182,7 @@ textarea {
         width: 100%;
         justify-content: center;
     }
-    /* Scroll horizontal nas tabelas */
+    /* Scroll horizontal só se ainda precisar (fallback) */
     .widget-content {
         overflow-x: auto !important;
         -webkit-overflow-scrolling: touch;
@@ -178,9 +191,6 @@ textarea {
     .widget-box0 .widget-content,
     .widget-box2 .widget-content {
         overflow-x: auto !important;
-    }
-    table.table {
-        min-width: 450px;
     }
     /* Botões de ação lado a lado empilham */
     div[style*="display:flex"][style*="gap"] {

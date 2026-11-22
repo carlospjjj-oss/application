@@ -75,15 +75,15 @@
                     <tr>
                         <th>Nº</th>
                         <th>Cliente</th>
-                        <th>Vendedor</th>
-                        <th>Data da Venda</th>
-                        <th>Venc. da Garantia</th>
-                        <th>Valor Total</th>
-                        <th>Desconto</th>
-                        <th>Valor com Desconto</th>
-                        <th>V. T. (Faturado)</th>
+                        <th class="col-mobile-hide">Vendedor</th>
+                        <th class="col-mobile-hide">Data da Venda</th>
+                        <th class="col-mobile-hide">Venc. Garantia</th>
+                        <th class="col-mobile-hide-sm">Valor Total</th>
+                        <th class="col-mobile-hide">Desconto</th>
+                        <th class="col-mobile-hide">Valor c/ Desc.</th>
+                        <th class="col-mobile-hide">V.T (Faturado)</th>
                         <th>Status</th>
-                        <th>Faturado</th>
+                        <th class="col-mobile-hide">Faturado</th>
                         <th style="text-align:center">Ações</th>
                     </tr>
                 </thead>
@@ -127,15 +127,15 @@
             echo '<tr>';
             echo '<td>' . $r->idVendas . '</td>';
             echo '<td><a href="' . base_url() . 'index.php/clientes/visualizar/' . $r->idClientes . '">' . $r->nomeCliente . '</a></td>';
-            echo '<td class="ph1">' . $r->nome . '</td>';
-            echo '<td>' . $dataVenda . '</td>';
-            echo '<td class="ph3"><span class="badge" style="background-color: ' . $corGarantia . '; border-color: ' . $corGarantia . '">' . $vencGarantia . '</span> </td>';
+            echo '<td class="col-mobile-hide">' . $r->nome . '</td>';
+            echo '<td class="col-mobile-hide">' . $dataVenda . '</td>';
+            echo '<td class="col-mobile-hide"><span class="badge" style="background-color: ' . $corGarantia . '; border-color: ' . $corGarantia . '">' . $vencGarantia . '</span></td>';
 
             if ($r->faturado == 1) {
-                echo '<td>R$ ' . number_format($r->valorTotal, 2, ',', '.') . '</td>';
-                echo '<td>R$ ' . number_format($r->desconto, 2, ',', '.') . '</td>';
-                echo '<td>R$ ' . number_format($r->valor_desconto, 2, ',', '.') . '</td>';
-                echo '<td>R$ ' . number_format($r->valor_desconto, 2, ',', '.') . '</td>';
+                echo '<td class="col-mobile-hide-sm">R$ ' . number_format($r->valorTotal, 2, ',', '.') . '</td>';
+                echo '<td class="col-mobile-hide">R$ ' . number_format($r->desconto, 2, ',', '.') . '</td>';
+                echo '<td class="col-mobile-hide">R$ ' . number_format($r->valor_desconto, 2, ',', '.') . '</td>';
+                echo '<td class="col-mobile-hide">R$ ' . number_format($r->valor_desconto, 2, ',', '.') . '</td>';
             } else {
                 $valorProdutos = isset($r->totalProdutos) ? $r->totalProdutos : 0.00;
                 $desconto = isset($r->desconto) ? $r->desconto : 0.00;
@@ -148,14 +148,14 @@
                 }
                 if ($valorComDesconto < 0) $valorComDesconto = 0;
 
-                echo '<td>R$ ' . number_format($valorProdutos, 2, ',', '.') . '</td>';
-                echo '<td>R$ ' . number_format($desconto, 2, ',', '.') . '</td>';
-                echo '<td>R$ ' . number_format($valorComDesconto, 2, ',', '.') . '</td>';
-                echo '<td>R$ 0,00</td>';
+                echo '<td class="col-mobile-hide-sm">R$ ' . number_format($valorProdutos, 2, ',', '.') . '</td>';
+                echo '<td class="col-mobile-hide">R$ ' . number_format($desconto, 2, ',', '.') . '</td>';
+                echo '<td class="col-mobile-hide">R$ ' . number_format($valorComDesconto, 2, ',', '.') . '</td>';
+                echo '<td class="col-mobile-hide">R$ 0,00</td>';
             }
 
-            echo '<td><span class="badge" style="background-color: ' . $corStatus . '; border-color: ' . $corStatus . '">' . $r->status . '</span> </td>';
-            echo '<td>' . $faturado . '</td>';
+            echo '<td><span class="badge" style="background-color: ' . $corStatus . '; border-color: ' . $corStatus . '">' . $r->status . '</span></td>';
+            echo '<td class="col-mobile-hide">' . $faturado . '</td>';
             echo '<td style="text-align:left">';
 
             if ($this->permission->checkPermission($this->session->userdata('permissao'), 'vVenda')) {

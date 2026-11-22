@@ -66,9 +66,9 @@
                     <tr>
                         <th>N° Exec.</th>
                         <th>Cliente</th>
-                        <th>Técnico</th>
-                        <th>Data Inicial</th>
-                        <th>Data Final</th>
+                        <th class="col-mobile-hide">Técnico</th>
+                        <th class="col-mobile-hide">Data Inicial</th>
+                        <th class="col-mobile-hide">Data Final</th>
                         <th>Status</th>
                         <th style="text-align:center">Ações</th>
                     </tr>
@@ -91,9 +91,9 @@
                     <tr>
                         <td><?= $r->os_id ?></td>
                         <td><?= $r->nomeCliente ?></td>
-                        <td><?= $r->tecnico ?></td>
-                        <td><?= $di ?></td>
-                        <td><?= $df ?></td>
+                        <td class="col-mobile-hide"><?= $r->tecnico ?></td>
+                        <td class="col-mobile-hide"><?= $di ?></td>
+                        <td class="col-mobile-hide"><?= $df ?></td>
                         <td><span class="badge" style="background:<?= $corStatus ?>;border-color:<?= $corStatus ?>"><?= $r->status ?></span></td>
                         <td style="text-align:center">
                             <a href="<?= base_url() ?>index.php/execucao/visualizar/<?= $r->os_id ?>" class="btn-nwe" title="Visualizar"><i class="bx bx-show bx-xs"></i></a>

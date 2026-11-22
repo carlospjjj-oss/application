@@ -494,7 +494,7 @@
                     <tr>
                         <th>N°</th>
                         <th>Cliente</th>
-                        <th>Data Final</th>
+                        <th class="col-mobile-hide">Data Final</th>
                         <th>Status</th>
                         <th>Ações</th>
                     </tr>
@@ -545,7 +545,7 @@
                                     <?= $o->nomeCliente ?>
                                 </td>
 
-                                <td><?php if ($o->dataFinal != null) {
+                                <td class="col-mobile-hide"><?php if ($o->dataFinal != null) {
                                     echo date('d/m/Y', strtotime($o->dataFinal));
                                 } else {
                                     echo "";
@@ -583,7 +583,7 @@
                     <tr>
                         <th>N°</th>
                         <th>Cliente</th>
-                        <th>Data Final</th>
+                        <th class="col-mobile-hide">Data Final</th>
                         <th>Status</th>
                         <th>Ações</th>
                     </tr>
@@ -634,7 +634,7 @@
                                     <?= $o->nomeCliente ?>
                                 </td>
 
-                                <td><?php if ($o->dataFinal != null) {
+                                <td class="col-mobile-hide"><?php if ($o->dataFinal != null) {
                                     echo date('d/m/Y', strtotime($o->dataFinal));
                                 } else {
                                     echo "";
@@ -673,7 +673,7 @@
                     <tr>
                         <th>N°</th>
                         <th>Cliente</th>
-                        <th>Data Final</th>
+                        <th class="col-mobile-hide">Data Final</th>
                         <th>Status</th>
                         <th>Ações</th>
                     </tr>
@@ -724,7 +724,7 @@
                                     <?= $o->nomeCliente ?>
                                 </td>
 
-                                <td><?php if ($o->dataFinal != null) {
+                                <td class="col-mobile-hide"><?php if ($o->dataFinal != null) {
                                     echo date('d/m/Y', strtotime($o->dataFinal));
                                 } else {
                                     echo "";
@@ -762,7 +762,7 @@
                     <tr>
                         <th>N°</th>
                         <th>Cliente</th>
-                        <th>Data Final</th>
+                        <th class="col-mobile-hide">Data Final</th>
                         <th>Status</th>
                         <th>Ações</th>
                     </tr>
@@ -813,7 +813,7 @@
                                     <?= $o->nomeCliente ?>
                                 </td>
 
-                                <td><?php if ($o->dataFinal != null) {
+                                <td class="col-mobile-hide"><?php if ($o->dataFinal != null) {
                                     echo date('d/m/Y', strtotime($o->dataFinal));
                                 } else {
                                     echo "";
@@ -851,7 +851,7 @@
                     <tr>
                         <th>N°</th>
                         <th>Cliente</th>
-                        <th>Data Final</th>
+                        <th class="col-mobile-hide">Data Final</th>
                         <th>Status</th>
                         <th>Ações</th>
                     </tr>
@@ -901,7 +901,7 @@
                                     <?= $o->nomeCliente ?>
                                 </td>
 
-                                <td><?php if ($o->dataFinal != null) {
+                                <td class="col-mobile-hide"><?php if ($o->dataFinal != null) {
                                     echo date('d/m/Y', strtotime($o->dataFinal));
                                 } else {
                                     echo "";

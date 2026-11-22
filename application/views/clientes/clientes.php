@@ -62,12 +62,12 @@
                     <tr>
                         <th>Cod.</th>
                         <th>Nome</th>
-                        <th>Contato</th>
-                        <th>CPF/CNPJ</th>
-                        <th>Telefone</th>
-                        <th>Celular</th>
-                        <th>Email</th>
-                        <th>Tipo</th> <!-- Nova coluna para Fornecedor/Cliente -->
+                        <th class="col-mobile-hide">Contato</th>
+                        <th class="col-mobile-hide">CPF/CNPJ</th>
+                        <th class="col-mobile-hide">Telefone</th>
+                        <th class="col-mobile-hide">Celular</th>
+                        <th class="col-mobile-hide">Email</th>
+                        <th>Tipo</th>
                         <th>Ações</th>
                     </tr>
                 </thead>
@@ -82,11 +82,11 @@
             echo '<tr>';
             echo '<td>' . $r->idClientes . '</td>';
             echo '<td><a href="' . base_url() . 'index.php/clientes/visualizar/' . $r->idClientes . '" style="margin-right: 1%">' . $r->nomeCliente . '</a></td>';
-            echo '<td>' . $r->contato . '</td>';
-            echo '<td>' . $r->documento . '</td>';
-            echo '<td>' . $r->telefone . '</td>';
-            echo '<td>' . $r->celular . '</td>';
-            echo '<td>' . $r->email . '</td>';
+            echo '<td class="col-mobile-hide">' . $r->contato . '</td>';
+            echo '<td class="col-mobile-hide">' . $r->documento . '</td>';
+            echo '<td class="col-mobile-hide">' . $r->telefone . '</td>';
+            echo '<td class="col-mobile-hide">' . $r->celular . '</td>';
+            echo '<td class="col-mobile-hide">' . $r->email . '</td>';
 
             // Verifica se é Fornecedor, Terceiro ou Cliente
             if ($r->fornecedor == 1) {

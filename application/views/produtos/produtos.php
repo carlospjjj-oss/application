@@ -54,9 +54,9 @@
                 <thead>
                 <tr>
                     <th>Cod.</th>
-                    <th>Cod. Barra</th>
+                    <th class="col-mobile-hide">Cod. Barra</th>
                     <th>Nome</th>
-                    <th>Estoque</th>
+                    <th class="col-mobile-hide-sm">Estoque</th>
                     <th>Preço</th>
                     <th>Ações</th>
                 </tr>
@@ -72,9 +72,9 @@
         foreach ($results as $r) {
             echo '<tr>';
             echo '<td>' . $r->idProdutos . '</td>';
-            echo '<td>' . $r->codDeBarra . '</td>';
+            echo '<td class="col-mobile-hide">' . $r->codDeBarra . '</td>';
             echo '<td>' . $r->descricao . '</td>';
-            echo '<td>' . $r->estoque . '</td>';
+            echo '<td class="col-mobile-hide-sm">' . $r->estoque . '</td>';
             echo '<td>' . number_format($r->precoVenda, 2, ',', '.') . '</td>';
             echo '<td>';
             if ($this->permission->checkPermission($this->session->userdata('permissao'), 'vProduto')) {
