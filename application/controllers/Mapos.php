@@ -689,7 +689,51 @@ class Mapos extends MY_Controller
             ];
         }, $allVisitas);
 
-        $events = array_merge($events, $eventosFinanceiro, $eventosVisitas);
+        // Adiciona execuções ao calendário
+        $this->load->model('execucao_model');
+        $allExecucoes = $this->execucao_model->calendario($start, $end);
+
+        $eventosExecucao = array_map(function ($exec) {
+            switch ($exec->status) {
+                case 'Concluído':
+                case 'Concluido':
+                    $cor = '#256625'; // verde escuro
+                    break;
+                case 'Em Andamento':
+                    $cor = '#1565C0'; // azul escuro
+                    break;
+                case 'Aberto':
+                default:
+                    $cor = '#6A0DAD'; // roxo
+                    break;
+            }
+
+            $end_date = (!empty($exec->data_fim_instalacao) && $exec->data_fim_instalacao != '0000-00-00')
+                ? $exec->data_fim_instalacao
+                : $exec->data_inicio_instalacao;
+
+            return [
+                'title' => 'Execução OS: ' . $exec->idOs . ', ' . $exec->nomeCliente,
+                'start' => $exec->data_inicio_instalacao,
+                'end'   => $end_date,
+                'color' => $cor,
+                'extendedProps' => [
+                    'tipoEvento'      => 'execucao',
+                    'id'              => $exec->idExecucao,
+                    'os_id'           => $exec->idOs,
+                    'cliente'         => '<b>Cliente:</b> ' . $exec->nomeCliente,
+                    'status'          => '<b>Status:</b> ' . $exec->status,
+                    'tipo_instalacao' => '<b>Tipo:</b> ' . ($exec->tipo_instalacao ?? '-'),
+                    'engenheiro'      => '<b>Engenheiro:</b> ' . ($exec->engenheiro ?? '-'),
+                    'inicio'          => '<b>Início:</b> ' . date('d/m/Y', strtotime($exec->data_inicio_instalacao)),
+                    'fim'             => !empty($exec->data_fim_instalacao) && $exec->data_fim_instalacao != '0000-00-00'
+                                            ? '<b>Fim:</b> ' . date('d/m/Y', strtotime($exec->data_fim_instalacao))
+                                            : '<b>Fim:</b> -',
+                ],
+            ];
+        }, $allExecucoes);
+
+        $events = array_merge($events, $eventosFinanceiro, $eventosVisitas, $eventosExecucao);
 
         return $this->output
             ->set_content_type('application/json')

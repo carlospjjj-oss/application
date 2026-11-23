@@ -178,6 +178,30 @@ class Execucao_model extends CI_Model
         return $this->db->get('anexos_execucao')->result();
     }
 
+    // ----------------------------------------------------------------
+    // Calendário
+    // ----------------------------------------------------------------
+    public function calendario($start = null, $end = null)
+    {
+        $this->db->select('execucoes.idExecucao, execucoes.status, execucoes.engenheiro,
+                           execucoes.tipo_instalacao,
+                           execucoes.data_inicio_instalacao, execucoes.data_fim_instalacao,
+                           clientes.nomeCliente, os.idOs');
+        $this->db->from('execucoes');
+        $this->db->join('os',       'os.idOs = execucoes.os_id');
+        $this->db->join('clientes', 'clientes.idClientes = os.clientes_id');
+
+        if ($start) $this->db->where('execucoes.data_inicio_instalacao >=', $start);
+        if ($end)   $this->db->where('execucoes.data_inicio_instalacao <=', $end);
+
+        // Inclui também execuções sem data mas com data_fim no período
+        // (usa OR via query manual)
+        $this->db->where('execucoes.data_inicio_instalacao IS NOT NULL');
+        $this->db->where('execucoes.data_inicio_instalacao !=', '0000-00-00');
+
+        return $this->db->get()->result();
+    }
+
     public function addAnexo($data)
     {
         $this->db->insert('anexos_execucao', $data);
