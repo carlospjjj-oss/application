@@ -166,7 +166,16 @@ class Cobrancas_model extends CI_Model
         $gatewayDePagamento = $cobranca->payment_gateway;
 
         // Cobranças manuais não possuem API para cancelar — apenas remove do banco
-        if (empty($gatewayDePagamento) || in_array($gatewayDePagamento, ['Manual', 'Faturar (Venda)'])) {
+        if (empty($gatewayDePagamento) || $gatewayDePagamento === 'Manual') {
+            return true;
+        }
+
+        // Faturar (Venda): reverte a venda para Aprovado ao cancelar/excluir cobrança
+        if ($gatewayDePagamento === 'Faturar (Venda)') {
+            if (!empty($cobranca->vendas_id)) {
+                $this->db->where('idVendas', $cobranca->vendas_id)
+                         ->update('vendas', ['faturado' => 0, 'status' => 'Aprovado', 'lancamentos_id' => null]);
+            }
             return true;
         }
 
