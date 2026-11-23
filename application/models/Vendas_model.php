@@ -140,10 +140,11 @@ class Vendas_model extends CI_Model
     public function isEditable($id = null)
     {
         if ($vendas = $this->getById($id)) {
-            if ($vendas->convertida) {
-                return false;
+            // Convertida em OS mas ainda não faturada: permite editar para poder faturar depois
+            if ($vendas->convertida && $vendas->faturado) {
+                return $this->data['configuration']['control_edit_vendas'] == '1';
             }
-            if ($vendas->faturado) {
+            if (!$vendas->convertida && $vendas->faturado) {
                 return $this->data['configuration']['control_edit_vendas'] == '1';
             }
         }
