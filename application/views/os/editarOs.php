@@ -370,23 +370,43 @@ foreach ($servicos as $s) {
                         <!--Anexos-->
                         <div class="tab-pane" id="tab5">
                             <div class="span12" style="padding: 1%; margin-left: 0">
-                                <div class="span12 well" style="padding: 1%; margin-left: 0" id="form-anexos">
-                                    <form id="formAnexos" enctype="multipart/form-data" action="javascript:;"
-                                        accept-charset="utf-8" s method="post">
-                                        <div class="span10">
-                                            <input type="hidden" name="idOsServico" id="idOsServico"
-                                                value="<?php echo $result->idOs; ?>" />
-                                            <label for="">Anexo</label>
-                                            <input type="file" class="span12" name="userfile[]" multiple="multiple"
-                                                size="20" />
+                                <?php
+                                // Conta anexos existentes por tipo
+                                $osQtdFotos = 0; $osQtdPdf = 0; $osQtdDoc = 0;
+                                foreach ($anexos as $_a) {
+                                    $_ext = strtolower(pathinfo($_a->anexo, PATHINFO_EXTENSION));
+                                    if (in_array($_ext, ['jpg','jpeg','png','gif','webp','mp4','mov','webm','bmp','svg'])) $osQtdFotos++;
+                                    elseif ($_ext === 'pdf') $osQtdPdf++;
+                                    elseif (in_array($_ext, ['doc','docx'])) $osQtdDoc++;
+                                }
+                                ?>
+                                <div class="span12 well" style="padding: 1%; margin-left: 0" id="form-anexos-os">
+                                    <div class="row-fluid">
+                                        <div style="margin-bottom:8px; color:#555; font-size:12px;">
+                                            Limite: 6 fotos/vídeos · 1 PDF · 1 DOC
+                                            &nbsp;|&nbsp; Vídeo máx. 1:30
                                         </div>
-                                        <div class="span2">
-                                            <label for="">.</label>
-                                            <button class="button btn btn-success">
-                                                <span class="button__icon"><i class='bx bx-paperclip'></i></span><span
-                                                    class="button__text2">Anexar</span></button>
-                                        </div>
-                                    </form>
+                                        <?php if ($osQtdFotos < 6): ?>
+                                        <span class="btn btn-success btn-mini" id="os-btn-foto" style="margin-right:6px;">
+                                            <i class='bx bx-image'></i> Foto/Vídeo (<?= $osQtdFotos ?>/6)
+                                        </span>
+                                        <?php endif; ?>
+                                        <?php if ($osQtdPdf < 1): ?>
+                                        <span class="btn btn-warning btn-mini" id="os-btn-pdf" style="margin-right:6px;">
+                                            <i class='bx bx-file-pdf'></i> PDF (<?= $osQtdPdf ?>/1)
+                                        </span>
+                                        <?php endif; ?>
+                                        <?php if ($osQtdDoc < 1): ?>
+                                        <span class="btn btn-primary btn-mini" id="os-btn-doc">
+                                            <i class='bx bx-file'></i> Documento (<?= $osQtdDoc ?>/1)
+                                        </span>
+                                        <?php endif; ?>
+                                        <!-- inputs ocultos -->
+                                        <input type="file" id="os-file-foto" accept="image/*,video/*" style="display:none">
+                                        <input type="file" id="os-file-pdf"  accept=".pdf"            style="display:none">
+                                        <input type="file" id="os-file-doc"  accept=".doc,.docx"      style="display:none">
+                                        <div id="os-upload-msg" style="margin-top:8px;"></div>
+                                    </div>
                                 </div>
                                 <div class="span12 pull-left" id="divAnexos" style="margin-left: 0">
                                     <?php
@@ -1071,38 +1091,75 @@ if (!$anotacoes) {
             }
         });
 
-        $("#formAnexos").validate({
-            submitHandler: function (form) {
-                //var dados = $( form ).serialize();
-                var dados = new FormData(form);
-                $("#form-anexos").hide('1000');
-                $("#divAnexos").html("<div class='progress progress-info progress-striped active'><div class='bar' style='width: 100%'></div></div>");
-                $.ajax({
-                    type: "POST",
-                    url: "<?php echo base_url(); ?>index.php/os/anexar",
-                    data: dados,
-                    mimeType: "multipart/form-data",
-                    contentType: false,
-                    cache: false,
-                    processData: false,
-                    dataType: 'json',
-                    success: function (data) {
-                        if (data.result == true) {
-                            $("#divAnexos").load("<?php echo current_url(); ?> #divAnexos");
-                            $("#userfile").val('');
+        // ---- Upload AJAX de anexos OS ----
+        var osBaseUrl = "<?php echo base_url(); ?>index.php/";
+        var osCsrfName = "<?php echo $this->security->get_csrf_token_name(); ?>";
+        var osCsrfHash = "<?php echo $this->security->get_csrf_hash(); ?>";
+        var osId       = "<?php echo $result->idOs; ?>";
 
-                        } else {
-                            $("#divAnexos").html('<div class="alert fade in"><button type="button" class="close" data-dismiss="alert">×</button><strong>Atenção!</strong> ' + data.mensagem + '</div>');
-                        }
-                    },
-                    error: function () {
-                        $("#divAnexos").html('<div class="alert alert-danger fade in"><button type="button" class="close" data-dismiss="alert">×</button><strong>Atenção!</strong> Ocorreu um erro. Verifique se você anexou o(s) arquivo(s).</div>');
+        function osUploadFile(file, type) {
+            if (!file) return;
+
+            // Valida duração de vídeo
+            var videoExts = ['mp4','mov','webm'];
+            var ext = file.name.split('.').pop().toLowerCase();
+            if (videoExts.indexOf(ext) >= 0) {
+                var tmpUrl = URL.createObjectURL(file);
+                var vid = document.createElement('video');
+                vid.preload = 'metadata';
+                vid.onloadedmetadata = function() {
+                    URL.revokeObjectURL(tmpUrl);
+                    if (vid.duration > 90) {
+                        $("#os-upload-msg").html('<div class="alert alert-danger fade in"><button type="button" class="close" data-dismiss="alert">×</button><strong>Atenção!</strong> O vídeo excede 1 minuto e 30 segundos.</div>');
+                        return;
                     }
-                });
-                $("#form-anexos").show('1000');
-                return false;
+                    osDoUpload(file);
+                };
+                vid.src = tmpUrl;
+            } else {
+                osDoUpload(file);
             }
-        });
+        }
+
+        function osDoUpload(file) {
+            var fd = new FormData();
+            fd.append('anexo', file);
+            fd.append('os_id', osId);
+            fd.append(osCsrfName, osCsrfHash);
+
+            $("#os-upload-msg").html("<div class='progress progress-info progress-striped active'><div class='bar' style='width: 100%'></div></div>");
+            $.ajax({
+                type: 'POST',
+                url: osBaseUrl + 'os/upload_anexo_ajax',
+                data: fd,
+                contentType: false,
+                processData: false,
+                dataType: 'json',
+                success: function(data) {
+                    if (data.success) {
+                        osCsrfHash = data.csrf_hash;
+                        $("#os-upload-msg").html('');
+                        // Recarrega lista e botões
+                        location.reload();
+                    } else {
+                        $("#os-upload-msg").html('<div class="alert alert-danger fade in"><button type="button" class="close" data-dismiss="alert">×</button><strong>Atenção!</strong> ' + data.message + '</div>');
+                        // Atualiza csrf
+                        $.get(osBaseUrl + 'os/getCsrfToken', function(r){ if(r.csrf_hash) osCsrfHash = r.csrf_hash; }, 'json');
+                    }
+                },
+                error: function() {
+                    $("#os-upload-msg").html('<div class="alert alert-danger fade in"><button type="button" class="close" data-dismiss="alert">×</button><strong>Atenção!</strong> Erro ao enviar arquivo.</div>');
+                }
+            });
+        }
+
+        $('#os-btn-foto').on('click', function(){ $('#os-file-foto').val('').trigger('click'); });
+        $('#os-btn-pdf').on('click',  function(){ $('#os-file-pdf').val('').trigger('click');  });
+        $('#os-btn-doc').on('click',  function(){ $('#os-file-doc').val('').trigger('click');  });
+
+        $('#os-file-foto').on('change', function(){ osUploadFile(this.files[0], 'foto'); });
+        $('#os-file-pdf').on('change',  function(){ osUploadFile(this.files[0], 'pdf'); });
+        $('#os-file-doc').on('change',  function(){ osUploadFile(this.files[0], 'doc'); });
 
         $(document).on('click', 'a', function (event) {
             var idProduto = $(this).attr('idAcao');

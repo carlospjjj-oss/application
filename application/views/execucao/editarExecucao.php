@@ -221,27 +221,68 @@
         ============================================================ -->
         <div class="tab-pane" id="tab-anexos">
             <p style="color:#999; font-size:12px; margin-bottom:12px;">
-                Os anexos da OS não são importados para a Execução.
+                Máximo: 6 fotos/vídeos (vídeos até 1:30), 1 PDF e 1 documento (DOC/DOCX).
             </p>
 
             <?php if ($this->permission->checkPermission($this->session->userdata('permissao'), 'eArquivo')): ?>
-            <form action="<?= base_url() ?>index.php/execucao/upload_anexo" method="post" enctype="multipart/form-data" style="margin-bottom:16px;">
-                <input type="hidden" name="execucao_id" value="<?= $result->idExecucao ?>">
-                <input type="hidden" name="os_id"       value="<?= $result->os_id ?>">
-                <input type="file"   name="anexo" style="margin-bottom:8px;">
-                <button type="submit" class="button btn btn-mini btn-success">
-                    <span class="button__icon"><i class='bx bx-upload'></i></span><span class="button__text2">Enviar Anexo</span>
-                </button>
-            </form>
+            <?php
+                $qtdFotos = 0; $qtdPdf = 0; $qtdDoc = 0;
+                foreach ($anexos as $a) {
+                    $ext = strtolower(pathinfo($a->anexo, PATHINFO_EXTENSION));
+                    if (in_array($ext, ['jpg','jpeg','png','gif','webp','mp4','mov','webm'])) $qtdFotos++;
+                    elseif ($ext === 'pdf') $qtdPdf++;
+                    elseif (in_array($ext, ['doc','docx'])) $qtdDoc++;
+                }
+            ?>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
+                <?php if ($qtdFotos < 6): ?>
+                <div>
+                    <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px;">Foto/Vídeo (<?= $qtdFotos ?>/6)</label>
+                    <label id="lblFotoVideo" style="cursor:pointer;display:inline-flex;align-items:center;gap:6px;background:#5cb85c;color:#fff;padding:0 14px;height:30px;border-radius:4px;font-size:13px;font-weight:600;">
+                        <i class="fas fa-upload"></i> Anexar Foto/Vídeo
+                    </label>
+                    <input type="file" id="inputFotoVideo" accept="image/*,video/mp4,video/quicktime,video/webm" multiple style="display:none">
+                    <span id="statusFotoVideo" style="font-size:12px;color:#888;margin-left:8px;"></span>
+                </div>
+                <?php endif ?>
+                <?php if ($qtdPdf < 1): ?>
+                <div>
+                    <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px;">PDF (<?= $qtdPdf ?>/1)</label>
+                    <label id="lblPdf" style="cursor:pointer;display:inline-flex;align-items:center;gap:6px;background:#d9534f;color:#fff;padding:0 14px;height:30px;border-radius:4px;font-size:13px;font-weight:600;">
+                        <i class="bx bx-file-pdf"></i> Anexar PDF
+                    </label>
+                    <input type="file" id="inputPdf" accept=".pdf" style="display:none">
+                    <span id="statusPdf" style="font-size:12px;color:#888;margin-left:8px;"></span>
+                </div>
+                <?php endif ?>
+                <?php if ($qtdDoc < 1): ?>
+                <div>
+                    <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px;">Documento (<?= $qtdDoc ?>/1)</label>
+                    <label id="lblDoc" style="cursor:pointer;display:inline-flex;align-items:center;gap:6px;background:#337ab7;color:#fff;padding:0 14px;height:30px;border-radius:4px;font-size:13px;font-weight:600;">
+                        <i class="bx bx-file"></i> Anexar DOC
+                    </label>
+                    <input type="file" id="inputDoc" accept=".doc,.docx" style="display:none">
+                    <span id="statusDoc" style="font-size:12px;color:#888;margin-left:8px;"></span>
+                </div>
+                <?php endif ?>
+            </div>
             <?php endif ?>
 
+            <div id="listaAnexos">
             <?php if ($anexos): ?>
             <table class="table table-bordered">
-                <thead><tr><th>Arquivo</th><th>Ações</th></tr></thead>
+                <thead><tr><th>Arquivo</th><th>Tipo</th><th>Ações</th></tr></thead>
                 <tbody>
-                    <?php foreach ($anexos as $a): ?>
+                    <?php foreach ($anexos as $a):
+                        $ext = strtolower(pathinfo($a->anexo, PATHINFO_EXTENSION));
+                        $tipo = in_array($ext, ['jpg','jpeg','png','gif','webp']) ? 'Foto'
+                              : (in_array($ext, ['mp4','mov','webm']) ? 'Vídeo'
+                              : ($ext === 'pdf' ? 'PDF'
+                              : (in_array($ext, ['doc','docx']) ? 'Documento' : strtoupper($ext))));
+                    ?>
                     <tr>
                         <td><a href="<?= $a->url ?>" target="_blank"><?= $a->anexo ?></a></td>
+                        <td><?= $tipo ?></td>
                         <td>
                             <form action="<?= base_url() ?>index.php/execucao/excluir_anexo" method="post" style="display:inline">
                                 <input type="hidden" name="idAnexo" value="<?= $a->idAnexo ?>">
@@ -259,6 +300,7 @@
                     Nenhum anexo adicionado ainda.
                 </p>
             <?php endif ?>
+            </div>
         </div>
 
         <!-- ============================================================
@@ -341,5 +383,86 @@
 </div>
 
 <script>
-$(function(){ $(".datepicker").datepicker({ dateFormat:'dd/mm/yy' }); });
+$(function(){
+    $(".datepicker").datepicker({ dateFormat:'dd/mm/yy' });
+
+    var execucaoId = <?= $result->idExecucao ?>;
+    var osId       = <?= $result->os_id ?>;
+    var baseUrl    = "<?= base_url() ?>";
+    var csrfName   = "<?= $this->security->get_csrf_token_name() ?>";
+
+    function getCsrf(cb) {
+        $.get(baseUrl + "index.php/execucao/getCsrfToken", cb, 'json');
+    }
+
+    function uploadAnexo(file, statusEl, onDone) {
+        statusEl.text('Enviando...');
+        getCsrf(function(t) {
+            var fd = new FormData();
+            fd.append('anexo', file);
+            fd.append('execucao_id', execucaoId);
+            fd.append('os_id', osId);
+            fd.append(csrfName, t.csrf_hash);
+            $.ajax({
+                url: baseUrl + 'index.php/execucao/upload_anexo_ajax',
+                type: 'POST', data: fd, processData: false, contentType: false, dataType: 'json',
+                success: function(r) {
+                    if (r.success) {
+                        statusEl.text('Enviado!');
+                        setTimeout(function(){ location.reload(); }, 800);
+                    } else {
+                        statusEl.text('Erro: ' + r.message);
+                    }
+                    if (onDone) onDone();
+                },
+                error: function() { statusEl.text('Erro ao enviar.'); if (onDone) onDone(); }
+            });
+        });
+    }
+
+    // Foto/Vídeo
+    $('#lblFotoVideo').on('click', function(){ $('#inputFotoVideo').click(); });
+    $('#inputFotoVideo').on('change', function() {
+        var files = Array.from(this.files);
+        if (!files.length) return;
+        var statusEl = $('#statusFotoVideo');
+        var idx = 0;
+        function next() {
+            if (idx >= files.length) return;
+            var file = files[idx++];
+            var ext = file.name.split('.').pop().toLowerCase();
+            var isVideo = ['mp4','mov','webm'].indexOf(ext) !== -1;
+            if (isVideo) {
+                var v = document.createElement('video');
+                v.preload = 'metadata';
+                v.onloadedmetadata = function() {
+                    URL.revokeObjectURL(v.src);
+                    if (v.duration > 90) {
+                        alert('Vídeo "' + file.name + '" excede 1:30. (' + Math.round(v.duration) + 's)');
+                        next();
+                    } else { uploadAnexo(file, statusEl, next); }
+                };
+                v.src = URL.createObjectURL(file);
+            } else { uploadAnexo(file, statusEl, next); }
+        }
+        next();
+        $('#inputFotoVideo').val('');
+    });
+
+    // PDF
+    $('#lblPdf').on('click', function(){ $('#inputPdf').click(); });
+    $('#inputPdf').on('change', function() {
+        if (!this.files.length) return;
+        uploadAnexo(this.files[0], $('#statusPdf'), null);
+        $(this).val('');
+    });
+
+    // DOC
+    $('#lblDoc').on('click', function(){ $('#inputDoc').click(); });
+    $('#inputDoc').on('change', function() {
+        if (!this.files.length) return;
+        uploadAnexo(this.files[0], $('#statusDoc'), null);
+        $(this).val('');
+    });
+});
 </script>

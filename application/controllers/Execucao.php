@@ -157,17 +157,58 @@ class Execucao extends MY_Controller
     }
 
     // ----------------------------------------------------------------
-    // Upload de anexo
+    // CSRF token para AJAX
     // ----------------------------------------------------------------
-    public function upload_anexo()
+    public function getCsrfToken()
+    {
+        echo json_encode(['csrf_hash' => $this->security->get_csrf_hash()]);
+        exit;
+    }
+
+    // ----------------------------------------------------------------
+    // Upload de anexo (AJAX) — 6 fotos/vídeos + 1 PDF + 1 DOC
+    // ----------------------------------------------------------------
+    public function upload_anexo_ajax()
     {
         if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'eArquivo')) {
-            $this->session->set_flashdata('error', 'Sem permissão.');
-            redirect('execucao');
+            echo json_encode(['success' => false, 'message' => 'Sem permissão.']); exit;
         }
 
         $execucao_id = $this->input->post('execucao_id');
         $os_id       = $this->input->post('os_id');
+
+        // Conta anexos existentes por tipo
+        $existentes = $this->execucao_model->getAnexos($execucao_id);
+        $qtdFotos = 0; $qtdPdf = 0; $qtdDoc = 0;
+        foreach ($existentes as $a) {
+            $ext = strtolower(pathinfo($a->anexo, PATHINFO_EXTENSION));
+            if (in_array($ext, ['jpg','jpeg','png','gif','webp','mp4','mov','webm'])) $qtdFotos++;
+            elseif ($ext === 'pdf') $qtdPdf++;
+            elseif (in_array($ext, ['doc','docx'])) $qtdDoc++;
+        }
+
+        $file = $_FILES['anexo'] ?? null;
+        if (!$file || $file['error'] !== UPLOAD_ERR_OK) {
+            echo json_encode(['success' => false, 'message' => 'Nenhum arquivo enviado.']); exit;
+        }
+
+        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        $isFotoVideo = in_array($ext, ['jpg','jpeg','png','gif','webp','mp4','mov','webm']);
+        $isPdf       = ($ext === 'pdf');
+        $isDoc       = in_array($ext, ['doc','docx']);
+
+        if (!$isFotoVideo && !$isPdf && !$isDoc) {
+            echo json_encode(['success' => false, 'message' => 'Tipo não permitido. Use fotos, vídeos, PDF ou DOC.']); exit;
+        }
+        if ($isFotoVideo && $qtdFotos >= 6) {
+            echo json_encode(['success' => false, 'message' => 'Limite de 6 fotos/vídeos atingido.']); exit;
+        }
+        if ($isPdf && $qtdPdf >= 1) {
+            echo json_encode(['success' => false, 'message' => 'Limite de 1 PDF atingido.']); exit;
+        }
+        if ($isDoc && $qtdDoc >= 1) {
+            echo json_encode(['success' => false, 'message' => 'Limite de 1 documento atingido.']); exit;
+        }
 
         $date = date('d-m-Y');
         $dir  = './assets/arquivos/execucao/' . $date;
@@ -175,25 +216,39 @@ class Execucao extends MY_Controller
 
         $config = [
             'upload_path'   => $dir,
-            'allowed_types' => 'txt|jpg|jpeg|gif|png|pdf|PDF|JPG|JPEG|GIF|PNG',
+            'allowed_types' => 'jpg|jpeg|png|gif|webp|mp4|mov|webm|pdf|doc|docx',
             'max_size'      => 0,
             'encrypt_name'  => true,
         ];
         $this->load->library('upload', $config);
 
         if (! $this->upload->do_upload('anexo')) {
-            $this->session->set_flashdata('error', $this->upload->display_errors());
-        } else {
-            $up = $this->upload->data();
-            $this->execucao_model->addAnexo([
-                'execucao_id' => $execucao_id,
-                'anexo'       => $up['file_name'],
-                'url'         => base_url() . 'assets/arquivos/execucao/' . $date . '/' . $up['file_name'],
-                'path'        => $up['full_path'],
-            ]);
-            $this->session->set_flashdata('success', 'Anexo adicionado!');
+            echo json_encode(['success' => false, 'message' => strip_tags($this->upload->display_errors())]); exit;
         }
 
+        $up = $this->upload->data();
+        $this->execucao_model->addAnexo([
+            'execucao_id' => $execucao_id,
+            'anexo'       => $up['file_name'],
+            'url'         => base_url() . 'assets/arquivos/execucao/' . $date . '/' . $up['file_name'],
+            'path'        => $up['full_path'],
+        ]);
+
+        echo json_encode(['success' => true, 'csrf_hash' => $this->security->get_csrf_hash()]);
+        exit;
+    }
+
+    // ----------------------------------------------------------------
+    // Upload de anexo (form tradicional — mantido para compatibilidade)
+    // ----------------------------------------------------------------
+    public function upload_anexo()
+    {
+        if (! $this->permission->checkPermission($this->session->userdata('permissao'), 'eArquivo')) {
+            $this->session->set_flashdata('error', 'Sem permissão.');
+            redirect('execucao');
+        }
+        $os_id = $this->input->post('os_id');
+        $this->session->set_flashdata('error', 'Use os botões de upload na página.');
         redirect(site_url('execucao/editar/' . $os_id));
     }
 

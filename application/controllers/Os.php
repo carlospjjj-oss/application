@@ -972,6 +972,86 @@ class Os extends MY_Controller
         }
     }
 
+    // ----------------------------------------------------------------
+    // CSRF token para AJAX (OS)
+    // ----------------------------------------------------------------
+    public function getCsrfToken()
+    {
+        echo json_encode(['csrf_hash' => $this->security->get_csrf_hash()]);
+        exit;
+    }
+
+    // ----------------------------------------------------------------
+    // Upload de anexo AJAX (OS) — 6 fotos/vídeos + 1 PDF + 1 DOC
+    // ----------------------------------------------------------------
+    public function upload_anexo_ajax()
+    {
+        $os_id = $this->input->post('os_id');
+        if (!$os_id || !is_numeric($os_id)) {
+            echo json_encode(['success' => false, 'message' => 'OS inválida.']); exit;
+        }
+
+        // Conta anexos existentes por tipo
+        $existentes = $this->Os_model->getAnexos($os_id);
+        $qtdFotos = 0; $qtdPdf = 0; $qtdDoc = 0;
+        foreach ($existentes as $a) {
+            $ext = strtolower(pathinfo($a->anexo, PATHINFO_EXTENSION));
+            if (in_array($ext, ['jpg','jpeg','png','gif','webp','mp4','mov','webm','bmp','svg'])) $qtdFotos++;
+            elseif ($ext === 'pdf') $qtdPdf++;
+            elseif (in_array($ext, ['doc','docx'])) $qtdDoc++;
+        }
+
+        $file = $_FILES['anexo'] ?? null;
+        if (!$file || $file['error'] !== UPLOAD_ERR_OK) {
+            echo json_encode(['success' => false, 'message' => 'Nenhum arquivo enviado.']); exit;
+        }
+
+        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        $isFotoVideo = in_array($ext, ['jpg','jpeg','png','gif','webp','mp4','mov','webm','bmp','svg']);
+        $isPdf       = ($ext === 'pdf');
+        $isDoc       = in_array($ext, ['doc','docx']);
+
+        if (!$isFotoVideo && !$isPdf && !$isDoc) {
+            echo json_encode(['success' => false, 'message' => 'Tipo não permitido. Use fotos, vídeos, PDF ou DOC.']); exit;
+        }
+        if ($isFotoVideo && $qtdFotos >= 6) {
+            echo json_encode(['success' => false, 'message' => 'Limite de 6 fotos/vídeos atingido.']); exit;
+        }
+        if ($isPdf && $qtdPdf >= 1) {
+            echo json_encode(['success' => false, 'message' => 'Limite de 1 PDF atingido.']); exit;
+        }
+        if ($isDoc && $qtdDoc >= 1) {
+            echo json_encode(['success' => false, 'message' => 'Limite de 1 documento atingido.']); exit;
+        }
+
+        $directory = FCPATH . 'assets' . DIRECTORY_SEPARATOR . 'anexos' . DIRECTORY_SEPARATOR . date('m-Y') . DIRECTORY_SEPARATOR . 'OS-' . $os_id;
+        if (!is_dir($directory . DIRECTORY_SEPARATOR . 'thumbs')) {
+            @mkdir($directory . DIRECTORY_SEPARATOR . 'thumbs', 0775, true);
+        }
+
+        $config = [
+            'upload_path'   => $directory,
+            'allowed_types' => 'jpg|jpeg|png|gif|webp|bmp|svg|mp4|mov|webm|pdf|doc|docx',
+            'max_size'      => 0,
+            'encrypt_name'  => true,
+        ];
+        $this->load->library('upload', $config);
+
+        // Mapeia o campo 'anexo' para o upload
+        if (!$this->upload->do_upload('anexo')) {
+            echo json_encode(['success' => false, 'message' => strip_tags($this->upload->display_errors())]); exit;
+        }
+
+        $up = $this->upload->data();
+        $url = base_url('assets' . DIRECTORY_SEPARATOR . 'anexos' . DIRECTORY_SEPARATOR . date('m-Y') . DIRECTORY_SEPARATOR . 'OS-' . $os_id);
+        $this->load->model('Os_model');
+        $this->Os_model->anexar($os_id, $up['file_name'], $url, '', $directory);
+
+        log_info('Adicionou anexo a uma OS via AJAX. ID (OS): ' . $os_id);
+        echo json_encode(['success' => true, 'csrf_hash' => $this->security->get_csrf_hash()]);
+        exit;
+    }
+
     public function excluirAnexo($id = null)
     {
         if ($id == null || ! is_numeric($id)) {
