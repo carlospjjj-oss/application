@@ -135,7 +135,7 @@
                         $totalProdutos += $sub;
                     ?>
                     <tr>
-                        <td><?= $p->nome ?></td>
+                        <td><?= $p->descricao ?></td>
                         <td style="text-align:center"><?= $p->quantidade ?></td>
                         <td>R$: <?= number_format($p->preco, 2, ',', '.') ?></td>
                         <td>R$: <?= number_format($sub, 2, ',', '.') ?></td>
