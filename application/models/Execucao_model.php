@@ -190,14 +190,10 @@ class Execucao_model extends CI_Model
         $this->db->from('execucoes');
         $this->db->join('os',       'os.idOs = execucoes.os_id');
         $this->db->join('clientes', 'clientes.idClientes = os.clientes_id');
-
+        $this->db->where('execucoes.data_inicio_instalacao IS NOT NULL', null, false);
+        $this->db->where('execucoes.data_inicio_instalacao !=', '0000-00-00');
         if ($start) $this->db->where('execucoes.data_inicio_instalacao >=', $start);
         if ($end)   $this->db->where('execucoes.data_inicio_instalacao <=', $end);
-
-        // Inclui também execuções sem data mas com data_fim no período
-        // (usa OR via query manual)
-        $this->db->where('execucoes.data_inicio_instalacao IS NOT NULL');
-        $this->db->where('execucoes.data_inicio_instalacao !=', '0000-00-00');
 
         return $this->db->get()->result();
     }
