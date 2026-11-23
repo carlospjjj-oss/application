@@ -83,7 +83,6 @@
                         <th class="col-mobile-hide">Valor c/ Desc.</th>
                         <th class="col-mobile-hide">V.T (Faturado)</th>
                         <th>Status</th>
-                        <th class="col-mobile-hide">Faturado</th>
                         <th style="text-align:center">Ações</th>
                     </tr>
                 </thead>
@@ -155,7 +154,6 @@
             }
 
             echo '<td><span class="badge" style="background-color: ' . $corStatus . '; border-color: ' . $corStatus . '">' . $r->status . '</span></td>';
-            echo '<td class="col-mobile-hide">' . $faturado . '</td>';
             echo '<td style="text-align:left">';
 
             if ($this->permission->checkPermission($this->session->userdata('permissao'), 'vVenda')) {
