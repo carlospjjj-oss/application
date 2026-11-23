@@ -81,13 +81,9 @@
                     <strong style="font-size:13px; display:block; margin-bottom:8px;">Tipo de Instalação</strong>
                     <div class="row-fluid">
                         <div class="span6">
-                            <label>Tipo</label>
-                            <select name="tipo_instalacao" class="span12">
-                                <option value="">Selecione...</option>
-                                <?php foreach (['Residencial','Comercial','Industrial','Condomínio','Estacionamento','Posto de Recarga','Outro'] as $t): ?>
-                                    <option value="<?= $t ?>" <?= $result->tipo_instalacao == $t ? 'selected' : '' ?>><?= $t ?></option>
-                                <?php endforeach ?>
-                            </select>
+                            <label>Tipo de Instalação</label>
+                            <input type="text" class="span12" value="<?= htmlspecialchars($result->tipo_instalacao ?? '') ?>" disabled>
+                            <input type="hidden" name="tipo_instalacao" value="<?= htmlspecialchars($result->tipo_instalacao ?? '') ?>">
                         </div>
                         <div class="span3">
                             <label>Início da Instalação</label>
