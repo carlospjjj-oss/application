@@ -141,12 +141,7 @@ class Vendas extends MY_Controller
 
         $this->data['editavel'] = $this->vendas_model->isEditable($idVendaAtual);
         if (! $this->data['editavel']) {
-            if ($vendaAntiga && $vendaAntiga->convertida) {
-                $this->session->set_flashdata('error', 'Essa Venda já foi convertida em Ordem de Serviço #' . $vendaAntiga->os_id . ' e não pode mais ser editada.');
-            } else {
-                $this->session->set_flashdata('error', 'Essa Venda já tem seu status Faturada e não pode ser alterado e nem suas informações atualizadas. Por favor abrir uma nova Venda.');
-            }
-
+            $this->session->set_flashdata('error', 'Essa Venda já tem seu status Faturada e não pode ser alterado e nem suas informações atualizadas. Por favor abrir uma nova Venda.');
             redirect(site_url('vendas'));
         }
 
