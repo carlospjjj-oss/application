@@ -51,13 +51,17 @@
                                         </div>
                                         <div class="span2">
                                             <label for="status">Status<span class="required">*</span></label>
-                                            <select class="span12" name="status" id="status" value="">
+                                            <select class="span12" name="status" id="status" value="" <?= $result->faturado ? 'disabled' : '' ?>>
                                                 <option <?= $result->status == 'Orçamento' ? 'selected' : '' ?> value="Orçamento">Orçamento</option>
                                                 <option <?= $result->status == 'Em Andamento' ? 'selected' : '' ?> value="Em Andamento">Em Andamento</option>
                                                 <option <?= $result->status == 'Aprovado' ? 'selected' : '' ?> value="Aprovado">Aprovado</option>
                                                 <option <?= $result->status == 'Finalizado' ? 'selected' : '' ?> value="Finalizado">Finalizado</option>
                                                 <option <?= $result->status == 'Cancelado' ? 'selected' : '' ?> value="Cancelado">Cancelado</option>
+                                                <option <?= $result->status == 'Faturado' ? 'selected' : '' ?> value="Faturado">Faturado</option>
                                             </select>
+                                            <?php if ($result->faturado): ?>
+                                                <input type="hidden" name="status" value="<?= htmlspecialchars($result->status) ?>">
+                                            <?php endif; ?>
                                         </div>
                                         <div class="span2">
                                             <label for="garantia">Garantia (dias)</label>
