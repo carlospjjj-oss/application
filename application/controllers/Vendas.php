@@ -170,12 +170,19 @@ class Vendas extends MY_Controller
 
             if ($this->vendas_model->edit('vendas', $data, 'idVendas', $this->input->post('idVendas')) == true) {
                 $novoStatus = $this->input->post('status');
-                if ($novoStatus === 'Aprovado' && $statusAntigo !== 'Aprovado' && !$vendaAntiga->convertida) {
-                    $novoOsId = $this->vendas_model->converterParaOs($this->input->post('idVendas'));
-                    if ($novoOsId) {
-                        log_info('Venda convertida em OS. Venda ID: ' . $this->input->post('idVendas') . ' -> OS ID: ' . $novoOsId);
-                        $this->session->set_flashdata('success', 'Venda aprovada e convertida em Ordem de Serviço #' . $novoOsId . ' com sucesso!');
-                        redirect(site_url('os/editar/') . $novoOsId);
+                if ($novoStatus === 'Aprovado' && $statusAntigo !== 'Aprovado') {
+                    if ($vendaAntiga->convertida && $vendaAntiga->os_id) {
+                        // OS já existe — só redireciona para ela
+                        $this->session->set_flashdata('success', 'Venda já convertida. Redirecionando para Ordem de Serviço #' . $vendaAntiga->os_id . '.');
+                        redirect(site_url('os/editar/') . $vendaAntiga->os_id);
+                    } else {
+                        // Primeira conversão
+                        $novoOsId = $this->vendas_model->converterParaOs($this->input->post('idVendas'));
+                        if ($novoOsId) {
+                            log_info('Venda convertida em OS. Venda ID: ' . $this->input->post('idVendas') . ' -> OS ID: ' . $novoOsId);
+                            $this->session->set_flashdata('success', 'Venda aprovada e convertida em Ordem de Serviço #' . $novoOsId . ' com sucesso!');
+                            redirect(site_url('os/editar/') . $novoOsId);
+                        }
                     }
                 }
                 $this->session->set_flashdata('success', 'Venda editada com sucesso!');
