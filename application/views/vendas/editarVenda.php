@@ -1249,11 +1249,12 @@ foreach ($produtos as $p) {
             $('#condEntregaServLabel').text(pct > 0 ? 'R$ ' + pctParaReais(pct).toFixed(2).replace('.',',') : '');
         }
         function atualizarLabelPix() {
+            if (!$('#chkPix').is(':checked')) { $('#condPixLabel').text(''); return; }
             var pct = parseFloat($('#condPixPct').val()) || 0;
-            if (pct > 0) {
-                var v = condTotalGeral * (1 - pct / 100);
-                $('#condPixLabel').text('R$ ' + v.toFixed(2).replace('.',',') + ' (desc. ' + pct + '%)');
-            } else { $('#condPixLabel').text(''); }
+            var v = condTotalGeral * (1 - pct / 100);
+            var label = 'R$ ' + v.toFixed(2).replace('.',',');
+            if (pct > 0) label += ' (desc. ' + pct + '%)';
+            $('#condPixLabel').text(label);
         }
         function atualizarParcelaLabel() {
             var valManual = parseFloat($('#condParcelado').val().replace(',','.')) || 0;
@@ -1319,7 +1320,7 @@ foreach ($produtos as $p) {
                     idVendas: idVendas,
                     cond_aceite_pct: pctAceite,         cond_aceite: pctParaReais(pctAceite),
                     cond_entrega_serv_pct: pctEntrega,  cond_entrega_serv: pctParaReais(pctEntrega),
-                    cond_pix_pct: pctPix,               cond_pix: condTotalGeral * (1 - pctPix/100) * (pctPix > 0 ? 1 : 0),
+                    cond_pix_pct: pctPix,               cond_pix: $('#chkPix').is(':checked') ? condTotalGeral * (1 - pctPix/100) : 0,
                     cond_parcelado: valParcelado,
                     cond_parcelas: parseInt($('#condParcelas').val()) || 0
                 },
