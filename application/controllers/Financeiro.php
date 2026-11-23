@@ -607,10 +607,10 @@ class Financeiro extends MY_Controller
         // Começa a transação
         $this->db->trans_start();
 
-        // Atualiza a tabela vendas, removendo o ID do lançamento e alterando o faturado e status
+        // Atualiza a tabela vendas, removendo o ID do lançamento e voltando para Aprovado
         $this->db->set('lancamentos_id', null);
         $this->db->set('faturado', 0);
-        $this->db->set('status', 'Finalizado');
+        $this->db->set('status', 'Aprovado');
         $this->db->where('lancamentos_id', $id);
         $this->db->update('vendas');
 
