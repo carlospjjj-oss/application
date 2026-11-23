@@ -372,10 +372,11 @@ foreach ($servicos as $s) {
                             <div class="span12" style="padding: 1%; margin-left: 0">
                                 <?php
                                 // Conta anexos existentes por tipo
-                                $osQtdFotos = 0; $osQtdPdf = 0; $osQtdDoc = 0;
+                                $osQtdFotos = 0; $osQtdVideos = 0; $osQtdPdf = 0; $osQtdDoc = 0;
                                 foreach ($anexos as $_a) {
                                     $_ext = strtolower(pathinfo($_a->anexo, PATHINFO_EXTENSION));
-                                    if (in_array($_ext, ['jpg','jpeg','png','gif','webp','mp4','mov','webm','bmp','svg'])) $osQtdFotos++;
+                                    if (in_array($_ext, ['jpg','jpeg','png','gif','webp','bmp','svg'])) $osQtdFotos++;
+                                    elseif (in_array($_ext, ['mp4','mov','webm'])) $osQtdVideos++;
                                     elseif ($_ext === 'pdf') $osQtdPdf++;
                                     elseif (in_array($_ext, ['doc','docx'])) $osQtdDoc++;
                                 }
@@ -383,12 +384,11 @@ foreach ($servicos as $s) {
                                 <div class="span12 well" style="padding: 1%; margin-left: 0" id="form-anexos-os">
                                     <div class="row-fluid">
                                         <div style="margin-bottom:8px; color:#555; font-size:12px;">
-                                            Limite: 6 fotos/vídeos · 1 PDF · 1 DOC
-                                            &nbsp;|&nbsp; Vídeo máx. 1:30
+                                            Limite: 6 fotos · 1 vídeo (máx. 1:30) · 1 PDF · 1 DOC
                                         </div>
-                                        <?php if ($osQtdFotos < 6): ?>
+                                        <?php if ($osQtdFotos < 6 || $osQtdVideos < 1): ?>
                                         <span class="btn btn-success btn-mini" id="os-btn-foto" style="margin-right:6px;">
-                                            <i class='bx bx-image'></i> Foto/Vídeo (<?= $osQtdFotos ?>/6)
+                                            <i class='bx bx-image'></i> Foto/Vídeo (<?= $osQtdFotos ?>/6 fotos · <?= $osQtdVideos ?>/1 vídeo)
                                         </span>
                                         <?php endif; ?>
                                         <?php if ($osQtdPdf < 1): ?>

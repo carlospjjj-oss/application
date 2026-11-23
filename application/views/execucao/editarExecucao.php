@@ -221,23 +221,24 @@
         ============================================================ -->
         <div class="tab-pane" id="tab-anexos">
             <p style="color:#999; font-size:12px; margin-bottom:12px;">
-                Máximo: 6 fotos/vídeos (vídeos até 1:30), 1 PDF e 1 documento (DOC/DOCX).
+                Máximo: 6 fotos, 1 vídeo (até 1:30), 1 PDF e 1 documento (DOC/DOCX).
             </p>
 
             <?php if ($this->permission->checkPermission($this->session->userdata('permissao'), 'eArquivo')): ?>
             <?php
-                $qtdFotos = 0; $qtdPdf = 0; $qtdDoc = 0;
+                $qtdFotos = 0; $qtdVideos = 0; $qtdPdf = 0; $qtdDoc = 0;
                 foreach ($anexos as $a) {
                     $ext = strtolower(pathinfo($a->anexo, PATHINFO_EXTENSION));
-                    if (in_array($ext, ['jpg','jpeg','png','gif','webp','mp4','mov','webm'])) $qtdFotos++;
+                    if (in_array($ext, ['jpg','jpeg','png','gif','webp'])) $qtdFotos++;
+                    elseif (in_array($ext, ['mp4','mov','webm'])) $qtdVideos++;
                     elseif ($ext === 'pdf') $qtdPdf++;
                     elseif (in_array($ext, ['doc','docx'])) $qtdDoc++;
                 }
             ?>
             <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
-                <?php if ($qtdFotos < 6): ?>
+                <?php if ($qtdFotos < 6 || $qtdVideos < 1): ?>
                 <div>
-                    <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px;">Foto/Vídeo (<?= $qtdFotos ?>/6)</label>
+                    <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px;">Foto/Vídeo (<?= $qtdFotos ?>/6 fotos · <?= $qtdVideos ?>/1 vídeo)</label>
                     <label id="lblFotoVideo" style="cursor:pointer;display:inline-flex;align-items:center;gap:6px;background:#5cb85c;color:#fff;padding:0 14px;height:30px;border-radius:4px;font-size:13px;font-weight:600;">
                         <i class="fas fa-upload"></i> Anexar Foto/Vídeo
                     </label>

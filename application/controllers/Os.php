@@ -993,10 +993,11 @@ class Os extends MY_Controller
 
         // Conta anexos existentes por tipo
         $existentes = $this->Os_model->getAnexos($os_id);
-        $qtdFotos = 0; $qtdPdf = 0; $qtdDoc = 0;
+        $qtdFotos = 0; $qtdVideos = 0; $qtdPdf = 0; $qtdDoc = 0;
         foreach ($existentes as $a) {
             $ext = strtolower(pathinfo($a->anexo, PATHINFO_EXTENSION));
-            if (in_array($ext, ['jpg','jpeg','png','gif','webp','mp4','mov','webm','bmp','svg'])) $qtdFotos++;
+            if (in_array($ext, ['jpg','jpeg','png','gif','webp','bmp','svg'])) $qtdFotos++;
+            elseif (in_array($ext, ['mp4','mov','webm'])) $qtdVideos++;
             elseif ($ext === 'pdf') $qtdPdf++;
             elseif (in_array($ext, ['doc','docx'])) $qtdDoc++;
         }
@@ -1007,15 +1008,19 @@ class Os extends MY_Controller
         }
 
         $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-        $isFotoVideo = in_array($ext, ['jpg','jpeg','png','gif','webp','mp4','mov','webm','bmp','svg']);
-        $isPdf       = ($ext === 'pdf');
-        $isDoc       = in_array($ext, ['doc','docx']);
+        $isFoto  = in_array($ext, ['jpg','jpeg','png','gif','webp','bmp','svg']);
+        $isVideo = in_array($ext, ['mp4','mov','webm']);
+        $isPdf   = ($ext === 'pdf');
+        $isDoc   = in_array($ext, ['doc','docx']);
 
-        if (!$isFotoVideo && !$isPdf && !$isDoc) {
+        if (!$isFoto && !$isVideo && !$isPdf && !$isDoc) {
             echo json_encode(['success' => false, 'message' => 'Tipo não permitido. Use fotos, vídeos, PDF ou DOC.']); exit;
         }
-        if ($isFotoVideo && $qtdFotos >= 6) {
-            echo json_encode(['success' => false, 'message' => 'Limite de 6 fotos/vídeos atingido.']); exit;
+        if ($isFoto && $qtdFotos >= 6) {
+            echo json_encode(['success' => false, 'message' => 'Limite de 6 fotos atingido.']); exit;
+        }
+        if ($isVideo && $qtdVideos >= 1) {
+            echo json_encode(['success' => false, 'message' => 'Limite de 1 vídeo atingido.']); exit;
         }
         if ($isPdf && $qtdPdf >= 1) {
             echo json_encode(['success' => false, 'message' => 'Limite de 1 PDF atingido.']); exit;
