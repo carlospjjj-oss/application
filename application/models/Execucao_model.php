@@ -183,19 +183,22 @@ class Execucao_model extends CI_Model
     // ----------------------------------------------------------------
     public function calendario($start = null, $end = null)
     {
-        $this->db->select('execucoes.idExecucao, execucoes.status, execucoes.engenheiro,
-                           execucoes.tipo_instalacao,
-                           execucoes.data_inicio_instalacao, execucoes.data_fim_instalacao,
-                           clientes.nomeCliente, os.idOs');
-        $this->db->from('execucoes');
-        $this->db->join('os',       'os.idOs = execucoes.os_id');
-        $this->db->join('clientes', 'clientes.idClientes = os.clientes_id');
-        $this->db->where('execucoes.data_inicio_instalacao IS NOT NULL', null, false);
-        $this->db->where('execucoes.data_inicio_instalacao !=', '0000-00-00');
-        if ($start) $this->db->where('execucoes.data_inicio_instalacao >=', $start);
-        if ($end)   $this->db->where('execucoes.data_inicio_instalacao <=', $end);
+        $start = $start ?: '1970-01-01';
+        $end   = $end   ?: '2099-12-31';
 
-        return $this->db->get()->result();
+        $sql = "SELECT execucoes.idExecucao, execucoes.status, execucoes.engenheiro,
+                       execucoes.tipo_instalacao,
+                       execucoes.data_inicio_instalacao, execucoes.data_fim_instalacao,
+                       clientes.nomeCliente, os.idOs
+                FROM execucoes
+                JOIN os       ON os.idOs = execucoes.os_id
+                JOIN clientes ON clientes.idClientes = os.clientes_id
+                WHERE execucoes.data_inicio_instalacao IS NOT NULL
+                  AND execucoes.data_inicio_instalacao != '0000-00-00'
+                  AND execucoes.data_inicio_instalacao >= ?
+                  AND execucoes.data_inicio_instalacao <= ?";
+
+        return $this->db->query($sql, [$start, $end])->result();
     }
 
     public function addAnexo($data)
