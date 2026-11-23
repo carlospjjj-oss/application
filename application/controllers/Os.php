@@ -313,6 +313,12 @@ class Os extends MY_Controller
                     $this->enviarOsPorEmail($idOs, $remetentes, 'Ordem de Serviço - Editada');
                 }
 
+                // Gera Ordem de Execução quando status=Finalizado e tipo_instalacao preenchido
+                if ($this->input->post('status') === 'Finalizado' && $this->input->post('tipo_instalacao')) {
+                    $this->load->model('execucao_model');
+                    $this->execucao_model->createFromOs($idOs);
+                }
+
                 $this->session->set_flashdata('success', 'Os editada com sucesso!');
                 log_info('Alterou uma OS. ID: ' . $this->input->post('idOs'));
                 redirect(site_url('os/editar/') . $this->input->post('idOs'));
