@@ -105,7 +105,11 @@ class Execucao_model extends CI_Model
                                                      $data['data_inicio_instalacao']  = $os->data_inicio_instalacao;
             if (!empty($os->data_fim_instalacao) && $os->data_fim_instalacao != '0000-00-00')
                                                      $data['data_fim_instalacao']     = $os->data_fim_instalacao;
-            if (!empty($os->engenheiro))             $data['engenheiro']              = $os->engenheiro;
+            // engenheiro: busca nome via engenheiro_id
+            if (!empty($os->engenheiro_id)) {
+                $eng = $this->db->where('idUsuarios', $os->engenheiro_id)->get('usuarios')->row();
+                if ($eng) $data['engenheiro'] = $eng->nome;
+            }
         }
 
         // Parâmetro explícito sobrescreve o da OS
@@ -129,12 +133,18 @@ class Execucao_model extends CI_Model
         $update = [];
         if (empty($exec->tipo_instalacao) && !empty($os->tipo_instalacao))
             $update['tipo_instalacao'] = $os->tipo_instalacao;
-        if (empty($exec->data_inicio_instalacao) && !empty($os->data_inicio_instalacao) && $os->data_inicio_instalacao != '0000-00-00')
+        if ((empty($exec->data_inicio_instalacao) || $exec->data_inicio_instalacao == '0000-00-00')
+            && !empty($os->data_inicio_instalacao) && $os->data_inicio_instalacao != '0000-00-00')
             $update['data_inicio_instalacao'] = $os->data_inicio_instalacao;
-        if (empty($exec->data_fim_instalacao) && !empty($os->data_fim_instalacao) && $os->data_fim_instalacao != '0000-00-00')
+        if ((empty($exec->data_fim_instalacao) || $exec->data_fim_instalacao == '0000-00-00')
+            && !empty($os->data_fim_instalacao) && $os->data_fim_instalacao != '0000-00-00')
             $update['data_fim_instalacao'] = $os->data_fim_instalacao;
-        if (empty($exec->engenheiro) && !empty($os->engenheiro))
-            $update['engenheiro'] = $os->engenheiro;
+
+        // engenheiro: busca nome do usuário via engenheiro_id da OS
+        if (empty($exec->engenheiro) && !empty($os->engenheiro_id)) {
+            $eng = $this->db->where('idUsuarios', $os->engenheiro_id)->get('usuarios')->row();
+            if ($eng) $update['engenheiro'] = $eng->nome;
+        }
 
         if (!empty($update)) {
             $this->db->where('idExecucao', $exec->idExecucao)->update('execucoes', $update);
