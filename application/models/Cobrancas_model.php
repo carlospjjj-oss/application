@@ -13,8 +13,9 @@ class Cobrancas_model extends CI_Model
 
     public function get($table, $fields, $where = '', $perpage = 0, $start = 0, $one = false, $array = 'array')
     {
-        $this->db->select($fields, 'vendas.*,os.*');
+        $this->db->select('cobrancas.*, clientes.nomeCliente');
         $this->db->from($table);
+        $this->db->join('clientes', 'clientes.idClientes = cobrancas.clientes_id', 'left');
         $this->db->limit($perpage, $start);
         $this->db->order_by('idCobranca', 'desc');
         if ($where) {

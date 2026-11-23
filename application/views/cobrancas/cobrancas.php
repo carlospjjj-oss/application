@@ -27,12 +27,13 @@
                     <tr>
                         <th>#</th>
                         <th>Origem</th>
+                        <th>Cliente</th>
                         <th>NF</th>
                         <th>Tipo / Forma</th>
-                        <th>Data de Vencimento</th>
-                        <th>Referência</th>
+                        <th class="col-mobile-hide">Data de Vencimento</th>
+                        <th class="col-mobile-hide">Referência</th>
                         <th>Status</th>
-                        <th>Valor</th>
+                        <th class="col-mobile-hide">Valor</th>
                         <th>Ações</th>
                     </tr>
                 </thead>
@@ -40,7 +41,7 @@
                     <?php
                     if (!$results) {
                         echo '<tr>
-                                <td colspan="9">Nenhuma cobrança Cadastrada</td>
+                                <td colspan="10">Nenhuma cobrança Cadastrada</td>
                             </tr>';
                     }
                     foreach ($results as $r) {
@@ -56,6 +57,7 @@
                         $isManual = in_array($r->payment_gateway, ['Manual', 'Faturar (Venda)']);
                         $origem = $r->payment_gateway === 'Manual' ? 'Manual' : ($r->payment_gateway === 'Faturar (Venda)' ? 'Faturar (Venda)' : $r->payment_gateway);
                         echo '<td>' . $origem . '</td>';
+                        echo '<td>' . htmlspecialchars($r->nomeCliente ?? '-') . '</td>';
                         // Coluna NF: extrai MO ou MT do campo message
                         $nfTipo = '';
                         if (!empty($r->message)) {
@@ -67,17 +69,18 @@
                             ? htmlspecialchars($r->payment ?? '')
                             : htmlspecialchars($r->payment_method ?? '');
                         echo '<td>' . $tipo . '</td>';
-                        echo '<td>' . $dataVenda . '</td>';
+                        echo '<td class="col-mobile-hide">' . $dataVenda . '</td>';
 
                         if ($r->os_id != '') {
-                            echo '<td><a href="' . base_url() . 'index.php/os/visualizar/' . $r->os_id . '"> Ordem de Serviço: #' . $r->os_id . '</a></td>';
-                        }
-                        if ($r->vendas_id != '') {
-                            echo '<td><a href="' . base_url() . 'index.php/vendas/visualizar/' . $r->vendas_id . '"> Venda: #' . $r->vendas_id . '</a></td>';
+                            echo '<td class="col-mobile-hide"><a href="' . base_url() . 'index.php/os/visualizar/' . $r->os_id . '"> Ordem de Serviço: #' . $r->os_id . '</a></td>';
+                        } elseif ($r->vendas_id != '') {
+                            echo '<td class="col-mobile-hide"><a href="' . base_url() . 'index.php/vendas/visualizar/' . $r->vendas_id . '"> Venda: #' . $r->vendas_id . '</a></td>';
+                        } else {
+                            echo '<td class="col-mobile-hide">-</td>';
                         }
 
                         echo '<td>' .  $cobrancaStatus . '</td>';
-                        echo '<td>R$ ' . number_format($r->total / 100, 2, ',', '.') . '</td>';
+                        echo '<td class="col-mobile-hide">R$ ' . number_format($r->total / 100, 2, ',', '.') . '</td>';
                         echo '<td>';
                         if ($this->permission->checkPermission($this->session->userdata('permissao'), 'vCobranca')) {
                             if (!$isManual) echo '<a style="margin-right: 1%" href="#modal-cancelar" role="button" data-toggle="modal" cancela_id="' . $r->idCobranca . '" class="btn-nwe4" title="Cancelar Cobrança"><i class="bx bx-x" ></i></a>';
