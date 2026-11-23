@@ -314,13 +314,18 @@ class Os extends MY_Controller
                 }
 
                 // Gera Ordem de Execução quando status=Finalizado e tipo_instalacao preenchido
+                $redirecionarExecucao = false;
                 if ($this->input->post('status') === 'Finalizado' && $this->input->post('tipo_instalacao')) {
                     $this->load->model('execucao_model');
                     $this->execucao_model->createFromOs($idOs);
+                    $redirecionarExecucao = true;
                 }
 
                 $this->session->set_flashdata('success', 'Os editada com sucesso!');
                 log_info('Alterou uma OS. ID: ' . $this->input->post('idOs'));
+                if ($redirecionarExecucao) {
+                    redirect(site_url('execucao/editar/') . $idOs);
+                }
                 redirect(site_url('os/editar/') . $this->input->post('idOs'));
             } else {
                 $this->data['custom_error'] = '<div class="form_error"><p>Ocorreu um erro</p></div>';
