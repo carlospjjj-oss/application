@@ -194,7 +194,7 @@ class Execucao_model extends CI_Model
                 JOIN os       ON os.idOs = execucoes.os_id
                 JOIN clientes ON clientes.idClientes = os.clientes_id
                 WHERE execucoes.data_inicio_instalacao IS NOT NULL
-                  AND execucoes.data_inicio_instalacao != '0000-00-00'
+                  AND execucoes.data_inicio_instalacao > '1970-01-01'
                   AND execucoes.data_inicio_instalacao >= ?
                   AND execucoes.data_inicio_instalacao <= ?";
 
