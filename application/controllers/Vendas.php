@@ -170,7 +170,7 @@ class Vendas extends MY_Controller
 
             if ($this->vendas_model->edit('vendas', $data, 'idVendas', $this->input->post('idVendas')) == true) {
                 $novoStatus = $this->input->post('status');
-                if ($novoStatus === 'Aprovado' && $statusAntigo !== 'Aprovado') {
+                if ($novoStatus === 'Aprovado' && $statusAntigo !== 'Aprovado' && !$vendaAntiga->convertida) {
                     $novoOsId = $this->vendas_model->converterParaOs($this->input->post('idVendas'));
                     if ($novoOsId) {
                         log_info('Venda convertida em OS. Venda ID: ' . $this->input->post('idVendas') . ' -> OS ID: ' . $novoOsId);
