@@ -139,6 +139,16 @@ class Cobrancas_model extends CI_Model
             return $this->session->set_flashdata('success', 'Pagamento confirmado!');
         }
 
+        if ($gatewayDePagamento === 'Faturar (Venda)') {
+            $this->db->where('idCobranca', $idCobranca)->update('cobrancas', ['status' => 'Pago']);
+            // Atualiza a venda vinculada como faturada
+            if (!empty($cobranca->vendas_id)) {
+                $this->db->where('idVendas', $cobranca->vendas_id)
+                         ->update('vendas', ['faturado' => 1, 'status' => 'Faturado']);
+            }
+            return $this->session->set_flashdata('success', 'Pagamento confirmado!');
+        }
+
         $this->load->library("Gateways/$gatewayDePagamento", null, 'PaymentGateway');
 
         $result = $this->PaymentGateway->confirmarPagamento($cobranca->idCobranca);
