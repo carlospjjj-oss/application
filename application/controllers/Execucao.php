@@ -68,6 +68,8 @@ class Execucao extends MY_Controller
 
         // Garante que a execução existe (cria se necessário)
         $this->execucao_model->createFromOs($os_id);
+        // Sincroniza campos da OS que possam estar vazios na execução
+        $this->execucao_model->syncFromOs($os_id);
         $exec = $this->execucao_model->getByOs($os_id);
 
         if (! $exec) {

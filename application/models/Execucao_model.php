@@ -94,10 +94,52 @@ class Execucao_model extends CI_Model
         // Evita duplicata
         if ($this->getByOs($os_id)) return true;
 
+        // Busca dados da OS para preencher a execução
+        $os = $this->db->where('idOs', $os_id)->get('os')->row();
+
         $data = ['os_id' => $os_id, 'status' => 'Aberto'];
+
+        if ($os) {
+            if (!empty($os->tipo_instalacao))        $data['tipo_instalacao']         = $os->tipo_instalacao;
+            if (!empty($os->data_inicio_instalacao) && $os->data_inicio_instalacao != '0000-00-00')
+                                                     $data['data_inicio_instalacao']  = $os->data_inicio_instalacao;
+            if (!empty($os->data_fim_instalacao) && $os->data_fim_instalacao != '0000-00-00')
+                                                     $data['data_fim_instalacao']     = $os->data_fim_instalacao;
+            if (!empty($os->engenheiro))             $data['engenheiro']              = $os->engenheiro;
+        }
+
+        // Parâmetro explícito sobrescreve o da OS
         if ($engenheiro) $data['engenheiro'] = $engenheiro;
+
         $this->db->insert('execucoes', $data);
         return $this->db->affected_rows() == 1 ? $this->db->insert_id() : false;
+    }
+
+    // ----------------------------------------------------------------
+    // Sincroniza campos vazios da execução com a OS (para execuções já criadas)
+    // ----------------------------------------------------------------
+    public function syncFromOs($os_id)
+    {
+        $exec = $this->getByOs($os_id);
+        if (!$exec) return false;
+
+        $os = $this->db->where('idOs', $os_id)->get('os')->row();
+        if (!$os) return false;
+
+        $update = [];
+        if (empty($exec->tipo_instalacao) && !empty($os->tipo_instalacao))
+            $update['tipo_instalacao'] = $os->tipo_instalacao;
+        if (empty($exec->data_inicio_instalacao) && !empty($os->data_inicio_instalacao) && $os->data_inicio_instalacao != '0000-00-00')
+            $update['data_inicio_instalacao'] = $os->data_inicio_instalacao;
+        if (empty($exec->data_fim_instalacao) && !empty($os->data_fim_instalacao) && $os->data_fim_instalacao != '0000-00-00')
+            $update['data_fim_instalacao'] = $os->data_fim_instalacao;
+        if (empty($exec->engenheiro) && !empty($os->engenheiro))
+            $update['engenheiro'] = $os->engenheiro;
+
+        if (!empty($update)) {
+            $this->db->where('idExecucao', $exec->idExecucao)->update('execucoes', $update);
+        }
+        return true;
     }
 
     // ----------------------------------------------------------------
