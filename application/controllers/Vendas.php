@@ -702,7 +702,7 @@ class Vendas extends MY_Controller
         $tipoDesconto = $this->input->post('tipoDesconto');
         $valorDesconto = floatval($this->input->post('valor_desconto'));
 
-        if (!$idVendas || $desconto <= 0) {
+        if (!$idVendas || $desconto < 0) {
             echo json_encode(['result' => false, 'messages' => 'Dados inválidos']);
             return;
         }
